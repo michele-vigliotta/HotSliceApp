@@ -47,11 +47,17 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.firebase.common.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     //dipendenze per usare firebase
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     implementation(platform("com.google.firebase:firebase-analytics-ktx"))
+
+
+
+
+
 
 }
