@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "297709536847",
+    "project_id": "michele-e60a9",
+    "storage_bucket": "michele-e60a9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:297709536847:android:1da907de5abeed572a8c3a",
+        "android_client_info": {
+          "package_name": "com.example.hotsliceapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "297709536847-4n8u4fslq1bbctstnc0jp1thq3qaic7g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnSx33RFJ2HaYcQgsWFWbLaEVXPZrlur0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "297709536847-4n8u4fslq1bbctstnc0jp1thq3qaic7g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
