@@ -14,6 +14,8 @@ import com.google.firebase.firestore.firestore
 
 class MainActivity : AppCompatActivity() {
 
+    val firestore = Firebase.firestore
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,22 +28,20 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-
-        FirebaseApp.initializeApp(this)
-        val db = Firebase.firestore
         val city = hashMapOf(
             "name" to "Los Angeles",
             "state" to "CA",
             "country" to "USA",
         )
 
-        val button: Button = findViewById<Button>(R.id.button)
-        button.setOnClickListener {
-        db.collection("cities").document("LA")
+        firestore.collection("cities").document("LA")
             .set(city)
             .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
             .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
-    }
+
+
+
+
         }
 }
 
