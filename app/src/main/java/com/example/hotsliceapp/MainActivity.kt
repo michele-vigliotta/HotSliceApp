@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         val city = hashMapOf(
             "name" to "Los Angeles",
             "state" to "CA",
-            "country" to "United States",
+            "country" to "US",
         )
 
         firestore.collection("cities").document("LA")
