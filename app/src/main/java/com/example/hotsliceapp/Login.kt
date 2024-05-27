@@ -35,8 +35,10 @@ class Login : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+                     val intent = Intent(this, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
                     // Login riuscito, passa alla schermata principale
-                    startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 } else {
                     // Login fallito, mostra un messaggio di errore
