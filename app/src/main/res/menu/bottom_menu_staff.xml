@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bottom_home"
+        android:icon="@drawable/baseline_home_24"
+        android:title="Home"/>
+    <item
+        android:id="@+id/bottom_offerte"
+        android:icon="@drawable/baseline_celebration_24"
+        android:title="Offerte"/>
+
+    <item
+        android:id="@+id/bottom_ordini"
+        android:icon="@drawable/baseline_access_time_24"
+        android:title="Ordini"/>
+
+</menu>
