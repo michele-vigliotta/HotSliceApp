@@ -12,9 +12,10 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
 
 class Login : AppCompatActivity() {
-
+    val db = Firebase.firestore
     private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +29,26 @@ class Login : AppCompatActivity() {
 
             val passw = (findViewById<EditText>(R.id.etPassword)).text.toString()
             loginUser(email, passw)
+        }
+        (findViewById<Button>(R.id.button2)).setOnClickListener {
+
+
+            val authid = (auth.currentUser?.uid).toString()
+            val documentSnapshot = db.collection("users").document(authid)
+            documentSnapshot.get().addOnSuccessListener {
+                    document ->
+                val role = document.getString("role")
+                Toast.makeText(baseContext, "Role: $role", Toast.LENGTH_SHORT).show()
+            }
+
+
+        }
+
+        (findViewById<Button>(R.id.button3)).setOnClickListener {
+
+            auth.signOut()
+            Toast.makeText(baseContext, "Utente Disconnesso", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
