@@ -44,6 +44,9 @@ android {
     buildFeatures {
         compose = true
     }
+    buildFeatures{
+        viewBinding=true
+    }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
