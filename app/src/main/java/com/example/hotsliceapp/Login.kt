@@ -26,13 +26,10 @@ class Login : AppCompatActivity() {
         val btnlogin : Button = findViewById(R.id.btnLogin)
         btnlogin.setOnClickListener {
             val email = (findViewById<EditText>(R.id.etEmail)).text.toString()
-
             val passw = (findViewById<EditText>(R.id.etPassword)).text.toString()
             loginUser(email, passw)
         }
         (findViewById<Button>(R.id.button2)).setOnClickListener {
-
-
             val authid = (auth.currentUser?.uid).toString()
             val documentSnapshot = db.collection("users").document(authid)
             documentSnapshot.get().addOnSuccessListener {
@@ -40,12 +37,10 @@ class Login : AppCompatActivity() {
                 val role = document.getString("role")
                 Toast.makeText(baseContext, "Role: $role", Toast.LENGTH_SHORT).show()
             }
-
-
         }
 
+        //codice logout
         (findViewById<Button>(R.id.button3)).setOnClickListener {
-
             auth.signOut()
             Toast.makeText(baseContext, "Utente Disconnesso", Toast.LENGTH_SHORT)
                 .show()
@@ -55,15 +50,14 @@ class Login : AppCompatActivity() {
     private fun loginUser(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
+                if (task.isSuccessful) { //login ok
                      val intent = Intent(this, HomeActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK //elimina le altre activity
                     startActivity(intent)
-                    // Login riuscito, passa alla schermata principale(HomeActivity)
                     finish()
                 } else {
                     // Login fallito, mostra un messaggio di errore
-                    Toast.makeText(baseContext, "Autenticazione fallita.", Toast.LENGTH_SHORT)
+                    Toast.makeText(baseContext, "Autenticazione fallita. Assicurati di avere un account valido", Toast.LENGTH_SHORT)
                         .show()
                 }
             }
