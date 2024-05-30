@@ -20,24 +20,25 @@ class HomeActivity : AppCompatActivity() {
     lateinit var binding: ActivityHomeBinding                     //aggiunta
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding=ActivityHomeBinding.inflate(layoutInflater)    //aggiunta
         setContentView(R.layout.activity_home)
-        setContentView(binding.root)                           //aggiunta
-        auth = Firebase.auth
 
+        binding=ActivityHomeBinding.inflate(layoutInflater)    //aggiunta
+        setContentView(binding.root)                           //aggiunta
         binding.buttonPizza.setOnClickListener {
             replaceFragment(FragmentPizza())
         }
 
+        //codice per mostrare il bottom menu in base al ruolo dell'utente
+        auth = Firebase.auth
         val authid = (auth.currentUser?.uid).toString()
         val documentSnapshot = db.collection("users").document(authid)
         documentSnapshot.get().addOnSuccessListener {
                 document ->
              role = document.getString("role").toString()
             if (role == "staff") {
-                var btnmenu = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-                btnmenu.menu.clear()
-                btnmenu.inflateMenu(R.menu.bottom_menu_staff)
+                var bottom_menu = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+                bottom_menu.menu.clear()
+                bottom_menu.inflateMenu(R.menu.bottom_menu_staff)
 
             }
             else if (role == "admin"){
@@ -45,8 +46,9 @@ class HomeActivity : AppCompatActivity() {
                 btnmenu.menu.clear()
                 btnmenu.inflateMenu(R.menu.bottom_menu_admin)
             }
-
         }
+
+        //codice per il logout
         var logout_btn= findViewById<Button>(R.id.logout_button)
         logout_btn.setOnClickListener {
             auth.signOut()
