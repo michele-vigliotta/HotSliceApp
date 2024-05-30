@@ -41,8 +41,16 @@ class Login : AppCompatActivity() {
             Toast.makeText(baseContext, "Utente Disconnesso", Toast.LENGTH_SHORT)
                 .show()
         }
+
+        //registrati button
+        (findViewById<Button>(R.id.btnRegister)).setOnClickListener {
+            val intent = Intent(this, Register::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 
+    //metodo login
     private fun loginUser(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
@@ -51,8 +59,7 @@ class Login : AppCompatActivity() {
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK //elimina le altre activity
                     startActivity(intent)
                     finish()
-                } else {
-                    // Login fallito, mostra un messaggio di errore
+                } else { // Login fallito, mostra un messaggio di errore
                     Toast.makeText(baseContext, "Autenticazione fallita. Assicurati di avere un account valido", Toast.LENGTH_SHORT)
                         .show()
                 }
