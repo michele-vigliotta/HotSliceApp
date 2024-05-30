@@ -23,6 +23,13 @@
             android:text="HUNGRY NOW?"
             android:textSize="24sp" />
 
+        <Button
+
+            android:id="@+id/logout_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logout" />
+
         <Space
             android:layout_width="match_parent"
             android:layout_height="100dp" />
@@ -65,6 +72,12 @@
             android:id="@+id/fragmentContainerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Button" />
     </LinearLayout>
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationView"

@@ -1,6 +1,9 @@
 package com.example.hotsliceapp
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.hotsliceapp.databinding.ActivityHomeBinding
@@ -43,6 +46,14 @@ class HomeActivity : AppCompatActivity() {
                 btnmenu.inflateMenu(R.menu.bottom_menu_admin)
             }
 
+        }
+        var logout_btn= findViewById<Button>(R.id.logout_button)
+        logout_btn.setOnClickListener {
+            auth.signOut()
+            Toast.makeText(baseContext, "Utente Disconnesso", Toast.LENGTH_SHORT)
+                .show()
+            val intent = Intent(this, Login::class.java)
+            startActivity(intent)
         }
     }
 
