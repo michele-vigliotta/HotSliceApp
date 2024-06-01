@@ -17,15 +17,22 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
     lateinit var role: String
-    lateinit var binding: ActivityHomeBinding                     //aggiunta
+    lateinit var binding: ActivityHomeBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        binding=ActivityHomeBinding.inflate(layoutInflater)    //aggiunta
-        setContentView(binding.root)                           //aggiunta
+        binding=ActivityHomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         binding.buttonPizza.setOnClickListener {
             replaceFragment(FragmentPizza())
+        }
+        binding.buttonBibite.setOnClickListener {
+            replaceFragment(FragmentBibite())
+        }
+        binding.buttonDolci.setOnClickListener {
+            replaceFragment(FragmentDolci())
         }
 
         //codice per mostrare il bottom menu in base al ruolo dell'utente
@@ -60,7 +67,7 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun replaceFragment(fragment: Fragment) {
+    private fun replaceFragment(fragment: Fragment) {//funzione per mettere un fragment nel fragment container
 
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
