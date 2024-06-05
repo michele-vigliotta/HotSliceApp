@@ -16,7 +16,7 @@ import com.google.firebase.firestore.QuerySnapshot
 
 class FragmentDolci:Fragment() {
     private lateinit var recyclerView: RecyclerView
-    private lateinit var dolciAdapter: PizzaAdapter
+    private lateinit var dolciAdapter: AdapterListeHome
     private val dolciList = mutableListOf<Item>()
 
     override fun onCreateView(
@@ -28,7 +28,7 @@ class FragmentDolci:Fragment() {
         recyclerView = view.findViewById(R.id.recyclerDolci)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        dolciAdapter = PizzaAdapter(dolciList)
+        dolciAdapter = AdapterListeHome(dolciList)
         recyclerView.adapter = dolciAdapter
         fetchDataFromFirebase()
         return view

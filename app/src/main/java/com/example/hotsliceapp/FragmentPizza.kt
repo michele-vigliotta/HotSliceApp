@@ -12,7 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class FragmentPizza:Fragment() {
     private lateinit var recyclerView: RecyclerView
-    private lateinit var pizzaAdapter: PizzaAdapter
+    private lateinit var pizzaAdapter: AdapterListeHome
     private val pizzaList = mutableListOf<Item>()
 
     override fun onCreateView(
@@ -24,7 +24,7 @@ class FragmentPizza:Fragment() {
         recyclerView = view.findViewById(R.id.recyclerPizze)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        pizzaAdapter = PizzaAdapter(pizzaList)
+        pizzaAdapter = AdapterListeHome(pizzaList)
         recyclerView.adapter = pizzaAdapter
         fetchDataFromFirebase()
         return view
