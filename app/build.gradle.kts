@@ -45,7 +45,7 @@ android {
         compose = true
     }
     buildFeatures{
-        viewBinding=true
+        viewBinding=true  //Ogni file xml diventa una classe binding per interagire meglio con le viste
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
