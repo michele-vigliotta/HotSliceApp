@@ -7,106 +7,86 @@
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".Login">
-
+    <!---android:background="@drawable/background" per settare il background-->
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
         android:text="HotSlice"
         android:textAlignment="center"
-        android:textColor="@color/red"
         android:textSize="30sp"
+        android:textColor="@color/red"
         app:layout_constraintBottom_toTopOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.145" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- hint mostra il testo quando la editText non ha focus -->
 
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="234dp"
         android:layout_height="186dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="56dp"
         android:src="@drawable/pizzalogin"
         app:layout_constraintBottom_toTopOf="@+id/etEmail"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/etEmail"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="24dp"
         android:background="@drawable/edittext_border"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        android:padding="16dp"
+        android:padding="12dp"
         app:layout_constraintBottom_toTopOf="@+id/etPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <!-- gravity center centra il testo nella view-->
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="52dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/edittext_border"
         android:hint="Password"
         android:inputType="textPassword"
-        android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnLogin"
+        android:padding="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnRegister"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.517"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnRegister"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:text="Login"
+        android:layout_marginBottom="31dp"
+        android:text="Registrati"
         android:background="@drawable/custom_button"
-        app:layout_constraintBottom_toTopOf="@+id/NotRegisteredText"
+        app:layout_constraintBottom_toTopOf="@+id/AlreadyRegisteredText"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/NotRegisteredText"
+        android:id="@+id/AlreadyRegisteredText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="10dp"
         android:gravity="center"
-        android:text="Non sei ancora registrato? Registrati ora!"
+        android:text="Sei già registrato? Vai al login"
         android:textColor="@color/red"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginBottom="10dp"
-        android:text="Login Check"
-        android:background="@drawable/custom_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="10dp"
-        android:text="Logout"
-        android:background="@drawable/custom_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
