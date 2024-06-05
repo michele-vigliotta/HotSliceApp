@@ -24,6 +24,13 @@ class HomeActivity : AppCompatActivity() {
         binding=ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Aggiunge il FragmentPizza di default se savedInstanceState è null
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, FragmentPizza())
+                .commit()
+        }
+
         binding.buttonPizza.setOnClickListener {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, FragmentPizza())
@@ -69,11 +76,5 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun replaceFragment(fragment: Fragment) {//funzione per mettere un fragment nel fragment container
 
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragmentContainerView,fragment)
-        fragmentTransaction.commit()
-    }
 }
