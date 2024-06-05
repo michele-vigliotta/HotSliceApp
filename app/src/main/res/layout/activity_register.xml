@@ -37,7 +37,7 @@
 
     <EditText
         android:id="@+id/etEmail"
-        android:layout_width="350dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:background="@drawable/edittext_border"
@@ -51,7 +51,7 @@
     <!-- gravity center centra il testo nella view-->
     <EditText
         android:id="@+id/etPassword"
-        android:layout_width="350dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:background="@drawable/edittext_border"
