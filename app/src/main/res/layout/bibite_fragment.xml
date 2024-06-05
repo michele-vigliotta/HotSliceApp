@@ -4,12 +4,12 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/textViewBibite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginTop="50dp"
-        android:text="Fragment nella home relativo alla pizza"
+        android:text="Fragment relativo alle bibite!"
         android:textStyle="bold"
         android:textSize="30dp"/>
 </RelativeLayout>
