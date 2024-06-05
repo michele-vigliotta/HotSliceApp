@@ -33,7 +33,11 @@ class Register: AppCompatActivity() {
                             val intent = Intent(this, Login::class.java)
                             startActivity(intent)
                             finish() //chiude la vecchia activity appena siamo nella nuova
-                        } else {
+                        }
+                        else if(passw.length < 6){
+                            Toast.makeText(this, "La password deve contenere almeno 6 caratteri", Toast.LENGTH_SHORT).show()
+                        }
+                        else {
                             Toast.makeText(this, "Email già in uso", Toast.LENGTH_SHORT).show()
                         }
                     }
