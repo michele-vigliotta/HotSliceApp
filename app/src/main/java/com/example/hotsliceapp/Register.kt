@@ -34,6 +34,9 @@ class Register: AppCompatActivity() {
                             startActivity(intent)
                             finish() //chiude la vecchia activity appena siamo nella nuova
                         }
+                        else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                            Toast.makeText(this, "Formato Email non valido", Toast.LENGTH_SHORT).show()
+                        }
                         else if(passw.length < 6){
                             Toast.makeText(this, "La password deve contenere almeno 6 caratteri", Toast.LENGTH_SHORT).show()
                         }
