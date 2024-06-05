@@ -26,14 +26,17 @@ class HomeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.buttonPizza.setOnClickListener {
-            replaceFragment(FragmentPizza())
-        }
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, FragmentPizza())
+                .commit()        }
         binding.buttonBibite.setOnClickListener {
-            replaceFragment(FragmentBibite())
-        }
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, FragmentBibite())
+                .commit()        }
         binding.buttonDolci.setOnClickListener {
-            replaceFragment(FragmentDolci())
-        }
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, FragmentDolci())
+                .commit()        }
 
         //codice per mostrare il bottom menu in base al ruolo dell'utente
         auth = Firebase.auth
