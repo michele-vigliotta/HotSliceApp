@@ -1,4 +1,4 @@
-package com.example.hotsliceapp
+package com.example.hotsliceapp.fragments
 
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.hotsliceapp.AdapterListeHome
+import com.example.hotsliceapp.Item
+import com.example.hotsliceapp.R
 import com.google.firebase.firestore.FirebaseFirestore
 
 class FragmentPizza:Fragment() {

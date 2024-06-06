@@ -81,7 +81,7 @@
             android:text="Dolci" />
     </LinearLayout>
 
-    <androidx.fragment.app.FragmentContainerView
+    <FrameLayout
         android:id="@+id/fragmentContainerView"
         android:name="com.example.hotsliceapp.FragmentPizza"
         android:layout_width="0dp"

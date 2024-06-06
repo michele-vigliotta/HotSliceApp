@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".HomeActivity">
+    tools:context=".activities.HomeActivity">
 
     <TextView
         android:id="@+id/textView2"
@@ -84,7 +84,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
-        android:name="com.example.hotsliceapp.FragmentPizza"
+        android:name="com.example.hotsliceapp.fragments.FragmentPizza"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"

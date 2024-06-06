@@ -1,8 +1,12 @@
-package com.example.hotsliceapp
+package com.example.hotsliceapp.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.hotsliceapp.fragments.FragmentHome
+import com.example.hotsliceapp.fragments.FragmentOfferte
+import com.example.hotsliceapp.fragments.FragmentPreferiti
+import com.example.hotsliceapp.R
 import com.example.hotsliceapp.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase

@@ -1,9 +1,10 @@
-package com.example.hotsliceapp
+package com.example.hotsliceapp.activities
 import android.content.Intent
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.hotsliceapp.R
 import com.example.hotsliceapp.databinding.ActivityLoginBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth

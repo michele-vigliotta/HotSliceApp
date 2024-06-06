@@ -1,10 +1,14 @@
-package com.example.hotsliceapp
+package com.example.hotsliceapp.activities
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.hotsliceapp.fragments.FragmentBibite
+import com.example.hotsliceapp.fragments.FragmentDolci
+import com.example.hotsliceapp.fragments.FragmentPizza
+import com.example.hotsliceapp.R
 import com.example.hotsliceapp.databinding.ActivityHomeBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase
@@ -36,23 +40,7 @@ class HomeActivity : AppCompatActivity() {
                 .replace(R.id.fragmentContainerView, FragmentDolci())
                 .commit()        }
 
-        binding.bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.bottom_offerte -> {
-                    // Apri l'activity Offerte
-                    startActivity(Intent(this, OfferteActivity::class.java))
-                    true
-                }
-                R.id.bottom_home -> {
-                    // Apri l'activity Home
-                    supportFragmentManager.beginTransaction()
-                    startActivity(Intent(this, HomeActivity::class.java))
-                    true
-                }
 
-                else -> false
-            }
-        }
 
 
 
