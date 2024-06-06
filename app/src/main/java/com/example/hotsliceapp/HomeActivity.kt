@@ -36,6 +36,26 @@ class HomeActivity : AppCompatActivity() {
                 .replace(R.id.fragmentContainerView, FragmentDolci())
                 .commit()        }
 
+        binding.bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.bottom_offerte -> {
+                    // Apri l'activity Offerte
+                    startActivity(Intent(this, OfferteActivity::class.java))
+                    true
+                }
+                R.id.bottom_home -> {
+                    // Apri l'activity Home
+                    supportFragmentManager.beginTransaction()
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    true
+                }
+
+                else -> false
+            }
+        }
+
+
+
         //codice per mostrare il bottom menu in base al ruolo dell'utente
         auth = Firebase.auth
         val authid = (auth.currentUser?.uid).toString()
