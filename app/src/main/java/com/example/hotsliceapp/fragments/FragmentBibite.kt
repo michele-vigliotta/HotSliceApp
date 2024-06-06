@@ -46,7 +46,7 @@ class FragmentBibite:Fragment() {
                 AdapterBibite.notifyDataSetChanged()
             }
             .addOnFailureListener { exception ->
-                Log.w("PizzaFragment", "Error getting documents.", exception)
+                Log.w("BibiteFragment", "Error getting documents.", exception)
             }
     }
 }
