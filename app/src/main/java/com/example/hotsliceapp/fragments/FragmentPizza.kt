@@ -1,5 +1,6 @@
 package com.example.hotsliceapp.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.hotsliceapp.AdapterListeHome
 import com.example.hotsliceapp.Item
 import com.example.hotsliceapp.R
+import com.example.hotsliceapp.activities.DettagliProdottoActivity
 import com.google.firebase.firestore.FirebaseFirestore
 
 class FragmentPizza:Fragment() {
@@ -30,7 +32,18 @@ class FragmentPizza:Fragment() {
         pizzaAdapter = AdapterListeHome(pizzaList) //inizializza l'adapter con una lista vuota
         recyclerView.adapter = pizzaAdapter
         fetchDataFromFirebase()
+
+        pizzaAdapter.onItemClick = {
+            val intent = Intent(activity, DettagliProdottoActivity::class.java)
+            intent.putExtra("item", it)
+            startActivity(intent)
+        }
+
         return view
+
+
+
+
     }
 
         private fun fetchDataFromFirebase() {
@@ -51,4 +64,6 @@ class FragmentPizza:Fragment() {
                     Log.w("PizzaFragment", "Error getting documents.", exception)
                 }
         }
+
+
     }

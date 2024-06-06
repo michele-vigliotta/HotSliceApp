@@ -30,6 +30,9 @@
         <activity
             android:name=".activities.Register"
             android:exported="false" />
+        <activity
+            android:name=".activities.DettagliProdottoActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

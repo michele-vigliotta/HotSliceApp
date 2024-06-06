@@ -13,6 +13,8 @@ import com.squareup.picasso.Picasso
 class AdapterListeHome(private val listaProdotti:List<Item>):  //estende Adapter
     RecyclerView.Adapter<AdapterListeHome.MyViewHolder>() {
 
+        var onItemClick : ((Item) -> Unit)? = null
+
     class MyViewHolder(itemView : View): RecyclerView.ViewHolder(itemView){
 
         val nomeProdotto : TextView = itemView.findViewById(R.id.nomeItem)
@@ -33,6 +35,10 @@ class AdapterListeHome(private val listaProdotti:List<Item>):  //estende Adapter
         val item : Item = listaProdotti[position]
         holder.nomeProdotto.text = item.nome
         holder.prezzoProdotto.text = "${item.prezzo} €"
+
+        holder.itemView.setOnClickListener{
+            onItemClick?.invoke(item)
+        }
 
 
         //se l'item ha una foto la carica

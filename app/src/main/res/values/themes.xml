@@ -4,7 +4,7 @@
         <!-- Customize your light theme here. Codice per settare i colori-->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <!-- <item name="colorPrimaryVariant">@color/my_light_on_primary</item> -->
-         <item name="android:statusBarColor">@color/red</item>
+        <item name="android:statusBarColor">@color/red</item>
     </style>
 
 
