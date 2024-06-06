@@ -18,13 +18,13 @@ import com.google.firebase.ktx.Firebase
 class FragmentHome : Fragment() {
     private lateinit var auth: FirebaseAuth
     private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding!! //getter per _binding (!! restituisce un non null)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false) //layout inflating
         return binding.root
     }
 
@@ -33,7 +33,7 @@ class FragmentHome : Fragment() {
 
         auth = Firebase.auth
 
-        binding.buttonPizza.setOnClickListener {
+        binding.buttonPizza.setOnClickListener {          //click listener per i pulsanti per cambaire fragment figlio da mostrare
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, FragmentPizza())
                 .addToBackStack(null)
