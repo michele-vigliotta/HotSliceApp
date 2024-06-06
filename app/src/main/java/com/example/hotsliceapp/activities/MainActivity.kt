@@ -8,6 +8,8 @@ import com.example.hotsliceapp.fragments.FragmentOfferte
 import com.example.hotsliceapp.fragments.FragmentPreferiti
 import com.example.hotsliceapp.R
 import com.example.hotsliceapp.databinding.ActivityMainBinding
+import com.example.hotsliceapp.fragments.FragmentCarrello
+import com.example.hotsliceapp.fragments.FragmentOrdini
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -31,6 +33,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.bottom_offerte -> FragmentOfferte()
                 R.id.bottom_preferiti -> FragmentPreferiti()
                 R.id.bottom_home -> FragmentHome()
+                R.id.bottom_carrello -> FragmentCarrello()
+                R.id.bottom_ordini -> FragmentOrdini()
                 else -> FragmentHome()
             }
             supportFragmentManager.beginTransaction()
