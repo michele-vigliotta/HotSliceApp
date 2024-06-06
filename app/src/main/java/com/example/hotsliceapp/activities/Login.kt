@@ -1,9 +1,10 @@
-package com.example.hotsliceapp
+package com.example.hotsliceapp.activities
 import android.content.Intent
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.hotsliceapp.R
 import com.example.hotsliceapp.databinding.ActivityLoginBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -26,7 +27,7 @@ class Login : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE)
         val stayLoggedIn = sharedPreferences.getBoolean("stayLoggedIn", false) //mi da il valore booleano di stayLoggedIn, di default false
         if (stayLoggedIn && auth.currentUser != null) { //se l'utente è loggato e se stayLoggedIn è true
-            startActivity(Intent(this, HomeActivity::class.java))
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
 
@@ -39,16 +40,22 @@ class Login : AppCompatActivity() {
                 auth.signInWithEmailAndPassword(email, passw)
                     .addOnCompleteListener(this) {task->
                         if(task.isSuccessful){
+                                val editor =
+                                    sharedPreferences.edit() //salva lo stato di rememberMe in staypLoggedIn
+                                editor.putBoolean("stayLoggedIn", rememberMe)
+                                editor.apply()
 
-                            val editor = sharedPreferences.edit() //salva lo stato di rememberMe in staypLoggedIn
-                            editor.putBoolean("stayLoggedIn", rememberMe)
-                            editor.apply()
+                                Toast.makeText(
+                                    baseContext,
+                                    "Login effettuato con successo",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                val intent = Intent(this, MainActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                        }
 
-                            Toast.makeText(baseContext, "Login effettuato con successo", Toast.LENGTH_SHORT).show()
-                            val intent = Intent(this, HomeActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        }else{
+                        else{
                             Toast.makeText(baseContext, "Email e/o password errati", Toast.LENGTH_SHORT).show()
                         }
                     }

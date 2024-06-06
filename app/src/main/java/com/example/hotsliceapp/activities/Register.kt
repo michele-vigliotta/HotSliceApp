@@ -1,4 +1,4 @@
-package com.example.hotsliceapp
+package com.example.hotsliceapp.activities
 
 import android.content.Intent
 import android.os.Bundle
