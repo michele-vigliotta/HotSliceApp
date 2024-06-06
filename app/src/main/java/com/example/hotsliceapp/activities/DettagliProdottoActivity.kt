@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+import com.bumptech.glide.Glide
 import com.example.hotsliceapp.Item
 import com.example.hotsliceapp.R
+import com.squareup.picasso.Picasso
 
 class DettagliProdottoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,7 +20,20 @@ class DettagliProdottoActivity : ComponentActivity() {
             val imageView : ImageView = findViewById(R.id.imageViewDettagli)
 
             textView.text = item.nome
-            imageView.setImageResource(item.image)
+
+            if(!item.foto.isNullOrEmpty()){
+            item.let {
+                Glide.with(this)
+                    .load(it.foto)
+                    .into(imageView)
+
+                textView.text = it.nome
+            }
+
+            } else {
+                imageView.setImageResource(R.drawable.pizza_foto)
+            }
+
         }
 
     }
