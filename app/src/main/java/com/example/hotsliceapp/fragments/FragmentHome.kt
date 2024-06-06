@@ -33,22 +33,26 @@ class FragmentHome : Fragment() {
 
         auth = Firebase.auth
 
+        //Fragment di default
+        if (savedInstanceState == null) {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, FragmentPizza())
+                .commit()
+        }
+
         binding.buttonPizza.setOnClickListener {          //click listener per i pulsanti per cambaire fragment figlio da mostrare
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, FragmentPizza())
-                .addToBackStack(null)
                 .commit()
         }
         binding.buttonBibite.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, FragmentBibite())
-                .addToBackStack(null)
                 .commit()
         }
         binding.buttonDolci.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, FragmentDolci())
-                .addToBackStack(null)
                 .commit()
         }
 

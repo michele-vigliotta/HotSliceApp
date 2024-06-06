@@ -27,7 +27,7 @@ class Login : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE)
         val stayLoggedIn = sharedPreferences.getBoolean("stayLoggedIn", false) //mi da il valore booleano di stayLoggedIn, di default false
         if (stayLoggedIn && auth.currentUser != null) { //se l'utente è loggato e se stayLoggedIn è true
-            startActivity(Intent(this, HomeActivity::class.java))
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
 
@@ -40,13 +40,6 @@ class Login : AppCompatActivity() {
                 auth.signInWithEmailAndPassword(email, passw)
                     .addOnCompleteListener(this) {task->
                         if(task.isSuccessful){
-
-                            if(email == "mainactivity@gmail.com"){val intent = Intent(this, MainActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            }else {
-
-
                                 val editor =
                                     sharedPreferences.edit() //salva lo stato di rememberMe in staypLoggedIn
                                 editor.putBoolean("stayLoggedIn", rememberMe)
@@ -57,10 +50,9 @@ class Login : AppCompatActivity() {
                                     "Login effettuato con successo",
                                     Toast.LENGTH_SHORT
                                 ).show()
-                                val intent = Intent(this, HomeActivity::class.java)
+                                val intent = Intent(this, MainActivity::class.java)
                                 startActivity(intent)
                                 finish()
-                            }
                         }
 
                         else{
