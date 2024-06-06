@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        replaceFragment(FragmentOfferte()) //fragment che mostro di default
+        replaceFragment(FragmentHome()) //fragment che mostro di default
 
         binding.bottomNavigationView.setOnItemSelectedListener {
             item -> val fragment:Fragment = when(item.itemId){
