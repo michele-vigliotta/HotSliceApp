@@ -42,7 +42,7 @@ class AdapterListeHome(private val listaProdotti:List<Item>):  //estende Adapter
             storageReference.downloadUrl.addOnSuccessListener { uri ->
                 Picasso.get()
                     .load(uri)
-                    .placeholder(R.drawable.pizza_foto) // Imposta l'immagine di fallback mentre il scarica
+                    .placeholder(R.drawable.pizza_foto) // Imposta l'immagine di fallback mentre scarica l'immagine
                     .into(holder.imageProdotto)
             }.addOnFailureListener {
                 // Imposta l'immagine di fallback in caso di errore
