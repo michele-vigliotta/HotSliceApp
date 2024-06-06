@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -19,7 +20,10 @@ class FragmentHome : Fragment() {
     private lateinit var auth: FirebaseAuth
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!! //getter per _binding (!! restituisce un non null)
-
+    private var selectedButton: Button? = null
+    private lateinit var buttonPizza: Button
+    private lateinit var buttonBibite: Button
+    private lateinit var buttonDolci: Button
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,24 +37,32 @@ class FragmentHome : Fragment() {
 
         auth = Firebase.auth
 
+        buttonPizza = binding.buttonPizza
+        buttonBibite = binding.buttonBibite
+        buttonDolci = binding.buttonDolci
+
         //Fragment di default
         if (savedInstanceState == null) {
+            selectButton(buttonPizza)
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, FragmentPizza())
                 .commit()
         }
 
         binding.buttonPizza.setOnClickListener {          //click listener per i pulsanti per cambaire fragment figlio da mostrare
+            selectButton(buttonPizza)
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, FragmentPizza())
                 .commit()
         }
         binding.buttonBibite.setOnClickListener {
+            selectButton(buttonBibite)
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, FragmentBibite())
                 .commit()
         }
         binding.buttonDolci.setOnClickListener {
+            selectButton(buttonDolci)
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, FragmentDolci())
                 .commit()
@@ -70,5 +82,11 @@ class FragmentHome : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun selectButton(button: Button) {
+        selectedButton?.isSelected = false // Deseleziona il pulsante precedente
+        button.isSelected = true // Seleziona il nuovo pulsante
+        selectedButton = button // Memorizza il pulsante selezionato
     }
 }
