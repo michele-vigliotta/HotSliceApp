@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class AdapterListeHome(private val listaProdotti:List<Item>):
+class AdapterListeHome(private val listaProdotti:List<Item>):  //estende Adapter
     RecyclerView.Adapter<AdapterListeHome.MyViewHolder>() {
 
     class MyViewHolder(itemView : View):RecyclerView.ViewHolder(itemView){

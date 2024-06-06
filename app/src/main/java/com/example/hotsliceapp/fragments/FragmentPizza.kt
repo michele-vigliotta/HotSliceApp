@@ -27,7 +27,7 @@ class FragmentPizza:Fragment() {
         recyclerView = view.findViewById(R.id.recyclerPizze)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        pizzaAdapter = AdapterListeHome(pizzaList)
+        pizzaAdapter = AdapterListeHome(pizzaList) //inizializza l'adapter con una lista vuota
         recyclerView.adapter = pizzaAdapter
         fetchDataFromFirebase()
         return view
@@ -40,9 +40,11 @@ class FragmentPizza:Fragment() {
                 .get()
                 .addOnSuccessListener { result ->
                     for (document in result) {
+                        //converte ogni elemento in un oggetto e lo aggiunge alla lista
                         val pizza = document.toObject(Item::class.java)
                         pizzaList.add(pizza)
                     }
+                    //aggiorna l'adapter con la nuova lista
                     pizzaAdapter.notifyDataSetChanged()
                 }
                 .addOnFailureListener { exception ->
