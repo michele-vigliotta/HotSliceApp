@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    >
 
     <item
         android:id="@+id/bottom_home"
@@ -14,15 +15,18 @@
     <item
         android:id="@+id/bottom_preferiti"
         android:icon="@drawable/baseline_favorite_24"
-        android:title="Preferiti"/>
+        android:title="Preferiti"
+        />
     <item
         android:id="@+id/bottom_carrello"
         android:icon="@drawable/baseline_add_shopping_cart_24"
-        android:title="Carrello"/>
+        android:title="Carrello"
+        />
     <item
         android:id="@+id/bottom_ordini"
         android:icon="@drawable/baseline_access_time_24"
-        android:title="Ordini"/>
+        android:title="Ordini"
+        />
     
 
 </menu>

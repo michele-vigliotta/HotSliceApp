@@ -94,5 +94,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-
+   // implementation ("com.ismaeldivita.chipnavigation:chip-navigation-bar:1.3.4") //per navbar
 }

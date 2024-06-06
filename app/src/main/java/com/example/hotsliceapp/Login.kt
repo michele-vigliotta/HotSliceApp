@@ -40,15 +40,29 @@ class Login : AppCompatActivity() {
                     .addOnCompleteListener(this) {task->
                         if(task.isSuccessful){
 
-                            val editor = sharedPreferences.edit() //salva lo stato di rememberMe in staypLoggedIn
-                            editor.putBoolean("stayLoggedIn", rememberMe)
-                            editor.apply()
+                            if(email == "mainactivity@gmail.com"){val intent = Intent(this, MainActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }else {
 
-                            Toast.makeText(baseContext, "Login effettuato con successo", Toast.LENGTH_SHORT).show()
-                            val intent = Intent(this, HomeActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        }else{
+
+                                val editor =
+                                    sharedPreferences.edit() //salva lo stato di rememberMe in staypLoggedIn
+                                editor.putBoolean("stayLoggedIn", rememberMe)
+                                editor.apply()
+
+                                Toast.makeText(
+                                    baseContext,
+                                    "Login effettuato con successo",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                val intent = Intent(this, HomeActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
+                        }
+
+                        else{
                             Toast.makeText(baseContext, "Email e/o password errati", Toast.LENGTH_SHORT).show()
                         }
                     }
