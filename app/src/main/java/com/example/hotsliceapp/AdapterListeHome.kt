@@ -6,13 +6,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class PizzaAdapter(private val listaPizze:List<Item>):
-    RecyclerView.Adapter<PizzaAdapter.MyViewHolder>() {
+class AdapterListeHome(private val listaProdotti:List<Item>):
+    RecyclerView.Adapter<AdapterListeHome.MyViewHolder>() {
 
     class MyViewHolder(itemView : View):RecyclerView.ViewHolder(itemView){
 
-        val nomePizza : TextView = itemView.findViewById(R.id.nomeItem)
-        val prezzoPizza: TextView = itemView.findViewById(R.id.prezzoItem)
+        val nomeProdotto : TextView = itemView.findViewById(R.id.nomeItem)
+        val prezzoProdotto: TextView = itemView.findViewById(R.id.prezzoItem)
 
     }
 
@@ -22,13 +22,13 @@ class PizzaAdapter(private val listaPizze:List<Item>):
     }
 
     override fun getItemCount(): Int {
-        return listaPizze.size
+        return listaProdotti.size
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val item : Item = listaPizze[position]
-        holder.nomePizza.text = item.nome
-        holder.prezzoPizza.text = "${item.prezzo} €"
+        val item : Item = listaProdotti[position]
+        holder.nomeProdotto.text = item.nome
+        holder.prezzoProdotto.text = "${item.prezzo} €"
     }
 
 

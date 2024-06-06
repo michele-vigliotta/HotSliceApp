@@ -22,13 +22,28 @@ class Login : AppCompatActivity() {
         auth = Firebase.auth //inizializza firebase auth
 
 
+        //SharedPreferences é una classe per memorizzare dati semplici che persistono anche quando l'app viene chiusa
+        val sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE)
+        val stayLoggedIn = sharedPreferences.getBoolean("stayLoggedIn", false) //mi da il valore booleano di stayLoggedIn, di default false
+        if (stayLoggedIn && auth.currentUser != null) { //se l'utente è loggato e se stayLoggedIn è true
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+        }
+
         binding.btnLogin.setOnClickListener {
             val email = (findViewById<EditText>(R.id.etEmail)).text.toString()
             val passw = (findViewById<EditText>(R.id.etPassword)).text.toString()
+            val rememberMe = binding.checkBoxStayLoggedIn.isChecked //stato checkbox
+
             if (email.isNotEmpty() && passw.isNotEmpty()){
                 auth.signInWithEmailAndPassword(email, passw)
                     .addOnCompleteListener(this) {task->
                         if(task.isSuccessful){
+
+                            val editor = sharedPreferences.edit() //salva lo stato di rememberMe in staypLoggedIn
+                            editor.putBoolean("stayLoggedIn", rememberMe)
+                            editor.apply()
+
                             Toast.makeText(baseContext, "Login effettuato con successo", Toast.LENGTH_SHORT).show()
                             val intent = Intent(this, HomeActivity::class.java)
                             startActivity(intent)
@@ -49,6 +64,7 @@ class Login : AppCompatActivity() {
         }
 
 
+        /*
         //codice per controllare il ruolo
         binding.button2.setOnClickListener {
             val authid = (auth.currentUser?.uid).toString()
@@ -58,13 +74,7 @@ class Login : AppCompatActivity() {
                 val role = document.getString("role")
                 Toast.makeText(baseContext, "Role: $role", Toast.LENGTH_SHORT).show()
             }
-        }
+        } */
 
-        //codice logout
-        binding.button3.setOnClickListener {
-            auth.signOut()
-            Toast.makeText(baseContext, "Utente Disconnesso", Toast.LENGTH_SHORT)
-                .show()
-        }
     }
 }

@@ -33,7 +33,6 @@
         android:src="@drawable/pizzalogin"
         app:layout_constraintBottom_toTopOf="@+id/etEmail"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
@@ -53,13 +52,25 @@
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="52dp"
+        android:layout_marginBottom="5dp"
         android:background="@drawable/edittext_border"
         android:hint="Password"
         android:inputType="textPassword"
         android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/checkBoxStayLoggedIn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <CheckBox
+        android:id="@+id/checkBoxStayLoggedIn"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginBottom="10dp"
+        android:text="Accedi automaticamente"
+        android:buttonTint="@color/red"
         app:layout_constraintBottom_toTopOf="@+id/btnLogin"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -77,7 +88,7 @@
         android:id="@+id/NotRegisteredText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="10dp"
         android:gravity="center"
         android:text="Non sei ancora registrato? Registrati ora!"
         android:textColor="@color/red"
@@ -86,27 +97,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginBottom="10dp"
-        android:text="Login Check"
-        android:background="@drawable/custom_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="10dp"
-        android:text="Logout"
-        android:background="@drawable/custom_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

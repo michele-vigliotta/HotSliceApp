@@ -3,9 +3,9 @@ package com.example.hotsliceapp
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.example.hotsliceapp.databinding.ActivityHomeBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase
@@ -18,28 +18,42 @@ class HomeActivity : AppCompatActivity() {
     val db = Firebase.firestore
     lateinit var role: String
     lateinit var binding: ActivityHomeBinding
+    private var selectedButton: Button? = null
+    private lateinit var buttonPizza: Button
+    private lateinit var buttonBibite: Button
+    private lateinit var buttonDolci: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
         binding=ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        buttonPizza = findViewById(R.id.buttonPizza)
+        buttonBibite = findViewById(R.id.buttonBibite)
+        buttonDolci = findViewById(R.id.buttonDolci)
+
         // Aggiunge il FragmentPizza di default se savedInstanceState è null
         if (savedInstanceState == null) {
+            selectButton(buttonPizza)
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, FragmentPizza())
                 .commit()
         }
 
         binding.buttonPizza.setOnClickListener {
+            selectButton(buttonPizza)
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, FragmentPizza())
                 .commit()        }
         binding.buttonBibite.setOnClickListener {
+            selectButton(buttonBibite)
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, FragmentBibite())
                 .commit()        }
         binding.buttonDolci.setOnClickListener {
+            selectButton(buttonDolci)
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, FragmentDolci())
                 .commit()        }
@@ -50,22 +64,22 @@ class HomeActivity : AppCompatActivity() {
         val documentSnapshot = db.collection("users").document(authid)
         documentSnapshot.get().addOnSuccessListener {
                 document ->
-             role = document.getString("role").toString()
+            role = document.getString("role").toString()
             if (role == "staff") {
-                var bottom_menu = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+                val bottom_menu = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
                 bottom_menu.menu.clear()
                 bottom_menu.inflateMenu(R.menu.bottom_menu_staff)
 
             }
             else if (role == "admin"){
-                var btnmenu = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+                val btnmenu = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
                 btnmenu.menu.clear()
                 btnmenu.inflateMenu(R.menu.bottom_menu_admin)
             }
         }
 
         //codice per il logout
-        var logout_btn= findViewById<Button>(R.id.logout_button)
+        val logout_btn= findViewById<ImageButton>(R.id.logout_button)
         logout_btn.setOnClickListener {
             auth.signOut()
             Toast.makeText(baseContext, "Utente Disconnesso", Toast.LENGTH_SHORT)
@@ -76,5 +90,9 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-
+    private fun selectButton(button: Button) {
+        selectedButton?.isSelected = false // Deseleziona il pulsante precedente
+        button.isSelected = true // Seleziona il nuovo pulsante
+        selectedButton = button // Memorizza il pulsante selezionato
+    }
 }
