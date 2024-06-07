@@ -43,14 +43,15 @@ class DettagliProdottoActivity : AppCompatActivity() {
         var buttonAdd : Button = findViewById(R.id.button_plus)
         var buttonAddToCart : Button = findViewById(R.id.button_add_to_cart)
 
-        editTextQuantity.setText("0")
+
 
             buttonMinus.setOnClickListener {
                 var currentQuantity = editTextQuantity.text.toString().toInt()
                 if (currentQuantity > 0) {
-                currentQuantity--
-                editTextQuantity.setText(currentQuantity.toString())
+                    currentQuantity--
+                    editTextQuantity.setText(currentQuantity.toString())
                 }
+            }
 
             buttonAdd.setOnClickListener {
                 var currentQuantity = editTextQuantity.text.toString().toInt()
@@ -67,10 +68,11 @@ class DettagliProdottoActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-
     private fun addToCart(itemName: String, quantity: Int) {
-        Toast.makeText(this, "Item added to cart:$quantity $itemName", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Aggiunto al carrello: $quantity $itemName", Toast.LENGTH_SHORT).show()
     }
-}
+    }
+
+
+
+
