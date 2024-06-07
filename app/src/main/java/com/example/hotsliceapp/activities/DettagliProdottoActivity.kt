@@ -71,6 +71,6 @@ class DettagliProdottoActivity : AppCompatActivity() {
 
 
     private fun addToCart(itemName: String, quantity: Int) {
-        Toast.makeText(this, "Item added to cart: $itemName", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Item added to cart:$quantity $itemName", Toast.LENGTH_SHORT).show()
     }
 }
