@@ -1,11 +1,10 @@
 package com.example.hotsliceapp.activities
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.example.hotsliceapp.CarrelloViewModel
-import com.example.hotsliceapp.CarrelloViewModelFactory
 import com.example.hotsliceapp.fragments.FragmentHome
 import com.example.hotsliceapp.fragments.FragmentOfferte
 import com.example.hotsliceapp.fragments.FragmentPreferiti
@@ -25,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     val db = Firebase.firestore
     lateinit var role: String
     private lateinit var binding: ActivityMainBinding
-    private lateinit var CarrelloViewModel: CarrelloViewModel
+    private val CarrelloViewModel: CarrelloViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -71,16 +70,14 @@ class MainActivity : AppCompatActivity() {
                 btnmenu.menu.clear()
                 btnmenu.inflateMenu(R.menu.bottom_menu_admin)
             }
+
         }
 
 
     }
 
+
     /*
-    fun getCarrelloViewModel(): CarrelloViewModel {
-        return CarrelloViewModel
-    }
-*/
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
@@ -88,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             super.onBackPressed()
         }
     }
-
+     */
     private fun replaceFragment(fragment: Fragment){
 
         val fragmentManager = supportFragmentManager

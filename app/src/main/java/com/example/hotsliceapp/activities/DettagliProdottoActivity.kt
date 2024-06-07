@@ -1,15 +1,17 @@
 package com.example.hotsliceapp.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import com.example.hotsliceapp.CarrelloViewModel
-import com.example.hotsliceapp.CarrelloViewModelFactory
 import com.example.hotsliceapp.Item
 import com.example.hotsliceapp.ItemCarrello
 import com.example.hotsliceapp.R
@@ -18,10 +20,25 @@ import com.squareup.picasso.Picasso
 
 class DettagliProdottoActivity : AppCompatActivity() {
 
-    private lateinit var CarrelloViewModel: CarrelloViewModel
+    private val carrelloViewModel: CarrelloViewModel by viewModels()
+    private val RESULT_CODE_CARRELLO = 200
+    override fun onBackPressed() {
+
+        returnResult() // Chiama la tua funzione per restituire il risultato
+        super.onBackPressed()
+    }
+
+    private fun returnResult() {
+        val intent = Intent()
+        intent.putParcelableArrayListExtra("itemsCarrello", ArrayList(carrelloViewModel.itemsCarrello.value))
+        setResult(RESULT_CODE_CARRELLO, intent)
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dettagliprodotto)
+
 
         val item = intent.getParcelableExtra<Item>("item")
         //CarrelloViewModel = ViewModelProvider(this, CarrelloViewModelFactory(application)).get(CarrelloViewModel::class.java)
@@ -49,14 +66,19 @@ class DettagliProdottoActivity : AppCompatActivity() {
         val buttonAddToCart : Button = findViewById(R.id.button_add_to_cart)
 
 
-
+/*
         buttonMinus.setOnClickListener {
                 var currentQuantity = editTextQuantity.text.toString().toInt()
                 if (currentQuantity > 0) {
                     currentQuantity--
                     editTextQuantity.setText(currentQuantity.toString())
                 }
-            }
+            } */
+
+        buttonMinus.setOnClickListener {
+            val items = carrelloViewModel.itemsCarrello.value ?: emptyList()
+            Toast.makeText(this, items.toString(), Toast.LENGTH_SHORT).show()
+        }
 
             buttonAdd.setOnClickListener {
                 var currentQuantity = editTextQuantity.text.toString().toInt()
@@ -75,18 +97,24 @@ class DettagliProdottoActivity : AppCompatActivity() {
         }
     private fun addToCart(itemName: String, foto: String?, prezzo: Double, quantity: Int) {
 
-        Toast.makeText(this, "Item: $itemName, Quantity: $quantity", Toast.LENGTH_SHORT).show()
-        /*
+        //Toast.makeText(this, "Item: $itemName, Quantity: $quantity", Toast.LENGTH_SHORT).show()
+
         val itemCarrello = ItemCarrello(itemName, foto, prezzo, quantity)
-        CarrelloViewModel.addItem(itemCarrello)
-        for (item in CarrelloViewModel.itemsCarrello.value ?: emptyList()) {
-            Toast.makeText(this, "Item: ${item.nome}, Quantity: ${item.quantita}", Toast.LENGTH_SHORT).show()
+        carrelloViewModel.addItem(itemCarrello)
 
+        carrelloViewModel.itemsCarrello.observe(this) { items ->
+            items.forEach {
+                Toast.makeText(this, "Item lesgoo: ${it.nome}, Quantity: ${it.quantita}", Toast.LENGTH_SHORT).show()
+            }
         }
-        */
+
 
     }
     }
+
+private fun Intent.putParcelableArrayListExtra(s: String, arrayList: ArrayList<ItemCarrello>) {
+
+}
 
 
 
