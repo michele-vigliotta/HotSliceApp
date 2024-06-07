@@ -33,17 +33,34 @@
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        app:queryHint="Find your food ..."
+        app:iconifiedByDefault="false"
+        app:queryBackground="@android:color/transparent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginEnd="19dp"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="10dp"
         android:text="Categories"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.064"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/searchView" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -61,8 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/backgroung_button"
-            android:text="Pizza"
-            />
+            android:text="Pizza" />
 
         <Button
             android:id="@+id/buttonBibite"
@@ -90,9 +106,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" >
-
-
     </FrameLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
