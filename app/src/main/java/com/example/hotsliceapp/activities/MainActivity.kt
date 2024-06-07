@@ -3,6 +3,9 @@ package com.example.hotsliceapp.activities
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.example.hotsliceapp.CarrelloViewModel
+import com.example.hotsliceapp.CarrelloViewModelFactory
 import com.example.hotsliceapp.fragments.FragmentHome
 import com.example.hotsliceapp.fragments.FragmentOfferte
 import com.example.hotsliceapp.fragments.FragmentPreferiti
@@ -22,11 +25,17 @@ class MainActivity : AppCompatActivity() {
     val db = Firebase.firestore
     lateinit var role: String
     private lateinit var binding: ActivityMainBinding
+    private lateinit var CarrelloViewModel: CarrelloViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         replaceFragment(FragmentHome()) //fragment che mostro di default
+
+
+        //Ottiengo una nuova istanza o un'istanza esistente di CarrelloViewModel associata al ciclo di vita di questa Activity o Fragment
+        //CarrelloViewModel = ViewModelProvider(this, CarrelloViewModelFactory(application)).get(CarrelloViewModel::class.java)
+        //CarrelloViewModel = ViewModelProvider(this).get(CarrelloViewModel::class.java)
 
         binding.bottomNavigationView.setOnItemSelectedListener {
             item -> val fragment:Fragment = when(item.itemId){
@@ -64,7 +73,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
     }
+
+    /*
+    fun getCarrelloViewModel(): CarrelloViewModel {
+        return CarrelloViewModel
+    }
+*/
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
