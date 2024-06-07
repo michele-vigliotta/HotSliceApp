@@ -4,13 +4,14 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.hotsliceapp.Item
 import com.example.hotsliceapp.R
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 
-class DettagliProdottoActivity : ComponentActivity() {
+class DettagliProdottoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dettagliprodotto)
@@ -29,13 +30,10 @@ class DettagliProdottoActivity : ComponentActivity() {
                     Picasso.get().load(uri).into(imageView)
                 }.addOnFailureListener{
                     imageView.setImageResource(R.drawable.pizza_foto)
-                }
+                    }
             }
-            } else {
+        } else {
                 imageView.setImageResource(R.drawable.pizza_foto)
-            }
-
-
-
+                }
     }
 }
