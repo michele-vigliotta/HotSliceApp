@@ -7,14 +7,15 @@ data class Item(var nome : String = "", var foto : String? = null, val prezzo: D
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-        parcel.readString(),
+        parcel.readString().toString(),
         parcel.readString()
     ){
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(foto)
         parcel.writeString(nome)
+        parcel.writeString(foto)
+
     }
     override fun describeContents(): Int {
         return 0
