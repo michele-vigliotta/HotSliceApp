@@ -8,13 +8,17 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import com.example.hotsliceapp.AdapterListeHome
+import com.example.hotsliceapp.Item
 import com.example.hotsliceapp.R
 import com.example.hotsliceapp.activities.Login
 import com.example.hotsliceapp.databinding.FragmentHomeBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import java.util.Locale
 
 class FragmentHome : Fragment() {
     private lateinit var auth: FirebaseAuth
@@ -24,6 +28,8 @@ class FragmentHome : Fragment() {
     private lateinit var buttonPizza: Button
     private lateinit var buttonBibite: Button
     private lateinit var buttonDolci: Button
+    private lateinit var searchView: SearchView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,6 +46,7 @@ class FragmentHome : Fragment() {
         buttonPizza = binding.buttonPizza
         buttonBibite = binding.buttonBibite
         buttonDolci = binding.buttonDolci
+        searchView = binding.searchView
 
         //Fragment di default
         if (savedInstanceState == null) {
@@ -77,6 +84,36 @@ class FragmentHome : Fragment() {
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let {
+                    val fragmentPizza = parentFragmentManager.fragments.find { it is FragmentPizza } as? FragmentPizza
+                    fragmentPizza?.filterList(it)
+
+                    val fragmentDolci = parentFragmentManager.fragments.find { it is FragmentDolci } as? FragmentDolci
+                    fragmentDolci?.filterList(it)
+
+                    val fragmentBibite = parentFragmentManager.fragments.find { it is FragmentBibite } as? FragmentBibite
+                    fragmentBibite?.filterList(it)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let {
+                    val fragmentPizza = parentFragmentManager.fragments.find { it is FragmentPizza } as? FragmentPizza
+                    fragmentPizza?.filterList(it)
+
+                    val fragmentDolci = parentFragmentManager.fragments.find { it is FragmentDolci } as? FragmentDolci
+                    fragmentDolci?.filterList(it)
+
+                    val fragmentBibite = parentFragmentManager.fragments.find { it is FragmentBibite } as? FragmentBibite
+                    fragmentBibite?.filterList(it)
+                }
+                return true
+            }
+        })
+
     }
 
     override fun onDestroyView() {

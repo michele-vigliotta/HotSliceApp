@@ -9,8 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
+import java.util.Locale
 
-class AdapterListeHome(private val listaProdotti:List<Item>):  //estende Adapter
+class AdapterListeHome(private var listaProdotti:List<Item>):  //estende Adapter
     RecyclerView.Adapter<AdapterListeHome.MyViewHolder>() {
 
         var onItemClick : ((Item) -> Unit)? = null
@@ -58,4 +59,9 @@ class AdapterListeHome(private val listaProdotti:List<Item>):  //estende Adapter
             holder.imageProdotto.setImageResource(R.drawable.pizza_foto)
         }
     }
+    fun setFilteredList(listaProdotti: List<Item>){
+        this.listaProdotti = listaProdotti
+        notifyDataSetChanged()
+    }
+
 }

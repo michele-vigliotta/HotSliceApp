@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,10 +16,10 @@ import com.example.hotsliceapp.R
 import com.example.hotsliceapp.activities.DettagliProdottoActivity
 import com.google.firebase.firestore.FirebaseFirestore
 
-class FragmentPizza:Fragment() {
+open class FragmentPizza:Fragment() {
     private lateinit var recyclerView: RecyclerView
-    private lateinit var pizzaAdapter: AdapterListeHome
-    private val pizzaList = mutableListOf<Item>()
+    lateinit var pizzaAdapter: AdapterListeHome
+    var pizzaList = mutableListOf<Item>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,9 +42,6 @@ class FragmentPizza:Fragment() {
 
         return view
 
-
-
-
     }
 
         private fun fetchDataFromFirebase() {
@@ -64,6 +62,12 @@ class FragmentPizza:Fragment() {
                     Log.w("PizzaFragment", "Error getting documents.", exception)
                 }
         }
-
-
+    fun filterList(query: String) {//metodo che filtra la lista quando si utilizza la searchview
+        val filteredList = pizzaList.filter { it.nome.contains(query, ignoreCase = true) }
+        pizzaAdapter.setFilteredList(filteredList)
+        if (filteredList.isEmpty()) {
+            // Se l'elenco filtrato è vuoto, mostra il messaggio
+            Toast.makeText(context, "Pizza non presente nel menù", Toast.LENGTH_SHORT).show()
+        }
     }
+}

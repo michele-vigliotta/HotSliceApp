@@ -7,7 +7,7 @@ data class Item(var nome : String = "", var foto : String? = null, val prezzo: D
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-        parcel.readString(),
+        parcel.readString()!!,
         parcel.readString()
     ){
     }
