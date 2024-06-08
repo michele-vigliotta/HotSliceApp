@@ -1,6 +1,7 @@
 package com.example.hotsliceapp.activities
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -80,6 +81,7 @@ class MainActivity : AppCompatActivity() {
         if (itemsCarrello != null) {
             listaCarrello += itemsCarrello
         }
+        Toast.makeText(this, "${listaCarrello}", Toast.LENGTH_SHORT).show()
     }
 
     private fun replaceFragment(fragment: Fragment){
@@ -88,5 +90,9 @@ class MainActivity : AppCompatActivity() {
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frame_layout,fragment)
         fragmentTransaction.commit()
+    }
+
+    fun updateListaCarrello(newList: List<ItemCarrello>) {
+        listaCarrello = newList as ArrayList<ItemCarrello>
     }
 }

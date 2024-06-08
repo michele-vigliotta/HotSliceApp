@@ -32,6 +32,8 @@ class AdapterListeHome(private val listaProdotti:List<Item>,
         return listaProdotti.size
     }
 
+
+
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item : Item = listaProdotti[position]
         holder.nomeProdotto.text = item.nome
