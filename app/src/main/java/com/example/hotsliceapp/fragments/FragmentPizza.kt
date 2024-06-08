@@ -51,8 +51,6 @@ class FragmentPizza:Fragment() {
 
         if (requestCode == REQUEST_CODE_DETTAGLI && resultCode == 200) {
             val itemsCarrello = data?.getParcelableArrayListExtra<ItemCarrello>("itemsCarrello")
-            // Ora hai la lista itemsCarrello, usala per aggiornare la UI del tuo fragment
-            // ... (aggiungi qui la logica per aggiornare la UI)
             (activity as MainActivity).handleResult(itemsCarrello)
         }
     }

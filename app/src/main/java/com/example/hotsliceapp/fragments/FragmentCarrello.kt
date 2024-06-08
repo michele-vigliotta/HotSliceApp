@@ -5,17 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
-import com.example.hotsliceapp.CarrelloViewModel
 import com.example.hotsliceapp.R
+import com.example.hotsliceapp.activities.MainActivity
 
 
 class FragmentCarrello : Fragment() {
 
-    private lateinit var carrelloViewModel: CarrelloViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,17 +24,29 @@ class FragmentCarrello : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
+        val mainActivity = activity as MainActivity
+        val listaCarrello = mainActivity.listaCarrello
         val textView = view.findViewById<TextView>(R.id.textViewCarrello)
-
-
-
-
-        val button = view.findViewById<TextView>(R.id.buttoncarrello)
-        button.setOnClickListener {
-            val items = carrelloViewModel.getItems() ?: emptyList()
-            Toast.makeText(context, items.toString(), Toast.LENGTH_SHORT).show()
+        if (listaCarrello.isEmpty()) {
+            textView.text = "Il carrello è vuoto"
+        }else{
+            var stringa = ""
+            var totale = 0.0
+            for (item in listaCarrello) {
+                stringa += "${item.quantita} - ${item.nome} - € ${item.prezzo} \n"
+                totale += (item.quantita * item.prezzo)
+            }
+            stringa += "\nTotale: € ${totale}"
+            textView.text = stringa
         }
+
+
+
+
+
+
+
+
+
     }
 }

@@ -9,8 +9,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
 import com.example.hotsliceapp.CarrelloViewModel
 import com.example.hotsliceapp.Item
 import com.example.hotsliceapp.ItemCarrello
@@ -23,6 +21,8 @@ class DettagliProdottoActivity : AppCompatActivity() {
     private val carrelloViewModel: CarrelloViewModel by viewModels()
     private val RESULT_CODE_CARRELLO = 200
     private var listaCarrello = arrayListOf<ItemCarrello>()
+
+
     override fun onBackPressed() {
 
         returnResult() // Chiama la tua funzione per restituire il risultato
@@ -66,19 +66,16 @@ class DettagliProdottoActivity : AppCompatActivity() {
         val buttonAddToCart : Button = findViewById(R.id.button_add_to_cart)
 
 
-/*
+
         buttonMinus.setOnClickListener {
                 var currentQuantity = editTextQuantity.text.toString().toInt()
                 if (currentQuantity > 0) {
                     currentQuantity--
                     editTextQuantity.setText(currentQuantity.toString())
                 }
-            } */
+            }
 
-        buttonMinus.setOnClickListener {
-            val items = carrelloViewModel.getItems() ?: emptyList()
-            Toast.makeText(this, items.toString(), Toast.LENGTH_SHORT).show()
-        }
+
 
             buttonAdd.setOnClickListener {
                 var currentQuantity = editTextQuantity.text.toString().toInt()
@@ -87,7 +84,7 @@ class DettagliProdottoActivity : AppCompatActivity() {
                 }
 
             buttonAddToCart.setOnClickListener {
-                var currentQuantity = editTextQuantity.text.toString().toInt()
+                val currentQuantity = editTextQuantity.text.toString().toInt()
                 if (currentQuantity > 0) {
                     if (item != null) {
                         addToCart(item.nome, item.foto, item.prezzo, currentQuantity)
@@ -106,7 +103,7 @@ class DettagliProdottoActivity : AppCompatActivity() {
 
 
         carrelloViewModel.setItems(listaCarrello)
-        var items = carrelloViewModel.getItems()
+        val items = carrelloViewModel.getItems()
 
         Toast.makeText(this, " ${items}", Toast.LENGTH_SHORT).show()
 
@@ -116,9 +113,7 @@ class DettagliProdottoActivity : AppCompatActivity() {
     }
 
 
-private fun Intent.putParcelableArrayListExtra(s: String, arrayList: ArrayList<ItemCarrello>) {
 
-}
 
 
 
