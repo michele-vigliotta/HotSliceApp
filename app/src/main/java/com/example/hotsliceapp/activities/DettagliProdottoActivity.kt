@@ -22,6 +22,7 @@ class DettagliProdottoActivity : AppCompatActivity() {
 
     private val carrelloViewModel: CarrelloViewModel by viewModels()
     private val RESULT_CODE_CARRELLO = 200
+    private var listaCarrello = arrayListOf<ItemCarrello>()
     override fun onBackPressed() {
 
         returnResult() // Chiama la tua funzione per restituire il risultato
@@ -30,7 +31,7 @@ class DettagliProdottoActivity : AppCompatActivity() {
 
     private fun returnResult() {
         val intent = Intent()
-        intent.putParcelableArrayListExtra("itemsCarrello", ArrayList(carrelloViewModel.itemsCarrello.value))
+        intent.putParcelableArrayListExtra("itemsCarrello", ArrayList(carrelloViewModel.getItems()))
         setResult(RESULT_CODE_CARRELLO, intent)
 
     }
@@ -41,8 +42,7 @@ class DettagliProdottoActivity : AppCompatActivity() {
 
 
         val item = intent.getParcelableExtra<Item>("item")
-        //CarrelloViewModel = ViewModelProvider(this, CarrelloViewModelFactory(application)).get(CarrelloViewModel::class.java)
-        //CarrelloViewModel = ViewModelProvider(this).get(CarrelloViewModel::class.java)
+
             val textView : TextView = findViewById(R.id.textViewDettagli)
             val imageView : ImageView = findViewById(R.id.imageViewDettagli)
 
@@ -76,7 +76,7 @@ class DettagliProdottoActivity : AppCompatActivity() {
             } */
 
         buttonMinus.setOnClickListener {
-            val items = carrelloViewModel.itemsCarrello.value ?: emptyList()
+            val items = carrelloViewModel.getItems() ?: emptyList()
             Toast.makeText(this, items.toString(), Toast.LENGTH_SHORT).show()
         }
 
@@ -96,21 +96,25 @@ class DettagliProdottoActivity : AppCompatActivity() {
             }
         }
     private fun addToCart(itemName: String, foto: String?, prezzo: Double, quantity: Int) {
+        val existingItem = listaCarrello.find { it.nome == itemName }
+        if (existingItem != null) {
+            existingItem.quantita += quantity
+        } else {
+            val newitemCarrello = ItemCarrello(itemName, foto, prezzo, quantity)
+            listaCarrello.add(newitemCarrello)
+        }
 
-        //Toast.makeText(this, "Item: $itemName, Quantity: $quantity", Toast.LENGTH_SHORT).show()
 
-        val itemCarrello = ItemCarrello(itemName, foto, prezzo, quantity)
-        carrelloViewModel.addItem(itemCarrello)
+        carrelloViewModel.setItems(listaCarrello)
+        var items = carrelloViewModel.getItems()
 
-        carrelloViewModel.itemsCarrello.observe(this) { items ->
-            items.forEach {
-                Toast.makeText(this, "Item lesgoo: ${it.nome}, Quantity: ${it.quantita}", Toast.LENGTH_SHORT).show()
-            }
+        Toast.makeText(this, " ${items}", Toast.LENGTH_SHORT).show()
+
         }
 
 
     }
-    }
+
 
 private fun Intent.putParcelableArrayListExtra(s: String, arrayList: ArrayList<ItemCarrello>) {
 

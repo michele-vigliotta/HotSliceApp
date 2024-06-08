@@ -14,6 +14,7 @@ import com.example.hotsliceapp.Item
 import com.example.hotsliceapp.ItemCarrello
 import com.example.hotsliceapp.R
 import com.example.hotsliceapp.activities.DettagliProdottoActivity
+import com.example.hotsliceapp.activities.MainActivity
 import com.google.firebase.firestore.FirebaseFirestore
 
 class FragmentPizza:Fragment() {
@@ -21,7 +22,7 @@ class FragmentPizza:Fragment() {
     private lateinit var pizzaAdapter: AdapterListeHome
     private val pizzaList = mutableListOf<Item>()
     private val REQUEST_CODE_DETTAGLI = 100
-    private val RESULT_CODE_CARRELLO = 200
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,19 +44,16 @@ class FragmentPizza:Fragment() {
         }
 
         return view
-
-
-
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_CODE_DETTAGLI && resultCode == RESULT_CODE_CARRELLO) {
+        if (requestCode == REQUEST_CODE_DETTAGLI && resultCode == 200) {
             val itemsCarrello = data?.getParcelableArrayListExtra<ItemCarrello>("itemsCarrello")
             // Ora hai la lista itemsCarrello, usala per aggiornare la UI del tuo fragment
             // ... (aggiungi qui la logica per aggiornare la UI)
+            (activity as MainActivity).handleResult(itemsCarrello)
         }
     }
 

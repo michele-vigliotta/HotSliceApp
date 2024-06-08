@@ -27,23 +27,16 @@ class FragmentCarrello : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Inizializza il ViewModel utilizzando ViewModelProvider
-        carrelloViewModel = ViewModelProvider(requireActivity()).get(CarrelloViewModel::class.java)
+
 
         val textView = view.findViewById<TextView>(R.id.textViewCarrello)
 
 
-        carrelloViewModel.itemsCarrello.observe(viewLifecycleOwner) { items ->
-            val stringBuilder = StringBuilder()
-            items.forEach { item ->
-                stringBuilder.append("Item lesgoo: ${item.nome}, Quantity: ${item.quantita}\n")
-            }
-            textView.text = stringBuilder.toString()
-        }
+
 
         val button = view.findViewById<TextView>(R.id.buttoncarrello)
         button.setOnClickListener {
-            val items = carrelloViewModel.itemsCarrello.value ?: emptyList()
+            val items = carrelloViewModel.getItems() ?: emptyList()
             Toast.makeText(context, items.toString(), Toast.LENGTH_SHORT).show()
         }
     }

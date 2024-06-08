@@ -1,10 +1,12 @@
 package com.example.hotsliceapp.activities
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.hotsliceapp.CarrelloViewModel
+import com.example.hotsliceapp.ItemCarrello
 import com.example.hotsliceapp.fragments.FragmentHome
 import com.example.hotsliceapp.fragments.FragmentOfferte
 import com.example.hotsliceapp.fragments.FragmentPreferiti
@@ -23,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
     lateinit var role: String
+    var listaCarrello: ArrayList<ItemCarrello> = arrayListOf()
     private lateinit var binding: ActivityMainBinding
     private val CarrelloViewModel: CarrelloViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,9 +35,7 @@ class MainActivity : AppCompatActivity() {
         replaceFragment(FragmentHome()) //fragment che mostro di default
 
 
-        //Ottiengo una nuova istanza o un'istanza esistente di CarrelloViewModel associata al ciclo di vita di questa Activity o Fragment
-        //CarrelloViewModel = ViewModelProvider(this, CarrelloViewModelFactory(application)).get(CarrelloViewModel::class.java)
-        //CarrelloViewModel = ViewModelProvider(this).get(CarrelloViewModel::class.java)
+
 
         binding.bottomNavigationView.setOnItemSelectedListener {
             item -> val fragment:Fragment = when(item.itemId){
@@ -74,6 +75,15 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    fun handleResult(itemsCarrello: ArrayList<ItemCarrello>?) {
+        // Gestisci il risultato qui
+        if (itemsCarrello != null) {
+            listaCarrello += itemsCarrello
+            // Per esempio, mostrare un Toast con i dati
+            Toast.makeText(this, "Items nel carrello: $listaCarrello", Toast.LENGTH_SHORT).show()
+        }
     }
 
 
