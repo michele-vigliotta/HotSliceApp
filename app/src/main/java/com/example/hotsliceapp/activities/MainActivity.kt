@@ -1,6 +1,7 @@
 package com.example.hotsliceapp.activities
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -79,10 +80,28 @@ class MainActivity : AppCompatActivity() {
     fun handleResult(itemsCarrello: ArrayList<ItemCarrello>?) {
         // Gestisco il risultato preso dai fragment
         if (itemsCarrello != null) {
-            listaCarrello += itemsCarrello
+            listaCarrello.addAll(itemsCarrello)
+            listaCarrello = mergeItemsWithSameName(listaCarrello)
         }
-        Toast.makeText(this, "${listaCarrello}", Toast.LENGTH_SHORT).show()
+        Log.d("HandleResult", "Lista Carrello: $listaCarrello")
     }
+
+    private fun mergeItemsWithSameName(items: ArrayList<ItemCarrello>): ArrayList<ItemCarrello> {
+        val itemMap = mutableMapOf<String, ItemCarrello>()
+
+        for (item in items) {
+            if (itemMap.containsKey(item.nome)) {
+                val existingItem = itemMap[item.nome]
+                if (existingItem != null) {
+                    existingItem.quantita += item.quantita
+                }
+            } else {
+                itemMap[item.nome] = item
+            }
+        }
+        return ArrayList(itemMap.values)
+    }
+
 
     private fun replaceFragment(fragment: Fragment){
 
@@ -95,4 +114,5 @@ class MainActivity : AppCompatActivity() {
     fun updateListaCarrello(newList: List<ItemCarrello>) {
         listaCarrello = newList as ArrayList<ItemCarrello>
     }
+
 }

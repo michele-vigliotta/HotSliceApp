@@ -76,5 +76,9 @@ class AdapterCarrello(private var listaCarrello: MutableList<ItemCarrello> )
         onGetList?.invoke(listaCarrello)
     }
 
+    fun clearList() {
+        listaCarrello.clear()
+        notifyDataSetChanged()
+    }
 
 }

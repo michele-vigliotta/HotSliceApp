@@ -43,8 +43,8 @@ class DettagliProdottoActivity : AppCompatActivity() {
 
         val item = intent.getParcelableExtra<Item>("item")
 
-            val textView : TextView = findViewById(R.id.textViewDettagli)
-            val imageView : ImageView = findViewById(R.id.imageViewDettagli)
+        val textView : TextView = findViewById(R.id.textViewDettagli)
+        val imageView : ImageView = findViewById(R.id.imageViewDettagli)
 
         if(item != null){
             textView.text = item.nome
@@ -55,11 +55,11 @@ class DettagliProdottoActivity : AppCompatActivity() {
                     Picasso.get().load(uri).into(imageView)
                 }.addOnFailureListener{
                     imageView.setImageResource(R.drawable.pizza_foto)
-                    }
+                }
             }
         } else {
-                imageView.setImageResource(R.drawable.pizza_foto)
-                }
+            imageView.setImageResource(R.drawable.pizza_foto)
+        }
         val editTextQuantity : EditText = findViewById(R.id.editText_quantity)
         val buttonMinus : Button = findViewById(R.id.button_minus)
         val buttonAdd : Button = findViewById(R.id.button_plus)
@@ -68,30 +68,30 @@ class DettagliProdottoActivity : AppCompatActivity() {
 
 
         buttonMinus.setOnClickListener {
-                var currentQuantity = editTextQuantity.text.toString().toInt()
-                if (currentQuantity > 0) {
-                    currentQuantity--
-                    editTextQuantity.setText(currentQuantity.toString())
-                }
-            }
-
-
-
-            buttonAdd.setOnClickListener {
-                var currentQuantity = editTextQuantity.text.toString().toInt()
-                currentQuantity++
+            var currentQuantity = editTextQuantity.text.toString().toInt()
+            if (currentQuantity > 0) {
+                currentQuantity--
                 editTextQuantity.setText(currentQuantity.toString())
-                }
+            }
+        }
 
-            buttonAddToCart.setOnClickListener {
-                val currentQuantity = editTextQuantity.text.toString().toInt()
-                if (currentQuantity > 0) {
-                    if (item != null) {
-                        addToCart(item.nome, item.foto, item.prezzo, currentQuantity)
-                    }
+
+
+        buttonAdd.setOnClickListener {
+            var currentQuantity = editTextQuantity.text.toString().toInt()
+            currentQuantity++
+            editTextQuantity.setText(currentQuantity.toString())
+        }
+
+        buttonAddToCart.setOnClickListener {
+            val currentQuantity = editTextQuantity.text.toString().toInt()
+            if (currentQuantity > 0) {
+                if (item != null) {
+                    addToCart(item.nome, item.foto, item.prezzo, currentQuantity)
                 }
             }
         }
+    }
     private fun addToCart(itemName: String, foto: String?, prezzo: Double, quantity: Int) {
         val existingItem = listaCarrello.find { it.nome == itemName }
         if (existingItem != null) {
@@ -107,10 +107,10 @@ class DettagliProdottoActivity : AppCompatActivity() {
 
         Toast.makeText(this, " ${items}", Toast.LENGTH_SHORT).show()
 
-        }
-
-
     }
+
+
+}
 
 
 
