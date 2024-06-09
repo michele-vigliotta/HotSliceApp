@@ -61,18 +61,21 @@ class FragmentHome : Fragment() {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, FragmentPizza())
                 .commit()
+            searchView.setQuery("", false)           //svuoto il testo della searchview auando passo in un nuovo fragment
         }
         binding.buttonBibite.setOnClickListener {
             selectButton(buttonBibite)
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, FragmentBibite())
                 .commit()
+            searchView.setQuery("", false)
         }
         binding.buttonDolci.setOnClickListener {
             selectButton(buttonDolci)
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, FragmentDolci())
                 .commit()
+            searchView.setQuery("", false)
         }
 
         // codice per il logout
