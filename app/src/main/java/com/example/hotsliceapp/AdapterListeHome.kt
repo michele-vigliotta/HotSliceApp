@@ -9,10 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
+import java.util.Locale
 
-class AdapterListeHome(private val listaProdotti:List<Item>,
-//    private val onItemClick: ((Item) -> Unit)?
-):  //estende Adapter
+class AdapterListeHome(private var listaProdotti:List<Item>):  //estende Adapter
     RecyclerView.Adapter<AdapterListeHome.MyViewHolder>() {
 
     var onItemClick: ((Item) -> Unit)? = null
@@ -32,14 +31,11 @@ class AdapterListeHome(private val listaProdotti:List<Item>,
         return listaProdotti.size
     }
 
-
-
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item : Item = listaProdotti[position]
         holder.nomeProdotto.text = item.nome
         holder.prezzoProdotto.text = "${item.prezzo} €"
 
-        //click su un item
         holder.itemView.setOnClickListener{
             onItemClick?.invoke(item)              //lamba function, definita nel fragment
         }
@@ -62,4 +58,9 @@ class AdapterListeHome(private val listaProdotti:List<Item>,
             holder.imageProdotto.setImageResource(R.drawable.pizza_foto)
         }
     }
+    fun setFilteredList(listaProdotti: List<Item>){
+        this.listaProdotti = listaProdotti
+        notifyDataSetChanged()
+    }
+
 }
