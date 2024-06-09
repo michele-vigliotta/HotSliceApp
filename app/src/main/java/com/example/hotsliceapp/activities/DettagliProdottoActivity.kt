@@ -105,6 +105,8 @@ class DettagliProdottoActivity : AppCompatActivity() {
         carrelloViewModel.setItems(listaCarrello)
         val items = carrelloViewModel.getItems()
 
+        Toast.makeText(this, "Aggiunto al carrello", Toast.LENGTH_SHORT).show()
+
     }
 
 
