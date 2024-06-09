@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,7 +28,7 @@ class FragmentDolci:Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.dolci_fragment,container,false)
+        val view = inflater.inflate(R.layout.dolci_fragment, container, false)
 
         recyclerView = view.findViewById(R.id.recyclerDolci)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -69,5 +70,14 @@ class FragmentDolci:Fragment() {
             .addOnFailureListener { exception ->
                 Log.w("DolciFragment", "Error getting documents.", exception)
             }
+    }
+
+    fun filterList(query: String) {//metodo che filtra la lista quando si utilizza la searchview
+        val filteredList = dolciList.filter { it.nome.contains(query, ignoreCase = true) }
+        dolciAdapter.setFilteredList(filteredList)
+        if (filteredList.isEmpty()) {
+            // Se l'elenco filtrato è vuoto, mostra il messaggio
+            Toast.makeText(context, "Dolce non presente nel menù", Toast.LENGTH_SHORT).show()
+        }
     }
 }
