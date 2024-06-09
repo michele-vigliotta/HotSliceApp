@@ -3,18 +3,23 @@ package com.example.hotsliceapp
 import android.os.Parcel
 import android.os.Parcelable
 
-data class Item(var nome : String = "", var foto : String? = null, val prezzo: Double = 0.0 //puó essere null
+data class Item(var nome : String = "",
+                var foto : String? = null,
+                val prezzo: Double = 0.0 //puó essere null
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-        parcel.readString()!!,
-        parcel.readString()
+        parcel.readString().toString(),
+        parcel.readString(),
+        parcel.readDouble()
     ){
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(foto)
         parcel.writeString(nome)
+        parcel.writeString(foto)
+        parcel.writeDouble(prezzo)
+
     }
     override fun describeContents(): Int {
         return 0

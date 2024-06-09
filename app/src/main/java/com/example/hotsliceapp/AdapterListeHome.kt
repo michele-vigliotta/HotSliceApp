@@ -14,8 +14,7 @@ import java.util.Locale
 class AdapterListeHome(private var listaProdotti:List<Item>):  //estende Adapter
     RecyclerView.Adapter<AdapterListeHome.MyViewHolder>() {
 
-        var onItemClick : ((Item) -> Unit)? = null
-
+    var onItemClick: ((Item) -> Unit)? = null
     class MyViewHolder(itemView : View): RecyclerView.ViewHolder(itemView){
 
         val nomeProdotto : TextView = itemView.findViewById(R.id.nomeItem)
@@ -38,7 +37,7 @@ class AdapterListeHome(private var listaProdotti:List<Item>):  //estende Adapter
         holder.prezzoProdotto.text = "${item.prezzo} €"
 
         holder.itemView.setOnClickListener{
-            onItemClick?.invoke(item)
+            onItemClick?.invoke(item)              //lamba function, definita nel fragment
         }
 
 

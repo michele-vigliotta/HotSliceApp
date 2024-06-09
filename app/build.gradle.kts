@@ -101,4 +101,11 @@ dependencies {
 
     // Picasso
     implementation ("com.squareup.picasso:picasso:2.8")
+
+    // ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.1")
+    // LiveData
+    implementation("androidx.lifecycle:lifecycle-livedata:2.8.1")
+
+
 }

@@ -1,60 +1,79 @@
 package com.example.hotsliceapp.fragments
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.hotsliceapp.AdapterListeHome
+import com.example.hotsliceapp.Item
+import com.example.hotsliceapp.ItemCarrello
 import com.example.hotsliceapp.R
+import com.example.hotsliceapp.activities.DettagliProdottoActivity
+import com.example.hotsliceapp.activities.MainActivity
+import com.google.firebase.firestore.FirebaseFirestore
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [FragmentOfferte.newInstance] factory method to
- * create an instance of this fragment.
- */
-class FragmentOfferte : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+class FragmentOfferte:Fragment() {
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var offerteAdapter: AdapterListeHome
+    private val offerteList = mutableListOf<Item>()
+    private val REQUEST_CODE_DETTAGLI = 100
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_offerte, container, false)
+        val view = inflater.inflate(R.layout.fragment_offerte,container,false)
+
+        recyclerView = view.findViewById(R.id.recyclerOfferte)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+
+        offerteAdapter = AdapterListeHome(offerteList) //inizializza l'adapter con una lista vuota
+        recyclerView.adapter = offerteAdapter
+        fetchDataFromFirebase()
+
+        offerteAdapter.onItemClick = {
+            val intent = Intent(activity, DettagliProdottoActivity::class.java)
+            intent.putExtra("item", it)
+            startActivityForResult(intent, REQUEST_CODE_DETTAGLI)
+        }
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FragmentOfferte.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FragmentOfferte().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_DETTAGLI && resultCode == 200) {
+            val itemsCarrello = data?.getParcelableArrayListExtra<ItemCarrello>("itemsCarrello")
+            (activity as MainActivity).handleResult(itemsCarrello)
+        }
+    }
+
+    private fun fetchDataFromFirebase() {
+
+        val db = FirebaseFirestore.getInstance()
+        db.collection("offerte")
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    //converte ogni elemento in un oggetto e lo aggiunge alla lista
+                    val offerta = document.toObject(Item::class.java)
+                    offerteList.add(offerta)
                 }
+                //aggiorna l'adapter con la nuova lista
+                offerteAdapter.notifyDataSetChanged()
+            }
+            .addOnFailureListener { exception ->
+                Log.w("offerteFragment", "Error getting documents.", exception)
             }
     }
+
+
 }
+

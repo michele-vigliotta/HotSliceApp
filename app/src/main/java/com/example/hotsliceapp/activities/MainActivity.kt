@@ -1,8 +1,13 @@
 package com.example.hotsliceapp.activities
 
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.hotsliceapp.CarrelloViewModel
+import com.example.hotsliceapp.ItemCarrello
 import com.example.hotsliceapp.fragments.FragmentHome
 import com.example.hotsliceapp.fragments.FragmentOfferte
 import com.example.hotsliceapp.fragments.FragmentPreferiti
@@ -21,12 +26,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
     lateinit var role: String
+    var listaCarrello: ArrayList<ItemCarrello> = arrayListOf()
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         replaceFragment(FragmentHome()) //fragment che mostro di default
+
+
+
 
         binding.bottomNavigationView.setOnItemSelectedListener {
             item -> val fragment:Fragment = when(item.itemId){
@@ -62,16 +71,37 @@ class MainActivity : AppCompatActivity() {
                 btnmenu.menu.clear()
                 btnmenu.inflateMenu(R.menu.bottom_menu_admin)
             }
+
         }
 
+
     }
-    override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 0) {
-            supportFragmentManager.popBackStack()
-        } else {
-            super.onBackPressed()
+
+    fun handleResult(itemsCarrello: ArrayList<ItemCarrello>?) {
+        // Gestisco il risultato preso dai fragment
+        if (itemsCarrello != null) {
+            listaCarrello.addAll(itemsCarrello)
+            listaCarrello = mergeItemsWithSameName(listaCarrello)
         }
+        Log.d("HandleResult", "Lista Carrello: $listaCarrello")
     }
+
+    private fun mergeItemsWithSameName(items: ArrayList<ItemCarrello>): ArrayList<ItemCarrello> {
+        val itemMap = mutableMapOf<String, ItemCarrello>()
+
+        for (item in items) {
+            if (itemMap.containsKey(item.nome)) {
+                val existingItem = itemMap[item.nome]
+                if (existingItem != null) {
+                    existingItem.quantita += item.quantita
+                }
+            } else {
+                itemMap[item.nome] = item
+            }
+        }
+        return ArrayList(itemMap.values)
+    }
+
 
     private fun replaceFragment(fragment: Fragment){
 
@@ -80,4 +110,9 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.replace(R.id.frame_layout,fragment)
         fragmentTransaction.commit()
     }
+
+    fun updateListaCarrello(newList: List<ItemCarrello>) {
+        listaCarrello = newList as ArrayList<ItemCarrello>
+    }
+
 }

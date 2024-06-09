@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/radioServizioAlTavolo"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Servizio al Tavolo"
+            android:buttonTint="@color/red"/>
+
+        <RadioButton
+            android:id="@+id/radioConsegnaADomicilio"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Consegna a Domicilio"
+            android:buttonTint="@color/red"/>
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/textViewDinamica"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp" />
+
+    <EditText
+        android:id="@+id/editTextDinamica"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:inputType="text"
+        android:backgroundTint="@color/yellow"
+
+        />
+</LinearLayout>
