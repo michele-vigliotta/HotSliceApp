@@ -1,6 +1,7 @@
 package com.example.hotsliceapp.fragments
 
 import AdapterCarrello
+import FragmentRitiroDialog
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.hotsliceapp.ItemCarrello
 import com.example.hotsliceapp.R
 import com.example.hotsliceapp.activities.MainActivity
 import com.google.firebase.Firebase
@@ -24,12 +26,15 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 
-class FragmentCarrello : Fragment() {
+class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
 
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: AdapterCarrello
     private lateinit var auth: FirebaseAuth
+    private lateinit var carrello: List<ItemCarrello>
+    var string: String = ""
+    val db = FirebaseFirestore.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,41 +65,68 @@ class FragmentCarrello : Fragment() {
             (activity as? MainActivity)?.updateListaCarrello(newList)
         }
 
-        val db = FirebaseFirestore.getInstance()
+
+
+
+        val ordinaButton = view.findViewById<Button>(R.id.ordinaButton)
+
+
+
+        ordinaButton.setOnClickListener {
+            adapter.getList() { newList ->
+                  carrello = newList
+            }
+            if (carrello.isEmpty()) {
+                Toast.makeText(requireActivity(), "Carrello vuoto", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                val dialog = FragmentRitiroDialog()
+                dialog.setListener(this)
+                dialog.show(parentFragmentManager, "RitiroDialog")
+            }
+        }
+
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onDialogPositiveClick(option: String, details: String) {
+        Toast.makeText(requireActivity(), "Ordine effettuato", Toast.LENGTH_SHORT).show()
         auth = Firebase.auth
         val authid = (auth.currentUser?.uid).toString()
         val ordiniCollection = db.collection("ordini")
 
-        val ordinaButton = view.findViewById<Button>(R.id.ordinaButton)
-        var string: String = ""
-        ordinaButton.setOnClickListener {
-            adapter.getList() { newList ->
-                for (item in newList) {
-                     string += "Nome: ${item.nome}, Quantità: ${item.quantita};\n"
-                }
-                val nuovoOrdine = hashMapOf(
-                    "id" to "${authid}_${System.currentTimeMillis()}",
-                    "userId" to authid,
-                    "stato" to "in corso",
-                    "data" to "${LocalDate.now()}  ${LocalTime.now()}",
-                    "descrizione" to string
-                )
-                ordiniCollection.add(nuovoOrdine)
-                    .addOnSuccessListener { documentReference ->
-                        Log.d("Firestore", "Documento aggiunto con ID: ${documentReference.id}")
-                        Toast.makeText(requireActivity(), "Ordine effettuato", Toast.LENGTH_SHORT).show()
-                    }
-                    .addOnFailureListener { e ->
-                        Log.w("Firestore", "Errore durante l'aggiunta del documento", e)
-                        Toast.makeText(requireActivity(), "Ordine non effettuato, riprova", Toast.LENGTH_SHORT).show()
-                    }
+        val indirizzo = if (option == "Consegna a Domicilio") details else ""
+        val tavolo = if (option == "Servizio al Tavolo") details else ""
+
+
+        adapter.getList() { newList ->
+
+
+            for (item in newList) {
+                string += "Nome: ${item.nome}, Quantità: ${item.quantita};\n"
             }
-            adapter.clearList()
+            val nuovoOrdine = hashMapOf(
+                "id" to "${authid}_${System.currentTimeMillis()}",
+                "userId" to authid,
+                "stato" to "in corso",
+                "data" to "${LocalDate.now()}  ${LocalTime.now()}",
+                "descrizione" to string,
+                "tipo" to option,
+                "indirizzo" to indirizzo,
+                "tavolo" to tavolo
+
+            )
+
+            ordiniCollection.add(nuovoOrdine)
+                .addOnSuccessListener { documentReference ->
+                    Log.d("Firestore", "Documento aggiunto con ID: ${documentReference.id}")
+                    Toast.makeText(requireActivity(), "Ordine effettuato", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { e ->
+                    Log.w("Firestore", "Errore durante l'aggiunta del documento", e)
+                    Toast.makeText(requireActivity(), "Ordine non effettuato, riprova", Toast.LENGTH_SHORT).show()
+                }
         }
-
-
-
-
+        adapter.clearList()
 
     }
 }
