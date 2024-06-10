@@ -84,8 +84,12 @@ class FragmentNuovoProdotto : DialogFragment() {
                     )
                     val collection = if (titolo == "Nuova Pizza") {
                         db.collection("pizze")
-                    } else {
-                        db.collection("bevande")
+                    } else if (titolo == "Nuova Bibita") {
+                        db.collection("bibite")
+                    }else if (titolo == "Nuovo Dolce"){
+                        db.collection("dolci")
+                    }else{
+                        db.collection("offerte")
                     }
                     collection.add(nuovoProdotto)
                         .addOnSuccessListener { documentReference ->
