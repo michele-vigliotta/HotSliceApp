@@ -60,18 +60,15 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
             recyclerView.adapter = adapter
 
 
-
+        //aggiorna la lista quando cambia
         adapter.getList() { newList ->
             (activity as? MainActivity)?.updateListaCarrello(newList)
         }
 
-
-
-
         val ordinaButton = view.findViewById<Button>(R.id.ordinaButton)
 
 
-
+        //apre il dialog ritiro se il carrello non è vuoto
         ordinaButton.setOnClickListener {
             adapter.getList() { newList ->
                   carrello = newList
@@ -81,12 +78,16 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
             }
             else {
                 val dialog = FragmentRitiroDialog()
+                /*Imposta il listener. FragmentCarrello implementa FragmentRitiroDialog.RitiroDialogListener.
+                Quando sul dialog viene premuto il pulsante Positive, onDialogPositiveClick viene chiamata */
                 dialog.setListener(this)
                 dialog.show(parentFragmentManager, "RitiroDialog")
             }
         }
 
     }
+
+    //metodo che gestisce il click positivo del dialog
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onDialogPositiveClick(option: String, details: String) {
         Toast.makeText(requireActivity(), "Ordine effettuato", Toast.LENGTH_SHORT).show()
