@@ -2,11 +2,8 @@ package com.example.hotsliceapp.activities
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.hotsliceapp.CarrelloViewModel
 import com.example.hotsliceapp.ItemCarrello
 import com.example.hotsliceapp.fragments.FragmentHome
 import com.example.hotsliceapp.fragments.FragmentOfferte
