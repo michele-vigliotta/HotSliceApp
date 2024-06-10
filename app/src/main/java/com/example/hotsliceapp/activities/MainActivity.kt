@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                 .commit()
             true
         }
-
+        val bottom_menu = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         //codice per mostrare il bottom menu in base al ruolo dell'utente
         auth = Firebase.auth
         val authid = (auth.currentUser?.uid).toString()
@@ -61,15 +61,13 @@ class MainActivity : AppCompatActivity() {
                 document ->
             role = document.getString("role").toString()
             if (role == "staff") {
-                val bottom_menu = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
                 bottom_menu.menu.clear()
                 bottom_menu.inflateMenu(R.menu.bottom_menu_staff)
 
             }
             else if (role == "admin"){
-                val btnmenu = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-                btnmenu.menu.clear()
-                btnmenu.inflateMenu(R.menu.bottom_menu_admin)
+                bottom_menu.menu.clear()
+                bottom_menu.inflateMenu(R.menu.bottom_menu_admin)
             }
 
         }

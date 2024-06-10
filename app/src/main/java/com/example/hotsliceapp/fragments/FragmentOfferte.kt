@@ -15,7 +15,12 @@ import com.example.hotsliceapp.ItemCarrello
 import com.example.hotsliceapp.R
 import com.example.hotsliceapp.activities.DettagliProdottoActivity
 import com.example.hotsliceapp.activities.MainActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 
 
 class FragmentOfferte:Fragment() {
@@ -23,6 +28,9 @@ class FragmentOfferte:Fragment() {
     private lateinit var offerteAdapter: AdapterListeHome
     private val offerteList = mutableListOf<Item>()
     private val REQUEST_CODE_DETTAGLI = 100
+    private lateinit var auth: FirebaseAuth
+    val db = Firebase.firestore
+    lateinit var role: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +44,18 @@ class FragmentOfferte:Fragment() {
         offerteAdapter = AdapterListeHome(offerteList) //inizializza l'adapter con una lista vuota
         recyclerView.adapter = offerteAdapter
         fetchDataFromFirebase()
+
+        val floatingButton = view.findViewById<FloatingActionButton>(R.id.floatingActionButton)
+        auth = Firebase.auth
+        val authid = (auth.currentUser?.uid).toString()
+        val documentSnapshot = db.collection("users").document(authid)
+        documentSnapshot.get().addOnSuccessListener {
+                document ->
+            role = document.getString("role").toString()
+            if (role == "staff") {
+                floatingButton.visibility = View.VISIBLE
+            }
+        }
 
         offerteAdapter.onItemClick = {
             val intent = Intent(activity, DettagliProdottoActivity::class.java)
