@@ -18,12 +18,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.hotsliceapp.ItemCarrello
 import com.example.hotsliceapp.R
 import com.example.hotsliceapp.activities.MainActivity
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.Date
 
 
 class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
@@ -89,13 +93,13 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
     }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onDialogPositiveClick(option: String, details: String) {
-        Toast.makeText(requireActivity(), "Ordine effettuato", Toast.LENGTH_SHORT).show()
         auth = Firebase.auth
         val authid = (auth.currentUser?.uid).toString()
         val ordiniCollection = db.collection("ordini")
-
         val indirizzo = if (option == "Consegna a Domicilio") details else ""
         val tavolo = if (option == "Servizio al Tavolo") details else ""
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val data = LocalDateTime.now().format(formatter).toString()
 
 
         adapter.getList() { newList ->
@@ -108,7 +112,7 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
                 "id" to "${authid}_${System.currentTimeMillis()}",
                 "userId" to authid,
                 "stato" to "in corso",
-                "data" to "${LocalDate.now()}  ${LocalTime.now()}",
+                "data" to data,
                 "descrizione" to string,
                 "tipo" to option,
                 "indirizzo" to indirizzo,
@@ -119,8 +123,7 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
             ordiniCollection.add(nuovoOrdine)
                 .addOnSuccessListener { documentReference ->
                     Log.d("Firestore", "Documento aggiunto con ID: ${documentReference.id}")
-                    Toast.makeText(requireActivity(), "Ordine effettuato", Toast.LENGTH_SHORT).show()
-                }
+                    Snackbar.make(requireView(), "Ordine effettuato", Snackbar.LENGTH_LONG).show()                }
                 .addOnFailureListener { e ->
                     Log.w("Firestore", "Errore durante l'aggiunta del documento", e)
                     Toast.makeText(requireActivity(), "Ordine non effettuato, riprova", Toast.LENGTH_SHORT).show()
