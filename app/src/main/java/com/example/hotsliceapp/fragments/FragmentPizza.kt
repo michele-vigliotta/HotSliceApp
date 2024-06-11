@@ -88,6 +88,7 @@ class FragmentPizza:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
             val itemsCarrello = data?.getParcelableArrayListExtra<ItemCarrello>("itemsCarrello")
             (activity as MainActivity).handleResult(itemsCarrello)
         }
+        fetchDataFromFirebase()
     }
 
     private fun fetchDataFromFirebase() {

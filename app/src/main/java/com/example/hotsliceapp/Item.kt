@@ -5,8 +5,11 @@ import android.os.Parcelable
 
 data class Item(var nome : String = "",
                 var foto : String? = null,
-                val prezzo: Double = 0.0 //puó essere null
+                var prezzo: Double = 0.0, //puó essere null
+                var descrizione : String = ""
 ) : Parcelable {
+
+
 
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),

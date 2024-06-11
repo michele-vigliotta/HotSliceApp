@@ -1,8 +1,11 @@
 package com.example.hotsliceapp.activities
 
+import FragmentModificaProdotto
+import FragmentNuovoProdotto
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
@@ -27,7 +30,7 @@ import com.squareup.picasso.Picasso
 import com.google.firebase.firestore.firestore
 import org.checkerframework.common.returnsreceiver.qual.This
 
-class DettagliProdottoActivity : AppCompatActivity() {
+class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.ModificaProdottoListener {
 
     private val carrelloViewModel: CarrelloViewModel by viewModels()
     private val RESULT_CODE_CARRELLO = 200
@@ -37,9 +40,32 @@ class DettagliProdottoActivity : AppCompatActivity() {
     lateinit var role: String
 
 
+    override fun onProdottoModificato(item: Item){
+        val textView : TextView = findViewById(R.id.textViewDettagli)
+        val imageView : ImageView = findViewById(R.id.imageViewDettagli)
+
+        if(item != null){
+            textView.text = item.nome
+
+            if(!item.foto.isNullOrEmpty()) {
+                val storageReference = FirebaseStorage.getInstance().reference.child("${item.foto}")
+                storageReference.downloadUrl.addOnSuccessListener { uri ->
+                    Picasso.get().load(uri).into(imageView)
+                }.addOnFailureListener{
+                    imageView.setImageResource(R.drawable.pizza_foto)
+                }
+            }
+        } else {
+            imageView.setImageResource(R.drawable.pizza_foto)
+        }
+    }
+
+
+
     override fun onBackPressed() {
 
-        returnResult() // Chiama la tua funzione per restituire il risultato
+        returnResult()
+        // Chiama la tua funzione per restituire il risultato
         super.onBackPressed()
     }
 
@@ -57,6 +83,7 @@ class DettagliProdottoActivity : AppCompatActivity() {
         val layoutDettagli = findViewById<ConstraintLayout>(R.id.layoutDettagli)
         val buttonAddToCart : Button = findViewById(R.id.button_add_to_cart)
         val favButton = findViewById<CheckBox>(R.id.favButton)
+        val item = intent.getParcelableExtra<Item>("item")
 
         auth = Firebase.auth
         val authid = (auth.currentUser?.uid).toString()
@@ -68,13 +95,23 @@ class DettagliProdottoActivity : AppCompatActivity() {
                 layoutContainer.removeAllViews()
                 layoutDettagli.removeView(favButton)
                 buttonAddToCart.text = "Modifica prodotto"
+                buttonAddToCart.setOnClickListener {
+                    val prodotto = "pizza"
+                    val dialog = FragmentModificaProdotto()
+                    dialog.setModificaProdottoListener(this)
+                    val bundle = Bundle()
+                    bundle.putParcelable("item", item)
+                    bundle.putString("prodotto", prodotto)
+                    dialog.arguments = bundle
+                    dialog.show(supportFragmentManager, "NuovoProdotto")
+                }
             }
 
 
         }
 
 
-        val item = intent.getParcelableExtra<Item>("item")
+
 
         val textView : TextView = findViewById(R.id.textViewDettagli)
         val imageView : ImageView = findViewById(R.id.imageViewDettagli)
