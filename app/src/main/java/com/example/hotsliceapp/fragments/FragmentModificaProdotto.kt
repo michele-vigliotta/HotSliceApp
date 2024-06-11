@@ -140,11 +140,29 @@ class FragmentModificaProdotto : DialogFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             val selectedImageUri = data.data
-            nomeFileFoto = getFileName(selectedImageUri)
-            uploadFoto(selectedImageUri, nomeFileFoto)
+            val fileSize = getFileSize(selectedImageUri)
+
+            if (fileSize > 2 *1024 * 1024) {
+                Toast.makeText(requireContext(), "Foto non caricata, le dimensioni devono essere inferiori a 2MB", Toast.LENGTH_SHORT).show()
+            }else {
+                nomeFileFoto = getFileName(selectedImageUri)
+                uploadFoto(selectedImageUri, nomeFileFoto)
+            }
         }
     }
 
+    private fun getFileSize(uri: Uri?): Long {
+        var fileSize: Long = 0
+        uri?.let {
+            val cursor = requireContext().contentResolver.query(it, null, null, null, null)
+            cursor?.use {
+                if (it.moveToFirst()) {
+                    fileSize = it.getLong(it.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE))
+                }
+            }
+        }
+        return fileSize
+    }
     private fun uploadFoto(uri: Uri?, nomeFileFoto: String?) {
 
         val imageRef = storageRef.child("$nomeFileFoto")
