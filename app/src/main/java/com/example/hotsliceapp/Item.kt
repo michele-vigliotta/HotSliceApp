@@ -12,8 +12,7 @@ data class Item(var nome : String = "",
         parcel.readString().toString(),
         parcel.readString(),
         parcel.readDouble()
-    ){
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(nome)

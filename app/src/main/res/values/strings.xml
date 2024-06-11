@@ -5,4 +5,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_dettagli_prodotto">DettagliProdottoActivity</string>
     <string name="offerte">Offerte</string>
+    <string name="preferiti">Preferiti</string>
+    <string name="pulsante_preferiti">Pulsante Preferiti</string>
 </resources>
