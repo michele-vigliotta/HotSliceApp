@@ -1,5 +1,6 @@
 package com.example.hotsliceapp.fragments
 
+import FragmentNuovoProdotto
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -23,7 +24,7 @@ import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 
-class FragmentBibite:Fragment() {
+class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var bibiteAdapter: AdapterListeHome
     private val bibiteList = mutableListOf<Item>()
@@ -31,6 +32,12 @@ class FragmentBibite:Fragment() {
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
     lateinit var role: String
+
+
+    override fun onProdottoAggiunto() {
+        bibiteList.clear()
+        fetchDataFromFirebase()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,6 +53,15 @@ class FragmentBibite:Fragment() {
         fetchDataFromFirebase()
 
         val floatingButton = view.findViewById<FloatingActionButton>(R.id.floatingActionButton)
+        floatingButton.setOnClickListener {
+            val prodotto = "Nuova Bibita"
+            val dialog = FragmentNuovoProdotto()
+            dialog.setNuovoProdottoListener(this)
+            val bundle = Bundle()
+            bundle.putString("prodotto", prodotto)
+            dialog.arguments = bundle
+            dialog.show(childFragmentManager, "NuovoProdotto")
+        }
         auth = Firebase.auth
         val authid = (auth.currentUser?.uid).toString()
         val documentSnapshot = db.collection("users").document(authid)
