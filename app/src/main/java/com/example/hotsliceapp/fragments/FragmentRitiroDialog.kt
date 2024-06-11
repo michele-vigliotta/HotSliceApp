@@ -1,8 +1,6 @@
 import android.app.Dialog
 import android.os.Bundle
 import android.text.InputType
-import android.view.LayoutInflater
-import android.view.View
 import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -14,13 +12,13 @@ import androidx.fragment.app.DialogFragment
 import com.example.hotsliceapp.R
 
 class FragmentRitiroDialog : DialogFragment() {
-
     private var listener: RitiroDialogListener? = null
 
+    //Interfaccia per comunicare con FragmentCarrello, onDialogPositiveClick dve essere implementata dal fragment chiamante
     interface RitiroDialogListener {
         fun onDialogPositiveClick(option: String, details: String)
     }
-
+    //Metodo per settare il listener da FragmentCarrello
     fun setListener(listener: RitiroDialogListener) {
         this.listener = listener
     }
@@ -36,7 +34,6 @@ class FragmentRitiroDialog : DialogFragment() {
         val textView = view.findViewById<TextView>(R.id.textViewDinamica)
         val editText = view.findViewById<EditText>(R.id.editTextDinamica)
 
-        builder.setPositiveButton("OK", null)
 
         radioGroup.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
@@ -51,12 +48,11 @@ class FragmentRitiroDialog : DialogFragment() {
                     editText.inputType = InputType.TYPE_CLASS_TEXT
                 }
             }
-
         }
 
         builder.setView(view)
             .setTitle("Scegli la modalità di ritiro")
-            .setPositiveButton("OK",null)
+            .setPositiveButton("OK",null) //Imposta il listener a null
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
             }

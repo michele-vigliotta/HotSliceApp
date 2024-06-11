@@ -30,4 +30,22 @@
         android:layout_marginTop="18dp"
         tools:listitem="@layout/each_item" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="18dp"
+        android:backgroundTint="@color/yellow"
+        android:clickable="true"
+        android:elevation="10dp"
+        android:src="@android:drawable/ic_input_add"
+        android:tint="#F3F2F2"
+        android:visibility="gone"
+        app:borderWidth="0dp"
+        app:fabSize="normal"
+        app:maxImageSize="52dp" />
+
 </RelativeLayout>
