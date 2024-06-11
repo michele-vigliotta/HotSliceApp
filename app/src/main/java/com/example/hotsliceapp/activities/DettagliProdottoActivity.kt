@@ -162,81 +162,117 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
             }
         }
 
-        // Rimuovi il listener precedente per evitare problemi di riciclo
-        favButton.setOnCheckedChangeListener(null)
+        if (item?.nome != null) {
+            val controllopreferito = db.collection("preferiti")
+                .whereEqualTo("nome", item?.nome)
+                .whereEqualTo("userId", authid)
+                .get()
 
-        // Imposta lo stato del CheckBox
-        favButton.isChecked /* Controlla se l'item è già nei preferiti */
+            // Rimuovi il listener precedente per evitare problemi di riciclo
+            favButton.setOnCheckedChangeListener(null)
 
-        favButton.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                addToFavorites(item)
-            } else {
-                removeFromFavorites(item)
+            controllopreferito.addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    favButton.isChecked = true
+                } else {
+                    favButton.isChecked = false
+                }}}
+
+
+
+                favButton.setOnCheckedChangeListener { _, isChecked ->
+                    if (isChecked) {
+                        addToFavorites(item)
+                    } else {
+                        removeFromFavorites(item)
+                    }
+                }
+
             }
-        }
-
-    }
-    private fun addToCart(itemName: String, foto: String?, prezzo: Double, quantity: Int) {
-        val existingItem = listaCarrello.find { it.nome == itemName }
-        if (existingItem != null) {
-            existingItem.quantita += quantity
-        } else {
-            val newitemCarrello = ItemCarrello(itemName, foto, prezzo, quantity)
-            listaCarrello.add(newitemCarrello)
-        }
-
-
-        carrelloViewModel.setItems(listaCarrello)
-        val items = carrelloViewModel.getItems()
-
-        Toast.makeText(this, "Aggiunto al carrello", Toast.LENGTH_SHORT).show()
-
-    }
-
-
-    private fun addToFavorites(item: Item?) {
-            val authid = (auth.currentUser?.uid).toString()
-            val nuovoPreferito = hashMapOf(
-                "userId" to authid,
-                "nome" to  item?.nome
-            )
-            val userFavoritesRef = db.collection("preferiti")
-            userFavoritesRef.add(nuovoPreferito)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Prodotto aggiunto ai preferiti!", Toast.LENGTH_SHORT).show()
+            private fun addToCart(itemName: String, foto: String?, prezzo: Double, quantity: Int) {
+                val existingItem = listaCarrello.find { it.nome == itemName }
+                if (existingItem != null) {
+                    existingItem.quantita += quantity
+                } else {
+                    val newitemCarrello = ItemCarrello(itemName, foto, prezzo, quantity)
+                    listaCarrello.add(newitemCarrello)
                 }
-                .addOnFailureListener {
-                    Toast.makeText(this, "Errore durante l'inserimento!", Toast.LENGTH_SHORT).show()
+
+
+                carrelloViewModel.setItems(listaCarrello)
+                val items = carrelloViewModel.getItems()
+
+                Toast.makeText(this, "Aggiunto al carrello", Toast.LENGTH_SHORT).show()
+
+            }
+
+
+            private fun addToFavorites(item: Item?) {
+                val authid = (auth.currentUser?.uid).toString()
+                if (item?.nome != null) {
+                    val controllopreferito = db.collection("preferiti")
+                        .whereEqualTo("nome", item.nome)
+                        .whereEqualTo("userId", authid)
+                        .get()
+                val nuovoPreferito = hashMapOf(
+                    "userId" to authid,
+                    "nome" to item.nome
+                )
+                controllopreferito.addOnSuccessListener { documents ->
+                    if (documents.isEmpty) {
+                        val userFavoritesRef = db.collection("preferiti")
+                        userFavoritesRef.add(nuovoPreferito)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Prodotto aggiunto ai preferiti!", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(this, "Errore durante l'inserimento!", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                    }
                 }
-        }
+
+            }}
 
 
-    private fun removeFromFavorites(item: Item?) {
-            val authid = (auth.currentUser?.uid).toString()
-        //Toast.makeText(this, "Fa qualcosa", Toast.LENGTH_SHORT).show()
-        db.collection("preferiti")
-            .whereEqualTo("userId", authid)
-            .whereEqualTo("nome", item?.nome)
-            .get()
+            private fun removeFromFavorites(item: Item?) {
+                val authid = (auth.currentUser?.uid).toString()
+                //Toast.makeText(this, "Fa qualcosa", Toast.LENGTH_SHORT).show()
+                db.collection("preferiti")
+                    .whereEqualTo("userId", authid)
+                    .whereEqualTo("nome", item?.nome)
+                    .get()
 
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    db.collection("preferiti").document(document.id).delete()
-                        .addOnSuccessListener {
-                            Toast.makeText(this, "Prodotto rimosso dai preferiti!", Toast.LENGTH_SHORT).show()
+                    .addOnSuccessListener { documents ->
+                        for (document in documents) {
+                            db.collection("preferiti").document(document.id).delete()
+                                .addOnSuccessListener {
+                                    Toast.makeText(
+                                        this,
+                                        "Prodotto rimosso dai preferiti!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(
+                                        this,
+                                        "Errore durante la rimozione!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                         }
-                        .addOnFailureListener {
-                            Toast.makeText(this, "Errore durante la rimozione!", Toast.LENGTH_SHORT).show()
-                        }
-                }
+                    }
+                    .addOnFailureListener { e ->
+                        // Gestisci l'errore
+                        Toast.makeText(
+                            this,
+                            "Errore nella ricerca del documento",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
             }
-            .addOnFailureListener { e ->
-                // Gestisci l'errore
-                Toast.makeText(this, "Errore nella ricerca del documento", Toast.LENGTH_SHORT).show()
-            }
-    }
-}
+        }
 
 
 
