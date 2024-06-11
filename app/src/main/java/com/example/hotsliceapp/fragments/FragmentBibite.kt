@@ -75,7 +75,9 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
 
         bibiteAdapter.onItemClick = {
             val intent = Intent(activity, DettagliProdottoActivity::class.java)
+            val prodotto = "bibita"
             intent.putExtra("item", it)
+            intent.putExtra("prodotto", prodotto)
             startActivityForResult(intent, REQUEST_CODE_DETTAGLI)
         }
 

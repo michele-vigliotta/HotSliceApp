@@ -84,6 +84,7 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
         val buttonAddToCart : Button = findViewById(R.id.button_add_to_cart)
         val favButton = findViewById<CheckBox>(R.id.favButton)
         val item = intent.getParcelableExtra<Item>("item")
+        val prodotto = intent.getStringExtra("prodotto")
 
         auth = Firebase.auth
         val authid = (auth.currentUser?.uid).toString()
@@ -96,7 +97,6 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                 layoutDettagli.removeView(favButton)
                 buttonAddToCart.text = "Modifica prodotto"
                 buttonAddToCart.setOnClickListener {
-                    val prodotto = "pizza"
                     val dialog = FragmentModificaProdotto()
                     dialog.setModificaProdottoListener(this)
                     val bundle = Bundle()

@@ -74,7 +74,9 @@ class FragmentDolci:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener{
 
         dolciAdapter.onItemClick = {
             val intent = Intent(activity, DettagliProdottoActivity::class.java)
+            val prodotto = "dolce"
             intent.putExtra("item", it)
+            intent.putExtra("prodotto", prodotto)
             startActivityForResult(intent, REQUEST_CODE_DETTAGLI)
         }
 
