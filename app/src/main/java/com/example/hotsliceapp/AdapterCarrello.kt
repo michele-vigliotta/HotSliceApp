@@ -56,7 +56,6 @@ class AdapterCarrello(private var listaCarrello: MutableList<ItemCarrello> )
             } else if (currentItem.quantita == 1) {
                 listaCarrello.removeAt(position)
                 notifyItemRemoved(position)
-                notifyItemRangeChanged(position, listaCarrello.size)
             }
 
         }
