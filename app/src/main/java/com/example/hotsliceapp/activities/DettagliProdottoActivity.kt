@@ -45,15 +45,16 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
     val db = Firebase.firestore
     lateinit var role: String
 
-
     override fun onProdottoModificato(item: Item){
         val textView : TextView = findViewById(R.id.textViewDettagli)
         val imageView : ImageView = findViewById(R.id.imageViewDettagli)
         val descrizione : TextView = findViewById(R.id.descrizioneDettagli)
+        val prezzo : TextView = findViewById(R.id.prezzoProdotto)
 
         if(item != null){
             textView.text = item.nome
             descrizione.text = item.descrizione
+            prezzo.text = item.prezzo.toString()
 
             if(!item.foto.isNullOrEmpty()) {
                 val storageReference = FirebaseStorage.getInstance().reference.child("${item.foto}")
@@ -156,10 +157,12 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
 
         val textView : TextView = findViewById(R.id.textViewDettagli)
         val imageView : ImageView = findViewById(R.id.imageViewDettagli)
-       // val descrizione : TextView = findViewById(R.id.descrizioneDettagli)
-
+        val descrizione : TextView = findViewById(R.id.descrizioneDettagli)
+        val prezzo : TextView = findViewById(R.id.prezzoProdotto)
         if(item != null){
             textView.text = item.nome
+            descrizione.text = item.descrizione
+            prezzo.text = item.prezzo.toString()+"€"
 
             if(!item.foto.isNullOrEmpty()) {
                 val storageReference = FirebaseStorage.getInstance().reference.child("${item.foto}")
