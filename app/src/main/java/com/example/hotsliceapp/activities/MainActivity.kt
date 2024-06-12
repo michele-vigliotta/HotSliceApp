@@ -12,6 +12,7 @@ import com.example.hotsliceapp.R
 import com.example.hotsliceapp.databinding.ActivityMainBinding
 import com.example.hotsliceapp.fragments.FragmentCarrello
 import com.example.hotsliceapp.fragments.FragmentOrdini
+import com.example.hotsliceapp.fragments.FragmentStatistiche
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.bottom_home -> FragmentHome()
                 R.id.bottom_carrello -> FragmentCarrello()
                 R.id.bottom_ordini -> FragmentOrdini()
+                R.id.bottom_statistiche -> FragmentStatistiche()
                 else -> FragmentHome()
             }
             supportFragmentManager.beginTransaction()
