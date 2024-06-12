@@ -52,16 +52,15 @@ class FragmentRitiroDialog : DialogFragment() {
                     editText.inputType = InputType.TYPE_CLASS_NUMBER
                     editText.visibility = View.VISIBLE
                     editText.setOnClickListener(null)
+                    editText.setText("")
                 }
                 R.id.radioServizioAsporto -> {
                     textView.text = "Inserisci l'orario di ritiro"
                     editText.hint = "HH:mm"
                     editText.inputType = InputType.TYPE_NULL
-                    editText.isFocusable = false
-                    editText.isClickable = true
                     editText.visibility = View.VISIBLE
                     editText.setOnClickListener {showTimePickerDialog()}
-
+                    editText.setText("")
 
                 }
             }
@@ -103,6 +102,7 @@ class FragmentRitiroDialog : DialogFragment() {
 
         val timePickerDialog = TimePickerDialog(
             requireContext(),
+            R.style.CustomTimePickerDialog,
             { _, selectedHour, selectedMinute ->
                 val selectedTime = Calendar.getInstance().apply {
                     set(Calendar.HOUR_OF_DAY, selectedHour)
