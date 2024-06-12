@@ -54,10 +54,12 @@ class FragmentPreferiti:Fragment() {
             val itemsCarrello = data?.getParcelableArrayListExtra<ItemCarrello>("itemsCarrello")
             (activity as MainActivity).handleResult(itemsCarrello)
         }
+
+        fetchDataFromFirebase()
     }
 
     private fun fetchDataFromFirebase() {
-
+        preferitiList.clear()
         val db = FirebaseFirestore.getInstance()
         db.collection("preferiti")
             .get()
