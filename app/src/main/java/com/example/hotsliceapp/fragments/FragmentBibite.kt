@@ -98,10 +98,7 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
             (activity as MainActivity).handleResult(itemsCarrello)
         }
         if (resultCode == 201 && requestCode == REQUEST_CODE_DETTAGLI_PRODOTTO) {
-
-            fetchDataFromFirebase()
             Snackbar.make(requireView(), "Prodotto eliminato", Snackbar.LENGTH_LONG).show()
-
         }
         fetchDataFromFirebase()
     }
