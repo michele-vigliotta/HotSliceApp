@@ -17,6 +17,7 @@ import com.example.hotsliceapp.R
 import com.example.hotsliceapp.activities.DettagliProdottoActivity
 import com.example.hotsliceapp.activities.MainActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -29,12 +30,12 @@ class FragmentOfferte:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
     private lateinit var offerteAdapter: AdapterListeHome
     private val offerteList = mutableListOf<Item>()
     private val REQUEST_CODE_DETTAGLI = 100
+    private val REQUEST_CODE_DETTAGLI_PRODOTTO = 200
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
     lateinit var role: String
 
     override fun onProdottoAggiunto() {
-        offerteList.clear()
         fetchDataFromFirebase()
     }
 
@@ -77,7 +78,11 @@ class FragmentOfferte:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
             val prodotto = "offerta"
             intent.putExtra("item", it)
             intent.putExtra("prodotto", prodotto)
-            startActivityForResult(intent, REQUEST_CODE_DETTAGLI)
+            if (role == "staff") {
+                startActivityForResult(intent, REQUEST_CODE_DETTAGLI_PRODOTTO)
+            } else {
+                startActivityForResult(intent, REQUEST_CODE_DETTAGLI)
+            }
         }
 
         return view
@@ -90,9 +95,17 @@ class FragmentOfferte:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
             val itemsCarrello = data?.getParcelableArrayListExtra<ItemCarrello>("itemsCarrello")
             (activity as MainActivity).handleResult(itemsCarrello)
         }
+        if (resultCode == 201 && requestCode == REQUEST_CODE_DETTAGLI_PRODOTTO) {
+
+            fetchDataFromFirebase()
+            Snackbar.make(requireView(), "Prodotto eliminato", Snackbar.LENGTH_LONG).show()
+
+        }
+        fetchDataFromFirebase()
     }
 
     private fun fetchDataFromFirebase() {
+        offerteList.clear()
 
         val db = FirebaseFirestore.getInstance()
         db.collection("offerte")
@@ -110,7 +123,5 @@ class FragmentOfferte:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
                 Log.w("offerteFragment", "Error getting documents.", exception)
             }
     }
-
-
 }
 

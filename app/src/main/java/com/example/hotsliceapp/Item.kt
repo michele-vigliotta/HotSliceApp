@@ -14,13 +14,15 @@ data class Item(var nome : String = "",
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
         parcel.readString(),
-        parcel.readDouble()
+        parcel.readDouble(),
+        parcel.readString().toString()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(nome)
         parcel.writeString(foto)
         parcel.writeDouble(prezzo)
+        parcel.writeString(descrizione)
 
     }
     override fun describeContents(): Int {

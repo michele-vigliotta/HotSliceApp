@@ -124,7 +124,8 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
             ordiniCollection.add(nuovoOrdine)
                 .addOnSuccessListener { documentReference ->
                     Log.d("Firestore", "Documento aggiunto con ID: ${documentReference.id}")
-                    Snackbar.make(requireView(), "Ordine effettuato", Snackbar.LENGTH_LONG).show()                }
+                    Snackbar.make(requireView(), "Ordine effettuato", Snackbar.LENGTH_LONG).show()
+                }
                 .addOnFailureListener { e ->
                     Log.w("Firestore", "Errore durante l'aggiunta del documento", e)
                     Toast.makeText(requireActivity(), "Ordine non effettuato, riprova", Toast.LENGTH_SHORT).show()
