@@ -97,4 +97,15 @@
         app:layout_constraintTop_toBottomOf="@+id/imageViewDettagli"
         app:layout_constraintVertical_bias="0.062" />
 
+    <TextView
+        android:id="@+id/descrizioneDettagli"
+        android:layout_width="393dp"
+        android:layout_height="117dp"
+        android:text="Descrizione del prodotto"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewDettagli" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

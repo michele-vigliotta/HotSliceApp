@@ -43,9 +43,11 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
     override fun onProdottoModificato(item: Item){
         val textView : TextView = findViewById(R.id.textViewDettagli)
         val imageView : ImageView = findViewById(R.id.imageViewDettagli)
+        val descrizione : TextView = findViewById(R.id.descrizioneDettagli)
 
         if(item != null){
             textView.text = item.nome
+            descrizione.text = item.descrizione
 
             if(!item.foto.isNullOrEmpty()) {
                 val storageReference = FirebaseStorage.getInstance().reference.child("${item.foto}")
@@ -115,6 +117,7 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
 
         val textView : TextView = findViewById(R.id.textViewDettagli)
         val imageView : ImageView = findViewById(R.id.imageViewDettagli)
+       // val descrizione : TextView = findViewById(R.id.descrizioneDettagli)
 
         if(item != null){
             textView.text = item.nome
