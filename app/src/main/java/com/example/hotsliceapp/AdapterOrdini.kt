@@ -27,13 +27,13 @@ class AdapterOrdini(private val ordiniList: List<ItemOrdine>):
 
     override fun onBindViewHolder(holder: OrdiniViewHolder, position: Int) {
         val ordine = ordiniList[position]
-        if (ordine.indirizzo == "") {
+        if (ordine.ora == "") {
             holder.descrizioneTextView.text = "Descrizione ordine:\n${ordine.descrizione}" +
                     "\nTavolo Numero: ${ordine.tavolo}"
         }
         else{
             holder.descrizioneTextView.text = "Descrizione ordine:\n${ordine.descrizione}" +
-                    "\nIndirizzo : ${ordine.indirizzo}"
+                    "\nOra di ritiro: ${ordine.ora}"
         }
         holder.statoTextView.text = "Stato: " + ordine.stato
         holder.dataTextView.text = "Data: " + ordine.data

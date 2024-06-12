@@ -85,7 +85,7 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
                 /*Imposta il listener. FragmentCarrello implementa FragmentRitiroDialog.RitiroDialogListener.
                 Quando sul dialog viene premuto il pulsante Positive, onDialogPositiveClick viene chiamata */
                 dialog.setListener(this)
-                dialog.show(parentFragmentManager, "RitiroDialog")
+                dialog.show(childFragmentManager, "RitiroDialog")
             }
         }
 
@@ -97,7 +97,7 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
         auth = Firebase.auth
         val authid = (auth.currentUser?.uid).toString()
         val ordiniCollection = db.collection("ordini")
-        val indirizzo = if (option == "Consegna a Domicilio") details else ""
+        val oraRitiro = if (option == "Servizio d'Asporto") details else ""
         val tavolo = if (option == "Servizio al Tavolo") details else ""
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val data = LocalDateTime.now().format(formatter).toString()
@@ -116,7 +116,7 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
                 "data" to data,
                 "descrizione" to string,
                 "tipo" to option,
-                "indirizzo" to indirizzo,
+                "ora" to oraRitiro,
                 "tavolo" to tavolo
 
             )
@@ -124,8 +124,7 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
             ordiniCollection.add(nuovoOrdine)
                 .addOnSuccessListener { documentReference ->
                     Log.d("Firestore", "Documento aggiunto con ID: ${documentReference.id}")
-                    Snackbar.make(requireView(), "Ordine effettuato", Snackbar.LENGTH_LONG).show()
-                }
+                    Snackbar.make(requireView(), "Ordine effettuato", Snackbar.LENGTH_LONG).show()                }
                 .addOnFailureListener { e ->
                     Log.w("Firestore", "Errore durante l'aggiunta del documento", e)
                     Toast.makeText(requireActivity(), "Ordine non effettuato, riprova", Toast.LENGTH_SHORT).show()

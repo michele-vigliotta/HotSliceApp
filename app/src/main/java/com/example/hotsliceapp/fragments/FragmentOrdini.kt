@@ -33,6 +33,7 @@ class FragmentOrdini : Fragment() {
     private lateinit var ordiniList: MutableList<ItemOrdine>
     private lateinit var auth: FirebaseAuth
     private val db = FirebaseFirestore.getInstance()
+    private var role: String = ""
 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -86,6 +87,18 @@ class FragmentOrdini : Fragment() {
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+        val authid = (auth.currentUser?.uid).toString()
+        val documentSnapshot = db.collection("users").document(authid)
+        documentSnapshot.get().addOnSuccessListener {
+                document ->
+            role = document.getString("role").toString()
+            if (role == "staff") {
+
+
+            }
+        }
+
 
         if (currentUser != null) {
             db.collection("ordini")

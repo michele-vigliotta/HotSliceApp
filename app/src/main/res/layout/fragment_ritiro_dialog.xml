@@ -18,10 +18,10 @@
             android:buttonTint="@color/red"/>
 
         <RadioButton
-            android:id="@+id/radioConsegnaADomicilio"
+            android:id="@+id/radioServizioAsporto"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:text="Consegna a Domicilio"
+            android:text="Servizio d'asporto"
             android:buttonTint="@color/red"/>
     </RadioGroup>
 
@@ -33,11 +33,13 @@
 
     <EditText
         android:id="@+id/editTextDinamica"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:inputType="text"
         android:backgroundTint="@color/yellow"
+        android:visibility="gone"/>
 
-        />
+
+
 </LinearLayout>
