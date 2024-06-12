@@ -25,11 +25,14 @@ import com.example.hotsliceapp.CarrelloViewModel
 import com.example.hotsliceapp.Item
 import com.example.hotsliceapp.ItemCarrello
 import com.example.hotsliceapp.R
+import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import com.google.firebase.firestore.firestore
@@ -44,6 +47,7 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
     lateinit var role: String
+    lateinit var controllopreferito: Task<QuerySnapshot>
 
     override fun onProdottoModificato(item: Item){
         val textView : TextView = findViewById(R.id.textViewDettagli)
@@ -208,7 +212,7 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
         }
 
         if (item?.nome != null) {
-            val controllopreferito = db.collection("preferiti")
+            controllopreferito = db.collection("preferiti")
                 .whereEqualTo("nome", item?.nome)
                 .whereEqualTo("userId", authid)
                 .get()
@@ -255,13 +259,10 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
             private fun addToFavorites(item: Item?) {
                 val authid = (auth.currentUser?.uid).toString()
                 if (item?.nome != null) {
-                    val controllopreferito = db.collection("preferiti")
-                        .whereEqualTo("nome", item.nome)
-                        .whereEqualTo("userId", authid)
-                        .get()
                 val nuovoPreferito = hashMapOf(
                     "userId" to authid,
-                    "nome" to item.nome
+                    "nome" to item.nome,
+                    "foto" to item.foto
                 )
                 controllopreferito.addOnSuccessListener { documents ->
                     if (documents.isEmpty) {
