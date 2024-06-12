@@ -18,6 +18,7 @@ import com.example.hotsliceapp.R
 import com.example.hotsliceapp.activities.DettagliProdottoActivity
 import com.example.hotsliceapp.activities.MainActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -29,13 +30,13 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
     private lateinit var bibiteAdapter: AdapterListeHome
     private val bibiteList = mutableListOf<Item>()
     private val REQUEST_CODE_DETTAGLI = 100
+    private val REQUEST_CODE_DETTAGLI_PRODOTTO = 200
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
     lateinit var role: String
 
 
     override fun onProdottoAggiunto() {
-        bibiteList.clear()
         fetchDataFromFirebase()
     }
 
@@ -78,7 +79,12 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
             val prodotto = "bibita"
             intent.putExtra("item", it)
             intent.putExtra("prodotto", prodotto)
-            startActivityForResult(intent, REQUEST_CODE_DETTAGLI)
+
+            if (role == "staff") {
+                startActivityForResult(intent, REQUEST_CODE_DETTAGLI_PRODOTTO)
+            } else {
+                startActivityForResult(intent, REQUEST_CODE_DETTAGLI)
+            }
         }
 
         return view
@@ -91,9 +97,17 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
             val itemsCarrello = data?.getParcelableArrayListExtra<ItemCarrello>("itemsCarrello")
             (activity as MainActivity).handleResult(itemsCarrello)
         }
-    }
-    private fun fetchDataFromFirebase() {
+        if (resultCode == 201 && requestCode == REQUEST_CODE_DETTAGLI_PRODOTTO) {
 
+            fetchDataFromFirebase()
+            Snackbar.make(requireView(), "Prodotto eliminato", Snackbar.LENGTH_LONG).show()
+
+        }
+        fetchDataFromFirebase()
+    }
+
+    private fun fetchDataFromFirebase() {
+        bibiteList.clear()
         val db = FirebaseFirestore.getInstance()
         db.collection("bibite")
             .get()
