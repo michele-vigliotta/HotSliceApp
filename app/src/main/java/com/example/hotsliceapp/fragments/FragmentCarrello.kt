@@ -101,13 +101,15 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
         val tavolo = if (option == "Servizio al Tavolo") details else ""
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val data = LocalDateTime.now().format(formatter).toString()
-
+        var totale: Double = 0.0
 
         adapter.getList() { newList ->
 
 
             for (item in newList) {
                 string += "Nome: ${item.nome}, Quantità: ${item.quantita};\n"
+
+                totale += (item.quantita * item.prezzo)
             }
             val nuovoOrdine = hashMapOf(
                 "id" to "${authid}_${System.currentTimeMillis()}",
@@ -117,8 +119,8 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
                 "descrizione" to string,
                 "tipo" to option,
                 "ora" to oraRitiro,
-                "tavolo" to tavolo
-
+                "tavolo" to tavolo,
+                "totale" to totale.toString()
             )
 
             ordiniCollection.add(nuovoOrdine)
