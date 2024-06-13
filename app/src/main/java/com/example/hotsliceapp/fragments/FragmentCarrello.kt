@@ -39,6 +39,7 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
     private lateinit var carrello: List<ItemCarrello>
     var string: String = ""
     val db = FirebaseFirestore.getInstance()
+    private lateinit var totaleTextView: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,15 +55,18 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
         recyclerView = view.findViewById(R.id.recyclerViewCarrello)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-
-
         val mainActivity = activity as MainActivity
         val listaCarrello = mainActivity.listaCarrello
 
+        totaleTextView = view.findViewById<TextView>(R.id.textViewTotale)
 
-            adapter = AdapterCarrello(listaCarrello)
-            recyclerView.adapter = adapter
+        val updateTotal: (Double) -> Unit = { totale ->
+            totaleTextView.text = "Totale: ${"%.2f".format(totale)} €"
+        }
+        adapter = AdapterCarrello(listaCarrello, updateTotal)
+        recyclerView.adapter = adapter
 
+        updateTotal(listaCarrello.sumByDouble { it.prezzo * it.quantita })
 
         //aggiorna la lista quando cambia
         adapter.getList() { newList ->
@@ -101,14 +105,13 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
         val tavolo = if (option == "Servizio al Tavolo") details else ""
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val data = LocalDateTime.now().format(formatter).toString()
-        var totale: Double = 0.0
+
 
         adapter.getList() { newList ->
 
-
+            var totale: Double = 0.0
             for (item in newList) {
                 string += "Nome: ${item.nome}, Quantità: ${item.quantita};\n"
-
                 totale += (item.quantita * item.prezzo)
             }
             val nuovoOrdine = hashMapOf(
@@ -126,13 +129,15 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
             ordiniCollection.add(nuovoOrdine)
                 .addOnSuccessListener { documentReference ->
                     Log.d("Firestore", "Documento aggiunto con ID: ${documentReference.id}")
-                    Snackbar.make(requireView(), "Ordine effettuato", Snackbar.LENGTH_LONG).show()                }
+                    Snackbar.make(requireView(), "Ordine effettuato", Snackbar.LENGTH_LONG).show()
+                    // Imposta il totale a 0 € dopo aver effettuato l'ordine
+                    totaleTextView.text = "Totale: 0.00 €"
+                }
                 .addOnFailureListener { e ->
                     Log.w("Firestore", "Errore durante l'aggiunta del documento", e)
                     Toast.makeText(requireActivity(), "Ordine non effettuato, riprova", Toast.LENGTH_SHORT).show()
                 }
         }
         adapter.clearList()
-
     }
 }
