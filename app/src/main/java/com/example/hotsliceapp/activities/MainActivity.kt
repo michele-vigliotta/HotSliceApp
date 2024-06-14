@@ -1,5 +1,6 @@
 package com.example.hotsliceapp.activities
 
+import FragmentOrdini
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -11,7 +12,6 @@ import com.example.hotsliceapp.fragments.FragmentPreferiti
 import com.example.hotsliceapp.R
 import com.example.hotsliceapp.databinding.ActivityMainBinding
 import com.example.hotsliceapp.fragments.FragmentCarrello
-import com.example.hotsliceapp.fragments.FragmentOrdini
 import com.example.hotsliceapp.fragments.FragmentStatistiche
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase

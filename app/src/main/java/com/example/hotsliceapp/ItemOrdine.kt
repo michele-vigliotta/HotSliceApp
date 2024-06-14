@@ -5,5 +5,6 @@ data class ItemOrdine(
     val stato: String = "",
     val data: String = "",
     val ora: String = "",
-    val tavolo: String = ""
+    val tavolo: String = "",
+    val totale: String = ""
 )
