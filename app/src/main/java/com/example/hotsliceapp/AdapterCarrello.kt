@@ -3,6 +3,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +25,7 @@ class AdapterCarrello(private var listaCarrello: MutableList<ItemCarrello>,
         val imageViewProdotto: ImageView = itemView.findViewById(R.id.imageViewProdotto)
         val buttonPlus: Button = itemView.findViewById(R.id.buttonPlus)
         val buttonMinus: Button = itemView.findViewById(R.id.buttonMinus)
+        val progressBar: ProgressBar = itemView.findViewById(R.id.progressBarFoto)
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CarrelloViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_carrello, parent, false)
@@ -39,12 +41,27 @@ class AdapterCarrello(private var listaCarrello: MutableList<ItemCarrello>,
         if(!currentItem.foto.isNullOrEmpty()) {
             val storageReference = FirebaseStorage.getInstance().reference.child("${currentItem.foto}")
             storageReference.downloadUrl.addOnSuccessListener { uri ->
-                Picasso.get().load(uri).into(holder.imageViewProdotto)
+                Picasso.get().load(uri).into(holder.imageViewProdotto, object : com.squareup.picasso.Callback {
+                    override fun onSuccess() {
+                        holder.progressBar.visibility = View.GONE
+                        holder.imageViewProdotto.visibility = View.VISIBLE
+                    }
+                    override fun onError(e: Exception?) {
+                        holder.imageViewProdotto.setImageResource(R.drawable.pizza_foto)
+                        holder.progressBar.visibility = View.GONE
+                        holder.imageViewProdotto.visibility = View.VISIBLE
+                    }
+
+                })
             }.addOnFailureListener{
                 holder.imageViewProdotto.setImageResource(R.drawable.pizza_foto)
+                holder.progressBar.visibility = View.GONE
+                holder.imageViewProdotto.visibility = View.VISIBLE
             }
         } else{
             holder.imageViewProdotto.setImageResource(R.drawable.pizza_foto)
+            holder.progressBar.visibility = View.GONE
+            holder.imageViewProdotto.visibility = View.VISIBLE
         }
         holder.buttonPlus.setOnClickListener {
             currentItem.quantita++
