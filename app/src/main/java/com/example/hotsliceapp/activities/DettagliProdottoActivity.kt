@@ -10,8 +10,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -63,6 +65,12 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
         val item = intent.getParcelableExtra<Item>("item")
         val prodotto = intent.getStringExtra("prodotto")
 
+        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+        val progressBarFoto = findViewById<ProgressBar>(R.id.progressBarFoto)
+        val layoutFoto = findViewById<FrameLayout>(R.id.imageFrameLayout)
+        imageView.visibility = View.GONE
+        layoutDettagli.visibility = View.GONE
+
         auth = Firebase.auth
         val authid = (auth.currentUser?.uid).toString()
         val documentSnapshot = db.collection("users").document(authid)
@@ -107,10 +115,18 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                     dialog.arguments = bundle
                     dialog.show(supportFragmentManager, "NuovoProdotto")
                 }
+                progressBar.visibility = View.GONE
+                layoutDettagli.visibility = View.VISIBLE
             }else if(role == "admin"){
                 layoutContainer.removeAllViews()
                 layoutDettagli.removeView(favButton)
+                progressBar.visibility = View.GONE
+                layoutDettagli.visibility = View.VISIBLE
+            }else{
+                progressBar.visibility = View.GONE
+                layoutDettagli.visibility = View.VISIBLE
             }
+
         }
 
         //Configurazione vista dettagli per ogni utente
@@ -119,17 +135,38 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
             descrizione.text = item.descrizione
             prezzo.text = item.prezzo.toString()+"€"
 
-            if(!item.foto.isNullOrEmpty()) {
+            if (!item.foto.isNullOrEmpty()) {
                 val storageReference = FirebaseStorage.getInstance().reference.child("${item.foto}")
                 storageReference.downloadUrl.addOnSuccessListener { uri ->
-                    Picasso.get().load(uri).into(imageView)
-                }.addOnFailureListener{
+                    Picasso.get().load(uri).into(imageView, object : com.squareup.picasso.Callback {
+                        override fun onSuccess() {
+                            progressBarFoto.visibility = View.GONE
+                            imageView.visibility = View.VISIBLE
+                        }
+
+                        override fun onError(e: Exception?) {
+                            imageView.setImageResource(R.drawable.pizza_foto)
+                            progressBarFoto.visibility = View.GONE
+                            imageView.visibility = View.VISIBLE
+                        }
+                    })
+                }.addOnFailureListener {
                     imageView.setImageResource(R.drawable.pizza_foto)
+                    progressBarFoto.visibility = View.GONE
+                    imageView.visibility = View.VISIBLE
                 }
+            } else {
+                imageView.setImageResource(R.drawable.pizza_foto)
+                progressBarFoto.visibility = View.GONE
+                imageView.visibility = View.VISIBLE
             }
         } else {
             imageView.setImageResource(R.drawable.pizza_foto)
+            progressBarFoto.visibility = View.GONE
+            imageView.visibility = View.VISIBLE
         }
+
+
 
         buttonMinus.setOnClickListener {
             var currentQuantity = editTextQuantity.text.toString().toInt()
