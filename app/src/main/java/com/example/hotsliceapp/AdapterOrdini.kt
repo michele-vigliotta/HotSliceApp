@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 class AdapterOrdini(private val ordiniList: List<ItemOrdine>):
     RecyclerView.Adapter<AdapterOrdini.OrdiniViewHolder>() {
 
+    var onItemClick: ((ItemOrdine) -> Unit)? = null
     // ViewHolder per la RecyclerView
     class OrdiniViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val descrizioneTextView: TextView = view.findViewById(R.id.descrizioneTextView)
@@ -40,5 +41,9 @@ class AdapterOrdini(private val ordiniList: List<ItemOrdine>):
         }
         holder.statoTextView.text = "Stato: " + ordine.stato
         holder.dataTextView.text = "Data: " + ordine.data
+
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke(ordine)
+        }
     }
 }

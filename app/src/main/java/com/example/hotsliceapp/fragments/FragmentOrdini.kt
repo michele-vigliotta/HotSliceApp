@@ -14,13 +14,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.hotsliceapp.ItemOrdine
 import com.example.hotsliceapp.AdapterOrdini
 import com.example.hotsliceapp.R
+import com.example.hotsliceapp.fragments.FragmentGestioneOrdine
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class FragmentOrdini : Fragment() {
+class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapterOrdini: AdapterOrdini
     private lateinit var ordiniList: MutableList<ItemOrdine>
@@ -73,6 +74,13 @@ class FragmentOrdini : Fragment() {
                     // Imposta il pulsante "Al Tavolo" come selezionato di default
                     selectButton(buttonAlTavolo)
                     filterOrdini("Servizio al Tavolo")
+                    adapterOrdini.onItemClick ={ordine ->
+                    val dialog = FragmentGestioneOrdine.newInstance(ordine)
+                    dialog.setListener(this)
+                    dialog.show(childFragmentManager, "FragmentGestioneOrdine")
+                    }
+
+
                 } else {
                     // Carica gli ordini per i clienti
                     loadOrdini(role, currentUser.uid)
@@ -159,4 +167,35 @@ class FragmentOrdini : Fragment() {
             Log.w("OrdiniFragment", "Errore durante il recupero degli ordini filtrati", exception)
         }
     }
+
+    override fun onDialogPositiveClick(option: String, ora: String, ordineId: String) {
+        Toast.makeText(context, ordineId, Toast.LENGTH_SHORT).show()
+
+
+        db.collection("ordini").whereEqualTo("id", ordineId).get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val documentId = document.id
+                        db.collection("ordini").document(documentId)
+                            .update(
+                                mapOf(
+                                    "stato" to option,
+                                    "ora" to ora
+                                )
+                            ).addOnSuccessListener {
+                                Log.d("Firestore", "Documento aggiornato con successo")
+
+                            }.addOnFailureListener{e ->
+                                // Gestione degli errori
+                                Log.w("Firestore", "Errore durante l'aggiornamento del documento", e)
+                            }
+                }
+            }
+            .addOnFailureListener{ e ->
+                Log.w("Firestore", "Errore durante il recupero dei documenti", e)
+                Toast.makeText(requireActivity(), "Errore durante il recupero dei documenti, riprova", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
 }

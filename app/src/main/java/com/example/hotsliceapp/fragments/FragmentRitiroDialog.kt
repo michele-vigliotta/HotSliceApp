@@ -51,15 +51,22 @@ class FragmentRitiroDialog : DialogFragment() {
                     editText.hint = "Numero del tavolo"
                     editText.inputType = InputType.TYPE_CLASS_NUMBER
                     editText.visibility = View.VISIBLE
+                    editText.isFocusable = true
+                    editText.isFocusableInTouchMode = true
+                    
                     editText.setOnClickListener(null)
                     editText.setText("")
                 }
                 R.id.radioServizioAsporto -> {
                     textView.text = "Inserisci l'orario di ritiro"
                     editText.hint = "HH:mm"
-                    editText.inputType = InputType.TYPE_NULL
                     editText.visibility = View.VISIBLE
-                    editText.setOnClickListener {showTimePickerDialog()}
+                    editText.isFocusable = false
+                    editText.isFocusableInTouchMode = false
+
+                    editText.setOnClickListener {
+                        showTimePickerDialog()
+                    }
                     editText.setText("")
 
                 }
