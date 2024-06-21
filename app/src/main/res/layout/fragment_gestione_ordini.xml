@@ -11,28 +11,28 @@
         android:orientation="vertical">
 
         <RadioButton
-            android:id="@+id/radioServizioAlTavolo"
+            android:id="@+id/radioAccettato"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:text="Servizio al Tavolo"
+            android:text="Accetta Ordine"
             android:buttonTint="@color/red"/>
 
         <RadioButton
-            android:id="@+id/radioServizioAsporto"
+            android:id="@+id/radioRifiutato"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:text="Servizio d'asporto"
+            android:text="Rifiuta Ordine"
             android:buttonTint="@color/red"/>
     </RadioGroup>
 
     <TextView
-        android:id="@+id/textViewDinamica"
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp" />
 
     <EditText
-        android:id="@+id/editTextDinamica"
+        android:id="@+id/editText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"

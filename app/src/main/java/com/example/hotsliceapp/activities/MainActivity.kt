@@ -1,7 +1,9 @@
 package com.example.hotsliceapp.activities
 
+import FragmentOrdini
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.hotsliceapp.ItemCarrello
@@ -11,7 +13,6 @@ import com.example.hotsliceapp.fragments.FragmentPreferiti
 import com.example.hotsliceapp.R
 import com.example.hotsliceapp.databinding.ActivityMainBinding
 import com.example.hotsliceapp.fragments.FragmentCarrello
-import com.example.hotsliceapp.fragments.FragmentOrdini
 import com.example.hotsliceapp.fragments.FragmentStatistiche
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase
@@ -31,7 +32,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         replaceFragment(FragmentHome()) //fragment che mostro di default
-
+        val layout = binding.main
+        val progressBar = binding.progressBar
+        layout.visibility = View.GONE
 
 
 
@@ -68,7 +71,8 @@ class MainActivity : AppCompatActivity() {
                 bottom_menu.menu.clear()
                 bottom_menu.inflateMenu(R.menu.bottom_menu_admin)
             }
-
+            layout.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
         }
 
 

@@ -1,87 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="16dp"
+    >
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:padding="8dp">
 
-    <!-- ImageView -->
+    <FrameLayout
+        android:id="@+id/frameLayoutFoto"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
     <ImageView
         android:id="@+id/imageViewProdotto"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/pizza_foto"
         android:scaleType="fitCenter"
-        android:layout_gravity="center_vertical"
-        android:layout_marginEnd="8dp"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
 
-    <!-- LinearLayout per Nome Prodotto e Prezzo -->
-    <LinearLayout
+        <ProgressBar
+            android:id="@+id/progressBarFoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/red"
+            android:visibility="visible"/>
+
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/textViewNomeProdotto"
         android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_gravity="center_vertical">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Nome Prodotto Molto Lungo Che Va A Capo"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/buttonMinus"
+        app:layout_constraintStart_toEndOf="@+id/frameLayoutFoto"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- TextView Nome Prodotto -->
-        <TextView
-            android:id="@+id/textViewNomeProdotto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nome Prodotto"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            android:textStyle="bold"
+    <TextView
+        android:id="@+id/textViewPrezzo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Prezzo"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonMinus"
+        app:layout_constraintStart_toEndOf="@+id/frameLayoutFoto"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNomeProdotto" />
 
-            />
-
-        <!-- TextView Prezzo -->
-        <TextView
-            android:id="@+id/textViewPrezzo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:text="Prezzo"
-            android:textAlignment="center"
-
-            />
-
-    </LinearLayout>
-
-    <!-- Button Minus -->
     <Button
         android:id="@+id/buttonMinus"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/custom_button"
         android:text="-"
         android:textSize="16sp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/custom_button"
-        android:layout_gravity="center_vertical"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textViewQuantitaProdotto"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- TextView Quantita -->
     <TextView
         android:id="@+id/textViewQuantitaProdotto"
         android:layout_width="20dp"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:layout_marginStart="8dp"
         android:text="0"
         android:textAlignment="center"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_gravity="center_vertical"/>
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonPlus"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Button Plus -->
     <Button
         android:id="@+id/buttonPlus"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/custom_button"
         android:text="+"
         android:textSize="16sp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/custom_button"
-        android:layout_gravity="center_vertical"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

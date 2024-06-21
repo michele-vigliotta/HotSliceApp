@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -39,6 +40,8 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
     private lateinit var carrello: List<ItemCarrello>
     var string: String = ""
     val db = FirebaseFirestore.getInstance()
+    private lateinit var totaleTextView: TextView
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,22 +54,29 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
+
         recyclerView = view.findViewById(R.id.recyclerViewCarrello)
         recyclerView.layoutManager = LinearLayoutManager(context)
-
-
 
         val mainActivity = activity as MainActivity
         val listaCarrello = mainActivity.listaCarrello
 
+        totaleTextView = view.findViewById<TextView>(R.id.textViewTotale)
 
-            adapter = AdapterCarrello(listaCarrello)
-            recyclerView.adapter = adapter
+        val updateTotal: (Double) -> Unit = { totale ->
+            totaleTextView.text = "Totale: ${"%.2f".format(totale)} €"
+        }
+        adapter = AdapterCarrello(listaCarrello, updateTotal)
+        recyclerView.adapter = adapter
 
+        updateTotal(listaCarrello.sumByDouble { it.prezzo * it.quantita })
 
         //aggiorna la lista quando cambia
         adapter.getList() { newList ->
             (activity as? MainActivity)?.updateListaCarrello(newList)
+            recyclerView.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
         }
 
         val ordinaButton = view.findViewById<Button>(R.id.ordinaButton)
@@ -85,7 +95,7 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
                 /*Imposta il listener. FragmentCarrello implementa FragmentRitiroDialog.RitiroDialogListener.
                 Quando sul dialog viene premuto il pulsante Positive, onDialogPositiveClick viene chiamata */
                 dialog.setListener(this)
-                dialog.show(parentFragmentManager, "RitiroDialog")
+                dialog.show(childFragmentManager, "RitiroDialog")
             }
         }
 
@@ -97,7 +107,7 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
         auth = Firebase.auth
         val authid = (auth.currentUser?.uid).toString()
         val ordiniCollection = db.collection("ordini")
-        val indirizzo = if (option == "Consegna a Domicilio") details else ""
+        val oraRitiro = if (option == "Servizio d'Asporto") details else ""
         val tavolo = if (option == "Servizio al Tavolo") details else ""
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val data = LocalDateTime.now().format(formatter).toString()
@@ -105,9 +115,10 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
 
         adapter.getList() { newList ->
 
-
+            var totale: Double = 0.0
             for (item in newList) {
                 string += "Nome: ${item.nome}, Quantità: ${item.quantita};\n"
+                totale += (item.quantita * item.prezzo)
             }
             val nuovoOrdine = hashMapOf(
                 "id" to "${authid}_${System.currentTimeMillis()}",
@@ -116,15 +127,17 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
                 "data" to data,
                 "descrizione" to string,
                 "tipo" to option,
-                "indirizzo" to indirizzo,
-                "tavolo" to tavolo
-
+                "ora" to oraRitiro,
+                "tavolo" to tavolo,
+                "totale" to totale.toString()
             )
 
             ordiniCollection.add(nuovoOrdine)
                 .addOnSuccessListener { documentReference ->
                     Log.d("Firestore", "Documento aggiunto con ID: ${documentReference.id}")
                     Snackbar.make(requireView(), "Ordine effettuato", Snackbar.LENGTH_LONG).show()
+                    // Imposta il totale a 0 € dopo aver effettuato l'ordine
+                    totaleTextView.text = "Totale: 0.00 €"
                 }
                 .addOnFailureListener { e ->
                     Log.w("Firestore", "Errore durante l'aggiunta del documento", e)
@@ -132,6 +145,5 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
                 }
         }
         adapter.clearList()
-
     }
 }

@@ -17,14 +17,29 @@
         android:orientation="horizontal"
         android:padding="8dp">
 
+        <FrameLayout
+            android:layout_width="120dp"
+            android:layout_height="100dp">
+
         <ImageView
             android:id="@+id/imageViewItem"
             android:layout_width="120dp"
             android:layout_height="100dp"
-            android:src="@drawable/pizza_foto"
             android:scaleType="fitCenter"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="8dp"
+            android:visibility="gone"/>
+
+            <ProgressBar
+                android:id="@+id/progressBarFoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/red"
+                android:visibility="visible"/>
+
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="0dp"

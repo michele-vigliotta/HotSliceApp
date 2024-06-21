@@ -9,11 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 class AdapterOrdini(private val ordiniList: List<ItemOrdine>):
     RecyclerView.Adapter<AdapterOrdini.OrdiniViewHolder>() {
 
+    var onItemClick: ((ItemOrdine) -> Unit)? = null
     // ViewHolder per la RecyclerView
     class OrdiniViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val descrizioneTextView: TextView = view.findViewById(R.id.descrizioneTextView)
         val statoTextView: TextView = view.findViewById(R.id.statoTextView)
-        val dataTextView: TextView = view.findViewById(R.id.dataTextView) // Aggiungi TextView per la data
+        val dataTextView: TextView = view.findViewById(R.id.dataTextView)
+        val dettaglioExtraTextView: TextView = view.findViewById(R.id.dettaglioExtraTextView)
 
     }
 
@@ -27,15 +29,21 @@ class AdapterOrdini(private val ordiniList: List<ItemOrdine>):
 
     override fun onBindViewHolder(holder: OrdiniViewHolder, position: Int) {
         val ordine = ordiniList[position]
-        if (ordine.indirizzo == "") {
-            holder.descrizioneTextView.text = "Descrizione ordine:\n${ordine.descrizione}" +
-                    "\nTavolo Numero: ${ordine.tavolo}"
+        if (ordine.ora == "") {
+            holder.descrizioneTextView.text = "Descrizione ordine:\n${ordine.descrizione}\n" +
+                    "Totale ordine: ${ordine.totale}€"
+            holder.dettaglioExtraTextView.text = "Tavolo Numero: ${ordine.tavolo}"
         }
         else{
-            holder.descrizioneTextView.text = "Descrizione ordine:\n${ordine.descrizione}" +
-                    "\nIndirizzo : ${ordine.indirizzo}"
+            holder.descrizioneTextView.text = "Descrizione ordine:\n${ordine.descrizione}\n" +
+                    "Totale ordine: ${ordine.totale}€"
+            holder.dettaglioExtraTextView.text = "Ora di ritiro: ${ordine.ora}"
         }
         holder.statoTextView.text = "Stato: " + ordine.stato
         holder.dataTextView.text = "Data: " + ordine.data
+
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke(ordine)
+        }
     }
 }

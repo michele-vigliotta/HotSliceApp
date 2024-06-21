@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -20,6 +21,7 @@ class AdapterListeHome(private var listaProdotti:List<Item>):  //estende Adapter
         val nomeProdotto : TextView = itemView.findViewById(R.id.nomeItem)
         val prezzoProdotto: TextView = itemView.findViewById(R.id.prezzoItem)
         val imageProdotto: ImageView = itemView.findViewById(R.id.imageViewItem)
+        val loadingBar: ProgressBar = itemView.findViewById(R.id.progressBarFoto)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -46,16 +48,28 @@ class AdapterListeHome(private var listaProdotti:List<Item>):  //estende Adapter
             val storageReference =
                 FirebaseStorage.getInstance().reference.child("${item.foto}")
             storageReference.downloadUrl.addOnSuccessListener { uri ->
-                Picasso.get()
-                    .load(uri)
-                    .placeholder(R.drawable.pizza_foto) // Imposta l'immagine di fallback mentre scarica l'immagine
-                    .into(holder.imageProdotto)
+                Picasso.get().load(uri).into(holder.imageProdotto, object : com.squareup.picasso.Callback {
+                        override fun onSuccess() {
+                            holder.loadingBar.visibility = View.GONE
+                            holder.imageProdotto.visibility = View.VISIBLE
+                        }
+
+                        override fun onError(e: Exception?) {
+                            holder.imageProdotto.setImageResource(R.drawable.pizza_foto)
+                            holder.loadingBar.visibility = View.GONE
+                            holder.imageProdotto.visibility = View.VISIBLE
+                        }
+
+                    })
             }.addOnFailureListener {
-                // Imposta l'immagine di fallback in caso di errore
                 holder.imageProdotto.setImageResource(R.drawable.pizza_foto)
+                holder.loadingBar.visibility = View.GONE
+                holder.imageProdotto.visibility = View.VISIBLE
             }
         }else{
             holder.imageProdotto.setImageResource(R.drawable.pizza_foto)
+            holder.loadingBar.visibility = View.GONE
+            holder.imageProdotto.visibility = View.VISIBLE
         }
     }
     fun setFilteredList(listaProdotti: List<Item>){

@@ -7,5 +7,10 @@
         <item name="android:statusBarColor">@color/red</item>
     </style>
 
+    <style name="CustomTimePickerDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/yellow</item>
+        <item name="android:textColorPrimary">@color/red</item>
+        <item name="android:textColorSecondary">@color/grey</item>
+    </style>
 
 </resources>

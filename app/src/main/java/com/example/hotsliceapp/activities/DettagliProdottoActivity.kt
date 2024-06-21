@@ -1,8 +1,6 @@
 package com.example.hotsliceapp.activities
 
 import FragmentModificaProdotto
-import FragmentNuovoProdotto
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -12,9 +10,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.ImageButton
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -26,17 +25,15 @@ import com.example.hotsliceapp.Item
 import com.example.hotsliceapp.ItemCarrello
 import com.example.hotsliceapp.R
 import com.google.android.gms.tasks.Task
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import com.google.firebase.firestore.firestore
-import org.checkerframework.common.returnsreceiver.qual.This
+
 
 class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.ModificaProdottoListener {
 
@@ -49,49 +46,6 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
     lateinit var role: String
     lateinit var controllopreferito: Task<QuerySnapshot>
 
-    override fun onProdottoModificato(item: Item){
-        val textView : TextView = findViewById(R.id.textViewDettagli)
-        val imageView : ImageView = findViewById(R.id.imageViewDettagli)
-        val descrizione : TextView = findViewById(R.id.descrizioneDettagli)
-        val prezzo : TextView = findViewById(R.id.prezzoProdotto)
-
-        if(item != null){
-            textView.text = item.nome
-            descrizione.text = item.descrizione
-            prezzo.text = item.prezzo.toString()
-
-            if(!item.foto.isNullOrEmpty()) {
-                val storageReference = FirebaseStorage.getInstance().reference.child("${item.foto}")
-                storageReference.downloadUrl.addOnSuccessListener { uri ->
-                    Picasso.get().load(uri).into(imageView)
-                }.addOnFailureListener{
-                    imageView.setImageResource(R.drawable.pizza_foto)
-                }
-            }
-        } else {
-            imageView.setImageResource(R.drawable.pizza_foto)
-        }
-
-        val rootView = findViewById<View>(android.R.id.content)
-        Snackbar.make(rootView, "Prodotto Modificato!", Snackbar.LENGTH_LONG).show()
-    }
-
-
-
-    override fun onBackPressed() {
-
-        returnResult()
-        // Chiama la tua funzione per restituire il risultato
-        super.onBackPressed()
-    }
-
-    private fun returnResult() {
-        val intent = Intent()
-        intent.putParcelableArrayListExtra("itemsCarrello", ArrayList(carrelloViewModel.getItems()))
-        setResult(RESULT_CODE_CARRELLO, intent)
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dettagliprodotto)
@@ -100,11 +54,22 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
         val buttonAddToCart : Button = findViewById(R.id.button_add_to_cart)
         val favButton = findViewById<CheckBox>(R.id.favButton)
         val modificaButton = findViewById<Button>(R.id.button_nuovo)
+        val textView : TextView = findViewById(R.id.textViewDettagli)
+        val imageView : ImageView = findViewById(R.id.imageViewDettagli)
+        val descrizione : TextView = findViewById(R.id.descrizioneDettagli)
+        val prezzo : TextView = findViewById(R.id.prezzoProdotto)
+        val editTextQuantity : EditText = findViewById(R.id.editText_quantity)
+        val buttonMinus : Button = findViewById(R.id.button_minus)
+        val buttonAdd : Button = findViewById(R.id.button_plus)
 
         val item = intent.getParcelableExtra<Item>("item")
         val prodotto = intent.getStringExtra("prodotto")
 
-
+        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+        val progressBarFoto = findViewById<ProgressBar>(R.id.progressBarFoto)
+        val layoutFoto = findViewById<FrameLayout>(R.id.imageFrameLayout)
+        imageView.visibility = View.GONE
+        layoutDettagli.visibility = View.GONE
 
         auth = Firebase.auth
         val authid = (auth.currentUser?.uid).toString()
@@ -112,7 +77,9 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
         documentSnapshot.get().addOnSuccessListener {
                 document ->
             role = document.getString("role").toString()
-            if (role == "staff") {
+
+            //Configurazione vista per staff
+            if (role == "admin") {
                 layoutContainer.removeAllViews()
                 layoutDettagli.removeView(favButton)
                 modificaButton.visibility = Button.VISIBLE
@@ -131,7 +98,6 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                         positiveButton.setOnClickListener {
                             eliminaProdotto(item?.nome.toString(), prodotto.toString())
                         }
-                        // Ora puoi accedere ai pulsanti e cambiare il loro colore
                         dialog.getButton(DialogInterface.BUTTON_POSITIVE)
                             .setTextColor(ContextCompat.getColor(this, R.color.red))
                         dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
@@ -139,8 +105,6 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                     }
                     dialog.show()
                 }
-
-
 
                 modificaButton.setOnClickListener {
                     val dialog = FragmentModificaProdotto()
@@ -151,38 +115,99 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                     dialog.arguments = bundle
                     dialog.show(supportFragmentManager, "NuovoProdotto")
                 }
-            }
+                progressBar.visibility = View.GONE
+                layoutDettagli.visibility = View.VISIBLE
+            }else if(role == "staff" && prodotto.toString() == "offerta") {
+                layoutContainer.removeAllViews()
+                layoutDettagli.removeView(favButton)
+                modificaButton.visibility = Button.VISIBLE
+                buttonAddToCart.text = "Elimina Prodotto"
 
+                buttonAddToCart.setOnClickListener {
+                    val builder = AlertDialog.Builder(this)
+                        .setTitle("Conferma eliminazione")
+                        .setMessage("Sei sicuro di voler eliminare questo prodotto?")
+                        .setPositiveButton("Elimina", null) // Imposta il listener a null per ora
+                        .setNegativeButton("Annulla") { dialog, _ -> dialog.dismiss() }
+
+                    val dialog = builder.create() // Crea il dialog
+                    dialog.setOnShowListener {
+                        val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                        positiveButton.setOnClickListener {
+                            eliminaProdotto(item?.nome.toString(), prodotto.toString())
+                        }
+                        dialog.getButton(DialogInterface.BUTTON_POSITIVE)
+                            .setTextColor(ContextCompat.getColor(this, R.color.red))
+                        dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
+                            .setTextColor(ContextCompat.getColor(this, R.color.red))
+                    }
+                    dialog.show()
+                }
+
+                modificaButton.setOnClickListener {
+                    val dialog = FragmentModificaProdotto()
+                    dialog.setModificaProdottoListener(this)
+                    val bundle = Bundle()
+                    bundle.putParcelable("item", item)
+                    bundle.putString("prodotto", prodotto)
+                    dialog.arguments = bundle
+                    dialog.show(supportFragmentManager, "NuovoProdotto")
+                }
+                progressBar.visibility = View.GONE
+                layoutDettagli.visibility = View.VISIBLE
+
+
+            }else if(role == "staff"){
+                layoutContainer.removeAllViews()
+                layoutDettagli.removeView(favButton)
+                progressBar.visibility = View.GONE
+                layoutDettagli.visibility = View.VISIBLE
+                buttonAddToCart.visibility = View.GONE
+                progressBar.visibility = View.GONE
+                layoutDettagli.visibility = View.VISIBLE
+            }else{
+                progressBar.visibility = View.GONE
+                layoutDettagli.visibility = View.VISIBLE
+            }
 
         }
 
-
-
-
-        val textView : TextView = findViewById(R.id.textViewDettagli)
-        val imageView : ImageView = findViewById(R.id.imageViewDettagli)
-        val descrizione : TextView = findViewById(R.id.descrizioneDettagli)
-        val prezzo : TextView = findViewById(R.id.prezzoProdotto)
+        //Configurazione vista dettagli per ogni utente
         if(item != null){
             textView.text = item.nome
             descrizione.text = item.descrizione
             prezzo.text = item.prezzo.toString()+"€"
 
-            if(!item.foto.isNullOrEmpty()) {
+            if (!item.foto.isNullOrEmpty()) {
                 val storageReference = FirebaseStorage.getInstance().reference.child("${item.foto}")
                 storageReference.downloadUrl.addOnSuccessListener { uri ->
-                    Picasso.get().load(uri).into(imageView)
-                }.addOnFailureListener{
+                    Picasso.get().load(uri).into(imageView, object : com.squareup.picasso.Callback {
+                        override fun onSuccess() {
+                            progressBarFoto.visibility = View.GONE
+                            imageView.visibility = View.VISIBLE
+                        }
+
+                        override fun onError(e: Exception?) {
+                            imageView.setImageResource(R.drawable.pizza_foto)
+                            progressBarFoto.visibility = View.GONE
+                            imageView.visibility = View.VISIBLE
+                        }
+                    })
+                }.addOnFailureListener {
                     imageView.setImageResource(R.drawable.pizza_foto)
+                    progressBarFoto.visibility = View.GONE
+                    imageView.visibility = View.VISIBLE
                 }
+            } else {
+                imageView.setImageResource(R.drawable.pizza_foto)
+                progressBarFoto.visibility = View.GONE
+                imageView.visibility = View.VISIBLE
             }
         } else {
             imageView.setImageResource(R.drawable.pizza_foto)
+            progressBarFoto.visibility = View.GONE
+            imageView.visibility = View.VISIBLE
         }
-        val editTextQuantity : EditText = findViewById(R.id.editText_quantity)
-        val buttonMinus : Button = findViewById(R.id.button_minus)
-        val buttonAdd : Button = findViewById(R.id.button_plus)
-
 
 
 
@@ -193,8 +218,6 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                 editTextQuantity.setText(currentQuantity.toString())
             }
         }
-
-
 
         buttonAdd.setOnClickListener {
             var currentQuantity = editTextQuantity.text.toString().toInt()
@@ -217,7 +240,7 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                 .whereEqualTo("userId", authid)
                 .get()
 
-            // Rimuovi il listener precedente per evitare problemi di riciclo
+            // Rimuove il listener precedente se presente
             favButton.setOnCheckedChangeListener(null)
 
             controllopreferito.addOnSuccessListener { documents ->
@@ -225,20 +248,19 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                     favButton.isChecked = true
                 } else {
                     favButton.isChecked = false
-                }}}
-
-
-
-                favButton.setOnCheckedChangeListener { _, isChecked ->
+                }
+            }
+        }
+        favButton.setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {
                         addToFavorites(item)
                     } else {
                         removeFromFavorites(item)
                     }
-                }
+        }
+    }
 
-            }
-            private fun addToCart(itemName: String, foto: String?, prezzo: Double, quantity: Int) {
+    private fun addToCart(itemName: String, foto: String?, prezzo: Double, quantity: Int) {
                 val existingItem = listaCarrello.find { it.nome == itemName }
                 if (existingItem != null) {
                     existingItem.quantita += quantity
@@ -246,13 +268,9 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                     val newitemCarrello = ItemCarrello(itemName, foto, prezzo, quantity)
                     listaCarrello.add(newitemCarrello)
                 }
-
-
                 carrelloViewModel.setItems(listaCarrello)
-                val items = carrelloViewModel.getItems()
-
-                Toast.makeText(this, "Aggiunto al carrello", Toast.LENGTH_SHORT).show()
-
+                //val items = carrelloViewModel.getItems()
+                Snackbar.make(findViewById(android.R.id.content), "Aggiunto al carrello", Snackbar.LENGTH_SHORT).show()
             }
 
 
@@ -279,8 +297,8 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                             }
                     }
                 }
-
-            }}
+                }
+            }
 
             private fun eliminaProdotto(nomeItem: String, tipo: String) {
                 val collection = when (tipo) {
@@ -349,7 +367,48 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                         ).show()
                     }
             }
+
+
+
+    override fun onProdottoModificato(item: Item){
+        val textView : TextView = findViewById(R.id.textViewDettagli)
+        val imageView : ImageView = findViewById(R.id.imageViewDettagli)
+        val descrizione : TextView = findViewById(R.id.descrizioneDettagli)
+        val prezzo : TextView = findViewById(R.id.prezzoProdotto)
+
+        if(item != null){
+            textView.text = item.nome
+            descrizione.text = item.descrizione
+            prezzo.text = item.prezzo.toString()
+
+            if(!item.foto.isNullOrEmpty()) {
+                val storageReference = FirebaseStorage.getInstance().reference.child("${item.foto}")
+                storageReference.downloadUrl.addOnSuccessListener { uri ->
+                    Picasso.get().load(uri).into(imageView)
+                }.addOnFailureListener{
+                    imageView.setImageResource(R.drawable.pizza_foto)
+                }
+            }
+        } else {
+            imageView.setImageResource(R.drawable.pizza_foto)
         }
+
+        val rootView = findViewById<View>(android.R.id.content)
+        Snackbar.make(rootView, "Prodotto Modificato!", Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun onBackPressed() {
+        returnResult()
+        // Chiama la tua funzione per restituire il risultato
+        super.onBackPressed()
+    }
+
+    private fun returnResult() {
+        val intent = Intent()
+        intent.putParcelableArrayListExtra("itemsCarrello", ArrayList(carrelloViewModel.getItems()))
+        setResult(RESULT_CODE_CARRELLO, intent)
+    }
+}
 
 
 
