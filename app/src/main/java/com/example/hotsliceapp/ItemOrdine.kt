@@ -5,10 +5,10 @@ import android.os.Parcelable
 
 data class ItemOrdine(
     val descrizione: String = "",
-    val stato: String = "",
+    var stato: String = "",
     val data: String = "",
     val id: String = "",
-    val ora: String = "",
+    var ora: String = "",
     val tavolo: String = "",
     val totale: String = ""
 ) : Parcelable{

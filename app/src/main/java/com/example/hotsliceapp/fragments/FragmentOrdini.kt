@@ -168,6 +168,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onDialogPositiveClick(option: String, ora: String, ordineId: String) {
         Toast.makeText(context, ordineId, Toast.LENGTH_SHORT).show()
 
@@ -184,6 +185,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
                                 )
                             ).addOnSuccessListener {
                                 Log.d("Firestore", "Documento aggiornato con successo")
+                                updateOrderInList(ordineId, option, ora)
 
                             }.addOnFailureListener{e ->
                                 // Gestione degli errori
@@ -196,6 +198,28 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
                 Toast.makeText(requireActivity(), "Errore durante il recupero dei documenti, riprova", Toast.LENGTH_SHORT).show()
             }
     }
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun updateOrderInList(ordineId: String, nuovoStato: String, nuovoOrario: String?) {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+        for (ordine in ordiniList) {
+            if (ordine.id == ordineId) {
+                ordine.stato = nuovoStato
+                if (ordine.tavolo == "" && nuovoOrario != null) {
+                    ordine.ora = nuovoOrario
+                }
+                break
+            }
+        }
+
+        // Ordina la lista per data decrescente
+        ordiniList.sortByDescending { LocalDateTime.parse(it.data, formatter) }
+
+        // Aggiorna la RecyclerView
+        adapterOrdini.notifyDataSetChanged()
+        recyclerView.scrollToPosition(0) // Scorre in cima alla lista
+    }
+
 
 
 }
