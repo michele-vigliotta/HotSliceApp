@@ -1,5 +1,6 @@
 package com.example.hotsliceapp
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +16,11 @@ class AdapterOrdini(private val ordiniList: List<ItemOrdine>):
         val descrizioneTextView: TextView = view.findViewById(R.id.descrizioneTextView)
         val statoTextView: TextView = view.findViewById(R.id.statoTextView)
         val dataTextView: TextView = view.findViewById(R.id.dataTextView)
-        val tipoTextView: TextView = view.findViewById(R.id.textViewTipo)
-        val tavoloOrarioTextView: TextView = view.findViewById(R.id.textViewTavoloOra)
-        val nomeTextView: TextView = view.findViewById(R.id.textViewNome)
-        val telefonoTextView: TextView = view.findViewById(R.id.textViewTelefono)
+        val tipoTextView: TextView = view.findViewById(R.id.tipoTextView)
+        val tavoloOrarioTextView: TextView = view.findViewById(R.id.tavoloOrarioTextView)
+        val nomeTextView: TextView = view.findViewById(R.id.nomeTextView)
+        val telefonoTextView: TextView = view.findViewById(R.id.telefonoTextView)
+        val totaleTextView: TextView = view.findViewById(R.id.totaleTextView)
 
 
     }
@@ -34,8 +36,11 @@ class AdapterOrdini(private val ordiniList: List<ItemOrdine>):
     override fun onBindViewHolder(holder: OrdiniViewHolder, position: Int) {
         val ordine = ordiniList[position]
         holder.dataTextView.text = "Ordine in data: " + ordine.data
-        holder.descrizioneTextView.text = "Descrizione:\n${ordine.descrizione}" +
-                "Totale ordine: ${ordine.totale}€"
+        Log.d("Descrizione", "Descrizione: '${ordine.descrizione}'")
+        // Pulizia della descrizione per evitare che vada a capo prima di "Totale ordine"
+        val descrizionePulita = ordine.descrizione.trim().replace("\n", " ")
+        holder.descrizioneTextView.text = "Descrizione: " + descrizionePulita
+        holder.totaleTextView.text ="Totale ordine: ${ordine.totale}€"
         //holder.tipoTextView.text = "Tipo: ${ordine.tipo}"
         if (ordine.ora == "") {
             holder.tavoloOrarioTextView.text = "Tavolo: ${ordine.tavolo}"

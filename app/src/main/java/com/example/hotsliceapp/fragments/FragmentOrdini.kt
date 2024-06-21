@@ -48,6 +48,8 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
 
         progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
         val linearLayoutButtons = view.findViewById<LinearLayout>(R.id.linearLayout)
+        val linearLayoutStaffElements = view.findViewById<LinearLayout>(R.id.linearLayoutStaffElements)
+
         buttonAlTavolo = view.findViewById(R.id.buttonAlTavolo)
         buttonDAsporto = view.findViewById(R.id.buttonDAsporto)
 
@@ -76,6 +78,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
                 // Mostra i pulsanti se l'utente è dello staff
                 if (role == "staff") {
                     linearLayoutButtons.visibility = View.VISIBLE
+                    linearLayoutStaffElements.visibility = View.VISIBLE
 
                     // Imposta il pulsante "Al Tavolo" come selezionato di default
                     selectButton(buttonAlTavolo)

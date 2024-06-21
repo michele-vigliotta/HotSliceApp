@@ -6,23 +6,26 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Layout per i pulsanti di selezione del tipo di ordine -->
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginBottom="16dp"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="16dp">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
+        <!-- Pulsante per "Al Tavolo" -->
         <Button
             android:id="@+id/buttonAlTavolo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Al Tavolo"
+            android:layout_marginEnd="20dp"
             android:background="@drawable/backgroung_button"
-            android:layout_marginEnd="20dp" />
+            android:text="Al Tavolo" />
 
+        <!-- Pulsante per "D'Asporto" -->
         <Button
             android:id="@+id/buttonDAsporto"
             android:layout_width="wrap_content"
@@ -32,30 +35,58 @@
             android:text="D'Asporto" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/linearLayoutStaffElements"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"> <!-- Inizialmente nascosto -->
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/textViewOrdiniUltime24Ore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingVertical="8dp"
+            android:text="Ordini nelle ultime 24 ore"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="16dp"
+            android:background="@android:color/darker_gray" />
+    </LinearLayout>
+    <!-- FrameLayout per la RecyclerView e la ProgressBar -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
+        <!-- RecyclerView per visualizzare gli ordini -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewOrdini"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:scrollbars="vertical"
-            tools:listitem="@layout/item_ordine"
-             />
+            tools:listitem="@layout/item_ordine" />
 
+        <!-- ProgressBar per il caricamento -->
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminate="true"
-            android:indeterminateTint="@color/red"
-             />
+            android:indeterminateTint="@color/red" />
 
     </FrameLayout>
-
 
 </LinearLayout>
