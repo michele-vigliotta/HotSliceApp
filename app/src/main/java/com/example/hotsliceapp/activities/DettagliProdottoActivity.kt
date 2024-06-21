@@ -262,6 +262,7 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                 val nuovoPreferito = hashMapOf(
                     "userId" to authid,
                     "nome" to item.nome,
+                    "prezzo" to item.prezzo,
                     "foto" to item.foto
                 )
                 controllopreferito.addOnSuccessListener { documents ->
