@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +35,7 @@ class FragmentDolci:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener{
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
     lateinit var role: String
+    private lateinit var progressBar: ProgressBar
 
     override fun onProdottoAggiunto() {
         fetchDataFromFirebase()
@@ -44,7 +46,7 @@ class FragmentDolci:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener{
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.dolci_fragment, container, false)
-
+        progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
         recyclerView = view.findViewById(R.id.recyclerDolci)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -113,6 +115,8 @@ class FragmentDolci:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener{
                     dolciList.add(dolce)
                 }
                 dolciAdapter.notifyDataSetChanged()
+                recyclerView.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
             }
             .addOnFailureListener { exception ->
                 Log.w("DolciFragment", "Error getting documents.", exception)

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hotsliceapp.AdapterListeHome
@@ -23,13 +24,14 @@ class FragmentPreferiti:Fragment() {
     private lateinit var preferitiAdapter: AdapterListeHome
     private val preferitiList = mutableListOf<Item>()
     private val REQUEST_CODE_DETTAGLI = 100
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_preferiti,container,false)
-
+        progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
         recyclerView = view.findViewById(R.id.recyclerPreferiti)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -71,6 +73,8 @@ class FragmentPreferiti:Fragment() {
                 }
                 //aggiorna l'adapter con la nuova lista
                 preferitiAdapter.notifyDataSetChanged()
+                recyclerView.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
             }
             .addOnFailureListener { exception ->
                 Log.w("FragmentPreferiti", "Error getting documents.", exception)

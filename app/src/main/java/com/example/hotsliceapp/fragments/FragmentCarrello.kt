@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -40,6 +41,7 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
     var string: String = ""
     val db = FirebaseFirestore.getInstance()
     private lateinit var totaleTextView: TextView
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +53,8 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
 
         recyclerView = view.findViewById(R.id.recyclerViewCarrello)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -71,6 +75,8 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
         //aggiorna la lista quando cambia
         adapter.getList() { newList ->
             (activity as? MainActivity)?.updateListaCarrello(newList)
+            recyclerView.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
         }
 
         val ordinaButton = view.findViewById<Button>(R.id.ordinaButton)

@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +36,7 @@ class FragmentPizza:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
     lateinit var role: String
+    private lateinit var progressBar: ProgressBar
 
     override fun onProdottoAggiunto() {
         fetchDataFromFirebase()
@@ -45,7 +47,7 @@ class FragmentPizza:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.pizza_fragment, container, false)
-
+        progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
         recyclerView = view.findViewById(R.id.recyclerPizze)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -73,6 +75,8 @@ class FragmentPizza:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
                 floatingButton.visibility = View.VISIBLE
             }
         }
+
+
 
         pizzaAdapter.onItemClick = {
             val intent = Intent(activity, DettagliProdottoActivity::class.java)
@@ -117,6 +121,8 @@ class FragmentPizza:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
                 }
                 //aggiorna l'adapter con la nuova lista
                 pizzaAdapter.notifyDataSetChanged()
+                recyclerView.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
             }
             .addOnFailureListener { exception ->
                 Log.w("PizzaFragment", "Error getting documents.", exception)

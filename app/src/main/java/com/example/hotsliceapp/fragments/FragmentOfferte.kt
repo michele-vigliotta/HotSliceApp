@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hotsliceapp.AdapterListeHome
@@ -34,6 +35,7 @@ class FragmentOfferte:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
     lateinit var role: String
+    private lateinit var progressBar: ProgressBar
 
     override fun onProdottoAggiunto() {
         fetchDataFromFirebase()
@@ -44,7 +46,7 @@ class FragmentOfferte:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_offerte,container,false)
-
+        progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
         recyclerView = view.findViewById(R.id.recyclerOfferte)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -84,7 +86,6 @@ class FragmentOfferte:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
                 startActivityForResult(intent, REQUEST_CODE_DETTAGLI)
             }
         }
-
         return view
     }
 
@@ -115,6 +116,8 @@ class FragmentOfferte:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
                 }
                 //aggiorna l'adapter con la nuova lista
                 offerteAdapter.notifyDataSetChanged()
+                recyclerView.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
             }
             .addOnFailureListener { exception ->
                 Log.w("offerteFragment", "Error getting documents.", exception)

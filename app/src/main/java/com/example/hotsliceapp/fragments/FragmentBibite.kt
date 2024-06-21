@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +35,7 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
     lateinit var role: String
+    private lateinit var progressBar: ProgressBar
 
 
     override fun onProdottoAggiunto() {
@@ -45,7 +47,7 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.bibite_fragment, container, false)
-
+        progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
         recyclerView = view.findViewById(R.id.recyclerBibite)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -114,6 +116,8 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
                     bibiteList.add(bibita)
                 }
                 bibiteAdapter.notifyDataSetChanged()
+                recyclerView.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
             }
             .addOnFailureListener { exception ->
                 Log.w("BibiteFragment", "Error getting documents.", exception)
