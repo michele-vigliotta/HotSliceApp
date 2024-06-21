@@ -14,23 +14,60 @@
         android:padding="16dp">
 
         <TextView
+            android:id="@+id/dataTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ordine in data:"
+            android:textStyle="bold"
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="16sp" />
+
+        <TextView
             android:id="@+id/descrizioneTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Descrizione"
+            android:text="Descrizione: ..."
             android:textSize="18sp"
-            android:textColor="@android:color/black"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginTop="24dp"
+            android:textColor="@android:color/black" />
 
         <TextView
-            android:id="@+id/dettaglioExtraTextView"
+            android:id="@+id/textViewTipo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dettaglio"
-            android:textSize="16sp"
+            android:textSize="18sp"
+            android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
-            android:textStyle="bold"
-        android:layout_marginBottom="8dp" />
+            android:text="Tipo: Ordine al tavolo/d'asporto" />
+
+        <TextView
+            android:id="@+id/textViewTavoloOra"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/black"
+            android:text="Tavolo: /Ora di ritiro:" />
+
+
+
+        <TextView
+            android:id="@+id/textViewNome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/black"
+            android:text="Nome:" />
+
+        <TextView
+            android:id="@+id/textViewTelefono"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/black"
+            android:text="Telefono:" />
 
         <TextView
             android:id="@+id/statoTextView"
@@ -39,17 +76,7 @@
             android:text="Stato"
             android:textSize="16sp"
             android:textColor="@android:color/black"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/dataTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Data"
-            android:textSize="14sp"
-            android:textColor="@android:color/holo_blue_light"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="20dp"/>
 
     </LinearLayout>
 

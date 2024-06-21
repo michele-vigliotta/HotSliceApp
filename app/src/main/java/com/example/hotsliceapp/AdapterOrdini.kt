@@ -15,7 +15,11 @@ class AdapterOrdini(private val ordiniList: List<ItemOrdine>):
         val descrizioneTextView: TextView = view.findViewById(R.id.descrizioneTextView)
         val statoTextView: TextView = view.findViewById(R.id.statoTextView)
         val dataTextView: TextView = view.findViewById(R.id.dataTextView)
-        val dettaglioExtraTextView: TextView = view.findViewById(R.id.dettaglioExtraTextView)
+        val tipoTextView: TextView = view.findViewById(R.id.textViewTipo)
+        val tavoloOrarioTextView: TextView = view.findViewById(R.id.textViewTavoloOra)
+        val nomeTextView: TextView = view.findViewById(R.id.textViewNome)
+        val telefonoTextView: TextView = view.findViewById(R.id.textViewTelefono)
+
 
     }
 
@@ -29,19 +33,19 @@ class AdapterOrdini(private val ordiniList: List<ItemOrdine>):
 
     override fun onBindViewHolder(holder: OrdiniViewHolder, position: Int) {
         val ordine = ordiniList[position]
+        holder.dataTextView.text = "Ordine in data: " + ordine.data
+        holder.descrizioneTextView.text = "Descrizione:\n${ordine.descrizione}" +
+                "Totale ordine: ${ordine.totale}€"
+        //holder.tipoTextView.text = "Tipo: ${ordine.tipo}"
         if (ordine.ora == "") {
-            holder.descrizioneTextView.text = "Descrizione ordine:\n${ordine.descrizione}\n" +
-                    "Totale ordine: ${ordine.totale}€"
-            holder.dettaglioExtraTextView.text = "Tavolo Numero: ${ordine.tavolo}"
+            holder.tavoloOrarioTextView.text = "Tavolo: ${ordine.tavolo}"
         }
         else{
-            holder.descrizioneTextView.text = "Descrizione ordine:\n${ordine.descrizione}\n" +
-                    "Totale ordine: ${ordine.totale}€"
-            holder.dettaglioExtraTextView.text = "Ora di ritiro: ${ordine.ora}"
+            holder.tavoloOrarioTextView.text = "Ora di ritiro: ${ordine.ora}"
         }
+        //holder.nomeTextView.text = "Nome: ${ordine.nome}"
+        //holder.telefonoTextView.text = "Telefono: ${ordine.telefono}"
         holder.statoTextView.text = "Stato: " + ordine.stato
-        holder.dataTextView.text = "Data: " + ordine.data
-
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(ordine)
         }

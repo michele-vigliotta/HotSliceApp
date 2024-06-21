@@ -144,17 +144,24 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
     @RequiresApi(Build.VERSION_CODES.O)
     private fun filterOrdini(tipo: String) {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val now = LocalDateTime.now()
+        val twentyFourHoursAgo = now.minusHours(24)
+
         val ordiniCollection = db.collection("ordini")
 
-        // Query base per lo staff
-        var query: Query = ordiniCollection.whereEqualTo("tipo", tipo)
+        // Query base per lo staff con filtro per tipo di ordine
+        val query = ordiniCollection.whereEqualTo("tipo", tipo)
 
-        // Esegui la query filtrata e gestisci i risultati
         query.get().addOnSuccessListener { documents ->
             ordiniList.clear() // Pulisce la lista degli ordini
             for (document in documents) {
                 val ordine = document.toObject(ItemOrdine::class.java)
-                ordiniList.add(ordine)
+                val ordineDateTime = LocalDateTime.parse(ordine.data, formatter)
+
+                // Verifica se l'ordine è stato creato nelle ultime 24 ore
+                if (ordineDateTime.isAfter(twentyFourHoursAgo)) {
+                    ordiniList.add(ordine)
+                }
             }
 
             // Ordina la lista per data decrescente
@@ -168,6 +175,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
         }
     }
 
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onDialogPositiveClick(option: String, ora: String, ordineId: String) {
         Toast.makeText(context, ordineId, Toast.LENGTH_SHORT).show()
@@ -177,7 +185,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     val documentId = document.id
-                        db.collection("ordini").document(documentId)
+                    db.collection("ordini").document(documentId)
                             .update(
                                 mapOf(
                                     "stato" to option,
