@@ -79,7 +79,7 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
             role = document.getString("role").toString()
 
             //Configurazione vista per staff
-            if (role == "staff") {
+            if (role == "admin") {
                 layoutContainer.removeAllViews()
                 layoutDettagli.removeView(favButton)
                 modificaButton.visibility = Button.VISIBLE
@@ -117,9 +117,52 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                 }
                 progressBar.visibility = View.GONE
                 layoutDettagli.visibility = View.VISIBLE
-            }else if(role == "admin"){
+            }else if(role == "staff" && prodotto.toString() == "offerta") {
                 layoutContainer.removeAllViews()
                 layoutDettagli.removeView(favButton)
+                modificaButton.visibility = Button.VISIBLE
+                buttonAddToCart.text = "Elimina Prodotto"
+
+                buttonAddToCart.setOnClickListener {
+                    val builder = AlertDialog.Builder(this)
+                        .setTitle("Conferma eliminazione")
+                        .setMessage("Sei sicuro di voler eliminare questo prodotto?")
+                        .setPositiveButton("Elimina", null) // Imposta il listener a null per ora
+                        .setNegativeButton("Annulla") { dialog, _ -> dialog.dismiss() }
+
+                    val dialog = builder.create() // Crea il dialog
+                    dialog.setOnShowListener {
+                        val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                        positiveButton.setOnClickListener {
+                            eliminaProdotto(item?.nome.toString(), prodotto.toString())
+                        }
+                        dialog.getButton(DialogInterface.BUTTON_POSITIVE)
+                            .setTextColor(ContextCompat.getColor(this, R.color.red))
+                        dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
+                            .setTextColor(ContextCompat.getColor(this, R.color.red))
+                    }
+                    dialog.show()
+                }
+
+                modificaButton.setOnClickListener {
+                    val dialog = FragmentModificaProdotto()
+                    dialog.setModificaProdottoListener(this)
+                    val bundle = Bundle()
+                    bundle.putParcelable("item", item)
+                    bundle.putString("prodotto", prodotto)
+                    dialog.arguments = bundle
+                    dialog.show(supportFragmentManager, "NuovoProdotto")
+                }
+                progressBar.visibility = View.GONE
+                layoutDettagli.visibility = View.VISIBLE
+
+
+            }else if(role == "staff"){
+                layoutContainer.removeAllViews()
+                layoutDettagli.removeView(favButton)
+                progressBar.visibility = View.GONE
+                layoutDettagli.visibility = View.VISIBLE
+                buttonAddToCart.visibility = View.GONE
                 progressBar.visibility = View.GONE
                 layoutDettagli.visibility = View.VISIBLE
             }else{

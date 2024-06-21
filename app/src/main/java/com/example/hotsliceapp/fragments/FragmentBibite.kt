@@ -69,7 +69,7 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
         documentSnapshot.get().addOnSuccessListener {
                 document ->
             role = document.getString("role").toString()
-            if (role == "staff") {
+            if (role == "admin") {
                 floatingButton.visibility = View.VISIBLE
             }
         }
@@ -80,7 +80,7 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
             intent.putExtra("item", it)
             intent.putExtra("prodotto", prodotto)
 
-            if (role == "staff") {
+            if (role == "admin") {
                 startActivityForResult(intent, REQUEST_CODE_DETTAGLI_PRODOTTO)
             } else {
                 startActivityForResult(intent, REQUEST_CODE_DETTAGLI)

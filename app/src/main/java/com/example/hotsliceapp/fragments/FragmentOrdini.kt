@@ -176,7 +176,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     val documentId = document.id
-                        db.collection("ordini").document(documentId)
+                    db.collection("ordini").document(documentId)
                             .update(
                                 mapOf(
                                     "stato" to option,
