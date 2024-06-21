@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +35,7 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
     lateinit var role: String
+    private lateinit var progressBar: ProgressBar
 
 
     override fun onProdottoAggiunto() {
@@ -45,7 +47,7 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.bibite_fragment, container, false)
-
+        progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
         recyclerView = view.findViewById(R.id.recyclerBibite)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -69,7 +71,7 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
         documentSnapshot.get().addOnSuccessListener {
                 document ->
             role = document.getString("role").toString()
-            if (role == "staff") {
+            if (role == "admin") {
                 floatingButton.visibility = View.VISIBLE
             }
         }
@@ -80,7 +82,7 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
             intent.putExtra("item", it)
             intent.putExtra("prodotto", prodotto)
 
-            if (role == "staff") {
+            if (role == "admin") {
                 startActivityForResult(intent, REQUEST_CODE_DETTAGLI_PRODOTTO)
             } else {
                 startActivityForResult(intent, REQUEST_CODE_DETTAGLI)
@@ -114,6 +116,8 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
                     bibiteList.add(bibita)
                 }
                 bibiteAdapter.notifyDataSetChanged()
+                recyclerView.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
             }
             .addOnFailureListener { exception ->
                 Log.w("BibiteFragment", "Error getting documents.", exception)

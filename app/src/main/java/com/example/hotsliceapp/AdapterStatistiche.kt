@@ -17,7 +17,7 @@ class AdapterStatistiche : RecyclerView.Adapter<AdapterStatistiche.ViewHolder>()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.itam_statistica, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_statistica, parent, false)
         return ViewHolder(view)
     }
 

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
@@ -31,6 +32,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
     private var selectedButton: Button? = null
     private lateinit var buttonAlTavolo: Button
     private lateinit var buttonDAsporto: Button
+    private lateinit var progressBar: ProgressBar
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -44,6 +46,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
         val linearLayoutButtons = view.findViewById<LinearLayout>(R.id.linearLayout)
         buttonAlTavolo = view.findViewById(R.id.buttonAlTavolo)
         buttonDAsporto = view.findViewById(R.id.buttonDAsporto)
@@ -63,6 +66,9 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
         if (currentUser != null) {
             val authid = currentUser.uid
             val documentSnapshot = db.collection("users").document(authid)
+
+            progressBar.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
 
             documentSnapshot.get().addOnSuccessListener { document ->
                 role = document.getString("role").toString()
@@ -122,6 +128,9 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
             ordiniCollection.whereEqualTo("userId", userId) // Se è cliente, carica solo i suoi ordini
         }
 
+        progressBar.visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
+
         // Esegui la query di base e gestisci i risultati
         query.get().addOnSuccessListener { documents ->
             ordiniList.clear() // Pulisce la lista degli ordini
@@ -136,6 +145,8 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
             // Aggiorna la RecyclerView
             adapterOrdini.notifyDataSetChanged()
             recyclerView.scrollToPosition(0) // Scorre in cima alla lista
+            recyclerView.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
         }.addOnFailureListener { exception ->
             Log.w("OrdiniFragment", "Errore durante il recupero degli ordini", exception)
         }
@@ -152,6 +163,10 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
         // Query base per lo staff con filtro per tipo di ordine
         val query = ordiniCollection.whereEqualTo("tipo", tipo)
 
+        progressBar.visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
+
+        // Esegui la query filtrata e gestisci i risultati
         query.get().addOnSuccessListener { documents ->
             ordiniList.clear() // Pulisce la lista degli ordini
             for (document in documents) {
@@ -170,6 +185,8 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
             // Aggiorna la RecyclerView
             adapterOrdini.notifyDataSetChanged()
             recyclerView.scrollToPosition(0) // Scorre in cima alla lista
+            recyclerView.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
         }.addOnFailureListener { exception ->
             Log.w("OrdiniFragment", "Errore durante il recupero degli ordini filtrati", exception)
         }
@@ -226,6 +243,8 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
         // Aggiorna la RecyclerView
         adapterOrdini.notifyDataSetChanged()
         recyclerView.scrollToPosition(0) // Scorre in cima alla lista
+        recyclerView.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
     }
 
 
