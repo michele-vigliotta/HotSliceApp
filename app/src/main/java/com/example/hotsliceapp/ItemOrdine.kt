@@ -10,10 +10,14 @@ data class ItemOrdine(
     val id: String = "",
     var ora: String = "",
     val tavolo: String = "",
-    val totale: String = ""
+    val totale: String = "",
+    val nome: String = "",
+    val telefono: String = ""
 ) : Parcelable{
 
     constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
@@ -31,7 +35,8 @@ data class ItemOrdine(
         parcel.writeString(ora)
         parcel.writeString(tavolo)
         parcel.writeString(totale)
-
+        parcel.writeString(nome)
+        parcel.writeString(telefono)
     }
 
     override fun describeContents(): Int {

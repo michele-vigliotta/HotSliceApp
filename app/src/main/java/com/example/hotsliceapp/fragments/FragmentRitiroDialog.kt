@@ -24,7 +24,7 @@ class FragmentRitiroDialog : DialogFragment() {
 
     //Interfaccia per comunicare con FragmentCarrello, onDialogPositiveClick dve essere implementata dal fragment chiamante
     interface RitiroDialogListener {
-        fun onDialogPositiveClick(option: String, details: String)
+        fun onDialogPositiveClick(option: String, details: String, nome: String, numero: String)
     }
     //Metodo per settare il listener da FragmentCarrello
     fun setListener(listener: RitiroDialogListener) {
@@ -42,6 +42,8 @@ class FragmentRitiroDialog : DialogFragment() {
         val radioServizioAsporto = view.findViewById<RadioButton>(R.id.radioServizioAsporto)
         val textView = view.findViewById<TextView>(R.id.textViewDinamica)
         editText = view.findViewById<EditText>(R.id.editTextDinamica)
+        val editTextNome = view.findViewById<EditText>(R.id.editTextNome)
+        val editTextNumero = view.findViewById<EditText>(R.id.editTextTelefono)
 
 
         radioGroup.setOnCheckedChangeListener { _, checkedId ->
@@ -56,9 +58,11 @@ class FragmentRitiroDialog : DialogFragment() {
                     
                     editText.setOnClickListener(null)
                     editText.setText("")
+                    editTextNome.visibility = View.GONE
+                    editTextNumero.visibility = View.GONE
                 }
                 R.id.radioServizioAsporto -> {
-                    textView.text = "Inserisci l'orario di ritiro"
+                    textView.text = "Inserisci l'orario di ritiro, il nome e il numero di telefono"
                     editText.hint = "HH:mm"
                     editText.visibility = View.VISIBLE
                     editText.isFocusable = false
@@ -68,7 +72,10 @@ class FragmentRitiroDialog : DialogFragment() {
                         showTimePickerDialog()
                     }
                     editText.setText("")
-
+                    editTextNome.visibility = View.VISIBLE
+                    editTextNumero.visibility = View.VISIBLE
+                    editTextNome.hint = "Nominativo"
+                    editTextNumero.hint = "Numero di telefono"
                 }
             }
         }
@@ -90,10 +97,19 @@ class FragmentRitiroDialog : DialogFragment() {
                     else -> ""
                 }
                 val enteredText = editText.text.toString()
+                val nome = editTextNome.text.toString()
+                val numero = editTextNumero.text.toString()
+
+
+
                 if (selectedOption.isEmpty() || enteredText.isEmpty()) {
                     Toast.makeText(requireContext(), "Compilare tutti i campi", Toast.LENGTH_SHORT).show()
-                }else{
-                    listener?.onDialogPositiveClick(selectedOption, enteredText)
+                }else if(selectedOption == "Servizio d'Asporto" && (nome.isEmpty() || numero.isEmpty() || numero.length != 10)){
+                    Toast.makeText(requireContext(), "Compilare tutti i campi e inserire un numero di telefono valido", Toast.LENGTH_SHORT).show()
+                }
+
+                else{
+                    listener?.onDialogPositiveClick(selectedOption, enteredText, nome, numero)
                     dialog.dismiss()
                 }
             }
@@ -104,24 +120,40 @@ class FragmentRitiroDialog : DialogFragment() {
 
     private fun showTimePickerDialog() {
         val calendar = Calendar.getInstance()
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        val minute = calendar.get(Calendar.MINUTE)
+        val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val currentMinute = calendar.get(Calendar.MINUTE)
+        val minHour = 19 // Ora minima consentita (19:00)
+        val maxHour = 23 // Ora massima consentita (23:59)
 
         val timePickerDialog = TimePickerDialog(
             requireContext(),
             R.style.CustomTimePickerDialog,
             { _, selectedHour, selectedMinute ->
-                val selectedTime = Calendar.getInstance().apply {
-                    set(Calendar.HOUR_OF_DAY, selectedHour)
-                    set(Calendar.MINUTE, selectedMinute)
+                if (selectedHour in minHour..maxHour &&
+                (selectedHour > currentHour ||
+                        (selectedHour == currentHour && selectedMinute >= currentMinute + 30))) {
+
+                    val selectedTime = Calendar.getInstance().apply {
+                        set(Calendar.HOUR_OF_DAY, selectedHour)
+                        set(Calendar.MINUTE, selectedMinute)
+                    }
+                    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                    editText.setText(timeFormat.format(selectedTime.time))
+                } else {
+                    Toast.makeText(requireContext(), "Seleziona un orario valido tra le 19:00 e le 24:00, almeno 30 minuti dopo l'ora corrente.", Toast.LENGTH_LONG).show()
                 }
-                val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-                editText.setText(timeFormat.format(selectedTime.time))
             },
-            hour,
-            minute,
+            currentHour,
+            currentMinute,
             true // true per formato 24 ore, false per formato 12 ore
         )
+
+        // Imposta i limiti per le ore selezionabili
+        timePickerDialog.updateTime(currentHour, currentMinute + 30) // Imposta l'orario iniziale a 30 minuti dopo l'ora corrente
+
         timePickerDialog.show()
     }
+
+
+
 }
