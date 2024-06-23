@@ -43,10 +43,9 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-    buildFeatures{
         viewBinding=true  //Ogni file xml diventa una classe binding per interagire meglio con le viste
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
@@ -106,6 +105,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.1")
     // LiveData
     implementation("androidx.lifecycle:lifecycle-livedata:2.8.1")
+
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
 
 }

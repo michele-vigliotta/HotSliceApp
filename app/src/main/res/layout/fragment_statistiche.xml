@@ -4,35 +4,49 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/textViewCarrello"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Statistiche"
+        android:textColor="@color/red"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textAlignment="center"/>
+
     <RadioGroup
         android:id="@+id/radioGroupStatistiche"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/radioWeek"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Last Week" />
+            android:text="Ultima settimana" />
 
         <RadioButton
             android:id="@+id/radioMonth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Last Month" />
+            android:text="Ultimo mese" />
 
         <RadioButton
             android:id="@+id/radioYear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Last Year" />
+            android:text="Ultimo anno" />
     </RadioGroup>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewStatistiche"
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp">
+    </com.github.mikephil.charting.charts.BarChart>
 
 </LinearLayout>
