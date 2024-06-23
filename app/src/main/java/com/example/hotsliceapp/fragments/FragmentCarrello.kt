@@ -103,7 +103,7 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
 
     //metodo che gestisce il click positivo del dialog
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onDialogPositiveClick(option: String, details: String) {
+    override fun onDialogPositiveClick(option: String, details: String, nome: String, numero: String) {
         auth = Firebase.auth
         val authid = (auth.currentUser?.uid).toString()
         val ordiniCollection = db.collection("ordini")
@@ -111,7 +111,8 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
         val tavolo = if (option == "Servizio al Tavolo") details else ""
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val data = LocalDateTime.now().format(formatter).toString()
-
+        val nome = if (option == "Servizio al Tavolo") "" else nome
+        val numero = if (option == "Servizio al Tavolo") "" else numero
 
         adapter.getList() { newList ->
 
@@ -129,7 +130,9 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
                 "tipo" to option,
                 "ora" to oraRitiro,
                 "tavolo" to tavolo,
-                "totale" to totale.toString()
+                "totale" to totale.toString(),
+                "nome" to nome,
+                "telefono" to numero
             )
 
             ordiniCollection.add(nuovoOrdine)

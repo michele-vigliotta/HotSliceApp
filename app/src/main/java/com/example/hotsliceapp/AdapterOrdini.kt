@@ -48,8 +48,8 @@ class AdapterOrdini(private val ordiniList: List<ItemOrdine>):
         else{
             holder.tavoloOrarioTextView.text = "Ora di ritiro: ${ordine.ora}"
         }
-        //holder.nomeTextView.text = "Nome: ${ordine.nome}"
-        //holder.telefonoTextView.text = "Telefono: ${ordine.telefono}"
+        holder.nomeTextView.text = "Nome: ${ordine.nome}"
+        holder.telefonoTextView.text = "Telefono: ${ordine.telefono}"
         holder.statoTextView.text = "Stato: " + ordine.stato
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(ordine)
