@@ -51,16 +51,16 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        layoutMain = findViewById(R.id.main)
-        layoutNoInternet = findViewById(R.id.layoutNoInternet)
+        layoutMain = binding.main
+        layoutNoInternet = binding.layoutNoInternet
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
 
         connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         replaceFragment(FragmentHome()) //fragment che mostro di default
-        val layout = binding.main
-        progressBar = binding.progressBar
-        layout.visibility = View.GONE
 
+        progressBar = binding.progressBar
+        layoutMain.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
 
 
         binding.bottomNavigationView.setOnItemSelectedListener {
@@ -79,6 +79,8 @@ class MainActivity : AppCompatActivity() {
                 .commit()
             true
         }
+
+
         val bottom_menu = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         //codice per mostrare il bottom menu in base al ruolo dell'utente
         auth = Firebase.auth
@@ -90,14 +92,15 @@ class MainActivity : AppCompatActivity() {
             if (role == "staff") {
                 bottom_menu.menu.clear()
                 bottom_menu.inflateMenu(R.menu.bottom_menu_staff)
-
             }
             else if (role == "admin"){
                 bottom_menu.menu.clear()
                 bottom_menu.inflateMenu(R.menu.bottom_menu_admin)
             }
-            layout.visibility = View.VISIBLE
+            layoutMain.visibility = View.VISIBLE
             progressBar.visibility = View.GONE
+            registerNetworkCallback() // Registra il NetworkCallback all'avvio
+            checkInternetConnection() // Verifica la connessione iniziale
         }
         registerNetworkCallback() // Registra il NetworkCallback all'avvio
         checkInternetConnection() // Verifica la connessione iniziale
@@ -110,15 +113,15 @@ class MainActivity : AppCompatActivity() {
         if(isInternetConnected){
             binding.main.visibility = View.VISIBLE
             binding.layoutNoInternet.visibility = View.GONE
-            binding.bottomNavigationView.visibility = View.VISIBLE
-            binding.progressBar.visibility = View.GONE
+            progressBar.visibility = View.GONE
+
 
 
         }else{
             binding.main.visibility = View.GONE
             binding.layoutNoInternet.visibility = View.VISIBLE
-            binding.bottomNavigationView.visibility = View.GONE
-            binding.progressBar.visibility = View.GONE
+            progressBar.visibility = View.GONE
+
         }
     }
 
