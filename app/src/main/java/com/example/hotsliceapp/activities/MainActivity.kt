@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity() {
 
         progressBar = binding.progressBar
         layoutMain.visibility = View.GONE
+        bottomNavigationView.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
 
 
@@ -99,6 +100,7 @@ class MainActivity : AppCompatActivity() {
             }
             layoutMain.visibility = View.VISIBLE
             progressBar.visibility = View.GONE
+            bottomNavigationView.visibility = View.VISIBLE
             registerNetworkCallback() // Registra il NetworkCallback all'avvio
             checkInternetConnection() // Verifica la connessione iniziale
         }
@@ -111,10 +113,11 @@ class MainActivity : AppCompatActivity() {
         isInternetConnected = networkInfo != null && networkInfo.isConnected
 
         if(isInternetConnected){
+
             binding.main.visibility = View.VISIBLE
             binding.layoutNoInternet.visibility = View.GONE
             progressBar.visibility = View.GONE
-
+            bottomNavigationView.visibility = View.VISIBLE
 
 
         }else{
