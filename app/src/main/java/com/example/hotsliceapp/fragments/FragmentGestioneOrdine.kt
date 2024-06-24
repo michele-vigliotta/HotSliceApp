@@ -64,17 +64,26 @@ class FragmentGestioneOrdine : DialogFragment() {
 
 
 
-        if (ordine?.tavolo == "") {
-            textView.text = "Inserisci l'orario di ritiro"
-            editText.hint = "HH:mm"
-            editText.visibility = View.VISIBLE
-            editText.isFocusable = false
-            editText.isFocusableInTouchMode = false
 
-            editText.setOnClickListener {
-                showTimePickerDialog()
+
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+
+            if ((ordine?.tavolo == "") && (checkedId == R.id.radioAccettato)) {
+                textView.text = "Inserisci l'orario di ritiro"
+                editText.hint = "HH:mm"
+                editText.visibility = View.VISIBLE
+                editText.isFocusable = false
+                editText.isFocusableInTouchMode = false
+
+                editText.setOnClickListener {
+                    showTimePickerDialog()
+                }
+                editText.setText("")
             }
-            editText.setText("")
+            else{
+                textView.visibility = View.GONE
+                editText.visibility = View.GONE
+            }
         }
 
         builder.setView(view)

@@ -108,17 +108,17 @@ class MainActivity : AppCompatActivity() {
         isInternetConnected = networkInfo != null && networkInfo.isConnected
 
         if(isInternetConnected){
-            layoutMain.visibility = View.VISIBLE
-            layoutNoInternet.visibility = View.GONE
-            bottomNavigationView.visibility = View.VISIBLE
-            progressBar.visibility = View.GONE
+            binding.main.visibility = View.VISIBLE
+            binding.layoutNoInternet.visibility = View.GONE
+            binding.bottomNavigationView.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.GONE
 
 
         }else{
-            layoutMain.visibility = View.GONE
-            layoutNoInternet.visibility = View.VISIBLE
-            bottomNavigationView.visibility = View.GONE
-            progressBar.visibility = View.GONE
+            binding.main.visibility = View.GONE
+            binding.layoutNoInternet.visibility = View.VISIBLE
+            binding.bottomNavigationView.visibility = View.GONE
+            binding.progressBar.visibility = View.GONE
         }
     }
 
