@@ -30,7 +30,7 @@
             android:id="@+id/textNoInternet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nessuna connessione Internet\nconnetersi e riprovare"
+            android:text="Nessuna connessione Internet\nconnettersi e riprovare"
             android:textAlignment="center"
             android:textSize="20sp"
             android:textColor="@android:color/black"
