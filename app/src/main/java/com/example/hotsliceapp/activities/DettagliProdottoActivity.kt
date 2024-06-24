@@ -2,8 +2,13 @@ package com.example.hotsliceapp.activities
 
 import FragmentModificaProdotto
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -46,154 +51,186 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
     lateinit var role: String
     lateinit var controllopreferito: Task<QuerySnapshot>
 
+    private var isInternetConnected: Boolean = false
+    private lateinit var connectivityManager: ConnectivityManager
+    private lateinit var networkCallback: ConnectivityManager.NetworkCallback
+
+    private lateinit var progressBar: ProgressBar
+    private lateinit var progressBarFoto: ProgressBar
+
+    private lateinit var layoutDettagli: ConstraintLayout
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dettagliprodotto)
-        val layoutContainer = findViewById<LinearLayout>(R.id.linearLayout2)
-        val layoutDettagli = findViewById<ConstraintLayout>(R.id.layoutDettagli)
-        val buttonAddToCart : Button = findViewById(R.id.button_add_to_cart)
-        val favButton = findViewById<CheckBox>(R.id.favButton)
-        val modificaButton = findViewById<Button>(R.id.button_nuovo)
-        val textView : TextView = findViewById(R.id.textViewDettagli)
-        val imageView : ImageView = findViewById(R.id.imageViewDettagli)
-        val descrizione : TextView = findViewById(R.id.descrizioneDettagli)
-        val prezzo : TextView = findViewById(R.id.prezzoProdotto)
-        val editTextQuantity : EditText = findViewById(R.id.editText_quantity)
-        val buttonMinus : Button = findViewById(R.id.button_minus)
-        val buttonAdd : Button = findViewById(R.id.button_plus)
 
-        val item = intent.getParcelableExtra<Item>("item")
-        val prodotto = intent.getStringExtra("prodotto")
+        layoutDettagli = findViewById(R.id.layoutDettagli)
 
-        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-        val progressBarFoto = findViewById<ProgressBar>(R.id.progressBarFoto)
-        val layoutFoto = findViewById<FrameLayout>(R.id.imageFrameLayout)
-        imageView.visibility = View.GONE
-        layoutDettagli.visibility = View.GONE
 
-        auth = Firebase.auth
-        val authid = (auth.currentUser?.uid).toString()
-        val documentSnapshot = db.collection("users").document(authid)
-        documentSnapshot.get().addOnSuccessListener {
-                document ->
-            role = document.getString("role").toString()
+        connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        registerNetworkCallback() // Registra il NetworkCallback all'avvio
+        checkInternetConnection() // Verifica la connessione iniziale
+    }
 
-            //Configurazione vista per staff
-            if (role == "admin") {
-                layoutContainer.removeAllViews()
-                layoutDettagli.removeView(favButton)
-                modificaButton.visibility = Button.VISIBLE
-                buttonAddToCart.text = "Elimina Prodotto"
+    private fun checkInternetConnection(){
+        val networkInfo = connectivityManager.activeNetworkInfo
+        isInternetConnected = networkInfo != null && networkInfo.isConnected
 
-                buttonAddToCart.setOnClickListener {
-                    val builder = AlertDialog.Builder(this)
-                        .setTitle("Conferma eliminazione")
-                        .setMessage("Sei sicuro di voler eliminare questo prodotto?")
-                        .setPositiveButton("Elimina", null) // Imposta il listener a null per ora
-                        .setNegativeButton("Annulla") { dialog, _ -> dialog.dismiss() }
+        if(isInternetConnected){
+            layoutDettagli.visibility = View.VISIBLE
 
-                    val dialog = builder.create() // Crea il dialog
-                    dialog.setOnShowListener {
-                        val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                        positiveButton.setOnClickListener {
-                            eliminaProdotto(item?.nome.toString(), prodotto.toString())
+            val layoutContainer = findViewById<LinearLayout>(R.id.linearLayout2)
+            val layoutDettagli = findViewById<ConstraintLayout>(R.id.layoutDettagli)
+            val buttonAddToCart : Button = findViewById(R.id.button_add_to_cart)
+            val favButton = findViewById<CheckBox>(R.id.favButton)
+            val modificaButton = findViewById<Button>(R.id.button_nuovo)
+            val textView : TextView = findViewById(R.id.textViewDettagli)
+            val imageView : ImageView = findViewById(R.id.imageViewDettagli)
+            val descrizione : TextView = findViewById(R.id.descrizioneDettagli)
+            val prezzo : TextView = findViewById(R.id.prezzoProdotto)
+            val editTextQuantity : EditText = findViewById(R.id.editText_quantity)
+            val buttonMinus : Button = findViewById(R.id.button_minus)
+            val buttonAdd : Button = findViewById(R.id.button_plus)
+
+            val item = intent.getParcelableExtra<Item>("item")
+            val prodotto = intent.getStringExtra("prodotto")
+
+            progressBar = findViewById<ProgressBar>(R.id.progressBar)
+            progressBarFoto = findViewById<ProgressBar>(R.id.progressBarFoto)
+            val layoutFoto = findViewById<FrameLayout>(R.id.imageFrameLayout)
+            imageView.visibility = View.GONE
+            layoutDettagli.visibility = View.GONE
+
+            auth = Firebase.auth
+            val authid = (auth.currentUser?.uid).toString()
+            val documentSnapshot = db.collection("users").document(authid)
+            documentSnapshot.get().addOnSuccessListener {
+                    document ->
+                role = document.getString("role").toString()
+
+                //Configurazione vista per staff
+                if (role == "admin") {
+                    layoutContainer.removeAllViews()
+                    layoutDettagli.removeView(favButton)
+                    modificaButton.visibility = Button.VISIBLE
+                    buttonAddToCart.text = "Elimina Prodotto"
+
+                    buttonAddToCart.setOnClickListener {
+                        val builder = AlertDialog.Builder(this)
+                            .setTitle("Conferma eliminazione")
+                            .setMessage("Sei sicuro di voler eliminare questo prodotto?")
+                            .setPositiveButton("Elimina", null) // Imposta il listener a null per ora
+                            .setNegativeButton("Annulla") { dialog, _ -> dialog.dismiss() }
+
+                        val dialog = builder.create() // Crea il dialog
+                        dialog.setOnShowListener {
+                            val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                            positiveButton.setOnClickListener {
+                                eliminaProdotto(item?.nome.toString(), prodotto.toString())
+                            }
+                            dialog.getButton(DialogInterface.BUTTON_POSITIVE)
+                                .setTextColor(ContextCompat.getColor(this, R.color.red))
+                            dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
+                                .setTextColor(ContextCompat.getColor(this, R.color.red))
                         }
-                        dialog.getButton(DialogInterface.BUTTON_POSITIVE)
-                            .setTextColor(ContextCompat.getColor(this, R.color.red))
-                        dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
-                            .setTextColor(ContextCompat.getColor(this, R.color.red))
+                        dialog.show()
                     }
-                    dialog.show()
-                }
 
-                modificaButton.setOnClickListener {
-                    val dialog = FragmentModificaProdotto()
-                    dialog.setModificaProdottoListener(this)
-                    val bundle = Bundle()
-                    bundle.putParcelable("item", item)
-                    bundle.putString("prodotto", prodotto)
-                    dialog.arguments = bundle
-                    dialog.show(supportFragmentManager, "NuovoProdotto")
-                }
-                progressBar.visibility = View.GONE
-                layoutDettagli.visibility = View.VISIBLE
-            }else if(role == "staff" && prodotto.toString() == "offerta") {
-                layoutContainer.removeAllViews()
-                layoutDettagli.removeView(favButton)
-                modificaButton.visibility = Button.VISIBLE
-                buttonAddToCart.text = "Elimina Prodotto"
+                    modificaButton.setOnClickListener {
+                        val dialog = FragmentModificaProdotto()
+                        dialog.setModificaProdottoListener(this)
+                        val bundle = Bundle()
+                        bundle.putParcelable("item", item)
+                        bundle.putString("prodotto", prodotto)
+                        dialog.arguments = bundle
+                        dialog.show(supportFragmentManager, "NuovoProdotto")
+                    }
+                    progressBar.visibility = View.GONE
+                    layoutDettagli.visibility = View.VISIBLE
+                }else if(role == "staff" && prodotto.toString() == "offerta") {
+                    layoutContainer.removeAllViews()
+                    layoutDettagli.removeView(favButton)
+                    modificaButton.visibility = Button.VISIBLE
+                    buttonAddToCart.text = "Elimina Prodotto"
 
-                buttonAddToCart.setOnClickListener {
-                    val builder = AlertDialog.Builder(this)
-                        .setTitle("Conferma eliminazione")
-                        .setMessage("Sei sicuro di voler eliminare questo prodotto?")
-                        .setPositiveButton("Elimina", null) // Imposta il listener a null per ora
-                        .setNegativeButton("Annulla") { dialog, _ -> dialog.dismiss() }
+                    buttonAddToCart.setOnClickListener {
+                        val builder = AlertDialog.Builder(this)
+                            .setTitle("Conferma eliminazione")
+                            .setMessage("Sei sicuro di voler eliminare questo prodotto?")
+                            .setPositiveButton("Elimina", null) // Imposta il listener a null per ora
+                            .setNegativeButton("Annulla") { dialog, _ -> dialog.dismiss() }
 
-                    val dialog = builder.create() // Crea il dialog
-                    dialog.setOnShowListener {
-                        val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                        positiveButton.setOnClickListener {
-                            eliminaProdotto(item?.nome.toString(), prodotto.toString())
+                        val dialog = builder.create() // Crea il dialog
+                        dialog.setOnShowListener {
+                            val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                            positiveButton.setOnClickListener {
+                                eliminaProdotto(item?.nome.toString(), prodotto.toString())
+                            }
+                            dialog.getButton(DialogInterface.BUTTON_POSITIVE)
+                                .setTextColor(ContextCompat.getColor(this, R.color.red))
+                            dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
+                                .setTextColor(ContextCompat.getColor(this, R.color.red))
                         }
-                        dialog.getButton(DialogInterface.BUTTON_POSITIVE)
-                            .setTextColor(ContextCompat.getColor(this, R.color.red))
-                        dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
-                            .setTextColor(ContextCompat.getColor(this, R.color.red))
+                        dialog.show()
                     }
-                    dialog.show()
+
+                    modificaButton.setOnClickListener {
+                        val dialog = FragmentModificaProdotto()
+                        dialog.setModificaProdottoListener(this)
+                        val bundle = Bundle()
+                        bundle.putParcelable("item", item)
+                        bundle.putString("prodotto", prodotto)
+                        dialog.arguments = bundle
+                        dialog.show(supportFragmentManager, "NuovoProdotto")
+                    }
+                    progressBar.visibility = View.GONE
+                    layoutDettagli.visibility = View.VISIBLE
+
+
+                }else if(role == "staff"){
+                    layoutContainer.removeAllViews()
+                    layoutDettagli.removeView(favButton)
+                    progressBar.visibility = View.GONE
+                    layoutDettagli.visibility = View.VISIBLE
+                    buttonAddToCart.visibility = View.GONE
+                    progressBar.visibility = View.GONE
+                    layoutDettagli.visibility = View.VISIBLE
+                }else{
+                    progressBar.visibility = View.GONE
+                    layoutDettagli.visibility = View.VISIBLE
                 }
 
-                modificaButton.setOnClickListener {
-                    val dialog = FragmentModificaProdotto()
-                    dialog.setModificaProdottoListener(this)
-                    val bundle = Bundle()
-                    bundle.putParcelable("item", item)
-                    bundle.putString("prodotto", prodotto)
-                    dialog.arguments = bundle
-                    dialog.show(supportFragmentManager, "NuovoProdotto")
-                }
-                progressBar.visibility = View.GONE
-                layoutDettagli.visibility = View.VISIBLE
-
-
-            }else if(role == "staff"){
-                layoutContainer.removeAllViews()
-                layoutDettagli.removeView(favButton)
-                progressBar.visibility = View.GONE
-                layoutDettagli.visibility = View.VISIBLE
-                buttonAddToCart.visibility = View.GONE
-                progressBar.visibility = View.GONE
-                layoutDettagli.visibility = View.VISIBLE
-            }else{
-                progressBar.visibility = View.GONE
-                layoutDettagli.visibility = View.VISIBLE
             }
 
-        }
+            //Configurazione vista dettagli per ogni utente
+            if(item != null){
+                textView.text = item.nome
+                descrizione.text = item.descrizione
+                prezzo.text = item.prezzo.toString()+"€"
 
-        //Configurazione vista dettagli per ogni utente
-        if(item != null){
-            textView.text = item.nome
-            descrizione.text = item.descrizione
-            prezzo.text = item.prezzo.toString()+"€"
+                if (!item.foto.isNullOrEmpty()) {
+                    val storageReference = FirebaseStorage.getInstance().reference.child("${item.foto}")
+                    storageReference.downloadUrl.addOnSuccessListener { uri ->
+                        Picasso.get().load(uri).into(imageView, object : com.squareup.picasso.Callback {
+                            override fun onSuccess() {
+                                progressBarFoto.visibility = View.GONE
+                                imageView.visibility = View.VISIBLE
+                            }
 
-            if (!item.foto.isNullOrEmpty()) {
-                val storageReference = FirebaseStorage.getInstance().reference.child("${item.foto}")
-                storageReference.downloadUrl.addOnSuccessListener { uri ->
-                    Picasso.get().load(uri).into(imageView, object : com.squareup.picasso.Callback {
-                        override fun onSuccess() {
-                            progressBarFoto.visibility = View.GONE
-                            imageView.visibility = View.VISIBLE
-                        }
-
-                        override fun onError(e: Exception?) {
-                            imageView.setImageResource(R.drawable.pizza_foto)
-                            progressBarFoto.visibility = View.GONE
-                            imageView.visibility = View.VISIBLE
-                        }
-                    })
-                }.addOnFailureListener {
+                            override fun onError(e: Exception?) {
+                                imageView.setImageResource(R.drawable.pizza_foto)
+                                progressBarFoto.visibility = View.GONE
+                                imageView.visibility = View.VISIBLE
+                            }
+                        })
+                    }.addOnFailureListener {
+                        imageView.setImageResource(R.drawable.pizza_foto)
+                        progressBarFoto.visibility = View.GONE
+                        imageView.visibility = View.VISIBLE
+                    }
+                } else {
                     imageView.setImageResource(R.drawable.pizza_foto)
                     progressBarFoto.visibility = View.GONE
                     imageView.visibility = View.VISIBLE
@@ -203,62 +240,90 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                 progressBarFoto.visibility = View.GONE
                 imageView.visibility = View.VISIBLE
             }
-        } else {
-            imageView.setImageResource(R.drawable.pizza_foto)
-            progressBarFoto.visibility = View.GONE
-            imageView.visibility = View.VISIBLE
-        }
 
 
 
-        buttonMinus.setOnClickListener {
-            var currentQuantity = editTextQuantity.text.toString().toInt()
-            if (currentQuantity > 0) {
-                currentQuantity--
+            buttonMinus.setOnClickListener {
+                var currentQuantity = editTextQuantity.text.toString().toInt()
+                if (currentQuantity > 0) {
+                    currentQuantity--
+                    editTextQuantity.setText(currentQuantity.toString())
+                }
+            }
+
+            buttonAdd.setOnClickListener {
+                var currentQuantity = editTextQuantity.text.toString().toInt()
+                currentQuantity++
                 editTextQuantity.setText(currentQuantity.toString())
             }
-        }
 
-        buttonAdd.setOnClickListener {
-            var currentQuantity = editTextQuantity.text.toString().toInt()
-            currentQuantity++
-            editTextQuantity.setText(currentQuantity.toString())
-        }
-
-        buttonAddToCart.setOnClickListener {
-            val currentQuantity = editTextQuantity.text.toString().toInt()
-            if (currentQuantity > 0) {
-                if (item != null) {
-                    addToCart(item.nome, item.foto, item.prezzo, currentQuantity)
-                }
-            }
-        }
-
-        if (item?.nome != null) {
-            controllopreferito = db.collection("preferiti")
-                .whereEqualTo("nome", item?.nome)
-                .whereEqualTo("userId", authid)
-                .get()
-
-            // Rimuove il listener precedente se presente
-            favButton.setOnCheckedChangeListener(null)
-
-            controllopreferito.addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    favButton.isChecked = true
-                } else {
-                    favButton.isChecked = false
-                }
-            }
-        }
-        favButton.setOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked) {
-                        addToFavorites(item)
-                    } else {
-                        removeFromFavorites(item)
+            buttonAddToCart.setOnClickListener {
+                val currentQuantity = editTextQuantity.text.toString().toInt()
+                if (currentQuantity > 0) {
+                    if (item != null) {
+                        addToCart(item.nome, item.foto, item.prezzo, currentQuantity)
                     }
+                }
+            }
+
+            if (item?.nome != null) {
+                controllopreferito = db.collection("preferiti")
+                    .whereEqualTo("nome", item?.nome)
+                    .whereEqualTo("userId", authid)
+                    .get()
+
+                // Rimuove il listener precedente se presente
+                favButton.setOnCheckedChangeListener(null)
+
+                controllopreferito.addOnSuccessListener { documents ->
+                    if (!documents.isEmpty) {
+                        favButton.isChecked = true
+                    } else {
+                        favButton.isChecked = false
+                    }
+                }
+            }
+            favButton.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    addToFavorites(item)
+                } else {
+                    removeFromFavorites(item)
+                }
+            }
+        }else{
+            // Reindirizza alla MainActivity
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish() // Chiudi l'activity corrente
         }
     }
+
+    private fun registerNetworkCallback() {
+        networkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+
+                runOnUiThread {
+                    checkInternetConnection()
+                }
+            }
+
+            override fun onLost(network: Network) {
+
+                runOnUiThread {
+                    checkInternetConnection()
+                }
+            }
+        }
+        connectivityManager.registerDefaultNetworkCallback(networkCallback)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        connectivityManager.unregisterNetworkCallback(networkCallback)
+    }
+
+
+
 
     private fun addToCart(itemName: String, foto: String?, prezzo: Double, quantity: Int) {
                 val existingItem = listaCarrello.find { it.nome == itemName }

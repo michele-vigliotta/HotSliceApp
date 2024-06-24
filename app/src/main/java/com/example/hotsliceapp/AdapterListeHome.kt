@@ -77,4 +77,9 @@ class AdapterListeHome(private var listaProdotti:List<Item>):  //estende Adapter
         notifyDataSetChanged()
     }
 
+    fun updateList(newList: List<Item>) {
+        listaProdotti = newList
+        notifyDataSetChanged()
+    }
+
 }

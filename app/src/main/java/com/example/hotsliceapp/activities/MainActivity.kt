@@ -1,10 +1,18 @@
 package com.example.hotsliceapp.activities
 
 import FragmentOrdini
+import android.content.Context
+import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.example.hotsliceapp.ItemCarrello
 import com.example.hotsliceapp.fragments.FragmentHome
@@ -22,32 +30,49 @@ import com.google.firebase.firestore.firestore
 
 
 class MainActivity : AppCompatActivity() {
+
+    private var isInternetConnected: Boolean = false
+    private lateinit var connectivityManager: ConnectivityManager
+    private lateinit var networkCallback: ConnectivityManager.NetworkCallback
+
     private lateinit var auth: FirebaseAuth
     val db = Firebase.firestore
     lateinit var role: String
     var listaCarrello: ArrayList<ItemCarrello> = arrayListOf()
     private lateinit var binding: ActivityMainBinding
+
+    private lateinit var layoutMain: View
+    private lateinit var layoutNoInternet: View
+    private lateinit var bottomNavigationView: View
+
+    private lateinit var progressBar: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        layoutMain = findViewById(R.id.main)
+        layoutNoInternet = findViewById(R.id.layoutNoInternet)
+        bottomNavigationView = findViewById(R.id.bottomNavigationView)
+
+        connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         replaceFragment(FragmentHome()) //fragment che mostro di default
         val layout = binding.main
-        val progressBar = binding.progressBar
+        progressBar = binding.progressBar
         layout.visibility = View.GONE
 
 
 
         binding.bottomNavigationView.setOnItemSelectedListener {
-            item -> val fragment:Fragment = when(item.itemId){
-                R.id.bottom_offerte -> FragmentOfferte()
-                R.id.bottom_preferiti -> FragmentPreferiti()
-                R.id.bottom_home -> FragmentHome()
-                R.id.bottom_carrello -> FragmentCarrello()
-                R.id.bottom_ordini -> FragmentOrdini()
-                R.id.bottom_statistiche -> FragmentStatistiche()
-                else -> FragmentHome()
-            }
+                item -> val fragment:Fragment = when(item.itemId){
+            R.id.bottom_offerte -> FragmentOfferte()
+            R.id.bottom_preferiti -> FragmentPreferiti()
+            R.id.bottom_home -> FragmentHome()
+            R.id.bottom_carrello -> FragmentCarrello()
+            R.id.bottom_ordini -> FragmentOrdini()
+            R.id.bottom_statistiche -> FragmentStatistiche()
+            else -> FragmentHome()
+        }
             supportFragmentManager.beginTransaction()
                 .replace(R.id.frame_layout, fragment)
                 .addToBackStack(null)
@@ -74,9 +99,54 @@ class MainActivity : AppCompatActivity() {
             layout.visibility = View.VISIBLE
             progressBar.visibility = View.GONE
         }
-
-
+        registerNetworkCallback() // Registra il NetworkCallback all'avvio
+        checkInternetConnection() // Verifica la connessione iniziale
     }
+
+    private fun checkInternetConnection(){
+        val networkInfo = connectivityManager.activeNetworkInfo
+        isInternetConnected = networkInfo != null && networkInfo.isConnected
+
+        if(isInternetConnected){
+            layoutMain.visibility = View.VISIBLE
+            layoutNoInternet.visibility = View.GONE
+            bottomNavigationView.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
+
+
+        }else{
+            layoutMain.visibility = View.GONE
+            layoutNoInternet.visibility = View.VISIBLE
+            bottomNavigationView.visibility = View.GONE
+            progressBar.visibility = View.GONE
+        }
+    }
+
+    private fun registerNetworkCallback() {
+        networkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+
+                runOnUiThread {
+                    checkInternetConnection()
+                }
+            }
+
+            override fun onLost(network: Network) {
+
+                runOnUiThread {
+                    checkInternetConnection()
+                }
+            }
+        }
+        connectivityManager.registerDefaultNetworkCallback(networkCallback)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        connectivityManager.unregisterNetworkCallback(networkCallback)
+    }
+
+
 
     fun handleResult(itemsCarrello: ArrayList<ItemCarrello>?) {
         // Gestisco il risultato preso dai fragment

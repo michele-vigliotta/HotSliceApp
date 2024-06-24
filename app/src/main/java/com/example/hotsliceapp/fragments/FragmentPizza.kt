@@ -34,7 +34,7 @@ class FragmentPizza:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
     private val REQUEST_CODE_DETTAGLI = 100
     private val REQUEST_CODE_DETTAGLI_PRODOTTO = 200
     private lateinit var auth: FirebaseAuth
-    val db = Firebase.firestore
+    private lateinit var db : FirebaseFirestore
     lateinit var role: String
     private lateinit var progressBar: ProgressBar
 
@@ -51,8 +51,13 @@ class FragmentPizza:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
         recyclerView = view.findViewById(R.id.recyclerPizze)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        pizzaAdapter = AdapterListeHome(pizzaList) //inizializza l'adapter con una lista vuota
+        pizzaAdapter = AdapterListeHome(emptyList()) //inizializza l'adapter con una lista vuota
         recyclerView.adapter = pizzaAdapter
+
+        db = Firebase.firestore
+        auth = FirebaseAuth.getInstance()
+
+
         fetchDataFromFirebase()
 
         val floatingButton = view.findViewById<FloatingActionButton>(R.id.floatingActionButton)
@@ -99,7 +104,7 @@ class FragmentPizza:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
 
         if (requestCode == REQUEST_CODE_DETTAGLI && resultCode == 200) {
             val itemsCarrello = data?.getParcelableArrayListExtra<ItemCarrello>("itemsCarrello")
-            (activity as MainActivity).handleResult(itemsCarrello)
+            (activity as? MainActivity)?.handleResult(itemsCarrello)
         }
         if (resultCode == 201 && requestCode == REQUEST_CODE_DETTAGLI_PRODOTTO) {
                 Snackbar.make(requireView(), "Prodotto eliminato", Snackbar.LENGTH_LONG).show()
@@ -120,7 +125,8 @@ class FragmentPizza:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
                     pizzaList.add(pizza)
                 }
                 //aggiorna l'adapter con la nuova lista
-                pizzaAdapter.notifyDataSetChanged()
+                //pizzaAdapter.notifyDataSetChanged()
+                pizzaAdapter.updateList(pizzaList)
                 recyclerView.visibility = View.VISIBLE
                 progressBar.visibility = View.GONE
             }
