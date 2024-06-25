@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class AdapterOrdini(private val ordiniList: List<ItemOrdine>):
+class AdapterOrdini(
+    private val ordiniList: List<ItemOrdine>,
+    private val isStaff: Boolean
+):
     RecyclerView.Adapter<AdapterOrdini.OrdiniViewHolder>() {
 
     var onItemClick: ((ItemOrdine) -> Unit)? = null
@@ -41,15 +44,24 @@ class AdapterOrdini(private val ordiniList: List<ItemOrdine>):
         val descrizionePulita = ordine.descrizione.trim().replace("\n", " ")
         holder.descrizioneTextView.text = "Descrizione: " + descrizionePulita
         holder.totaleTextView.text ="Totale ordine: ${ordine.totale}€"
-        //holder.tipoTextView.text = "Tipo: ${ordine.tipo}"
         if (ordine.ora == "") {
             holder.tavoloOrarioTextView.text = "Tavolo: ${ordine.tavolo}"
+            holder.tipoTextView.text = "Tipo: Ordine al tavolo"
         }
         else{
             holder.tavoloOrarioTextView.text = "Ora di ritiro: ${ordine.ora}"
+            holder.tipoTextView.text = "Tipo: Ordine d'asporto"
         }
-        holder.nomeTextView.text = "Nome: ${ordine.nome}"
-        holder.telefonoTextView.text = "Telefono: ${ordine.telefono}"
+        if (isStaff && ordine.ora != "") {
+            holder.nomeTextView.visibility = View.VISIBLE
+            holder.nomeTextView.text = "Nome: ${ordine.nome}"
+
+            holder.telefonoTextView.visibility = View.VISIBLE
+            holder.telefonoTextView.text = "Telefono: ${ordine.telefono}"
+        } else {
+            holder.nomeTextView.visibility = View.GONE
+            holder.telefonoTextView.visibility = View.GONE
+        }
         holder.statoTextView.text = "Stato: " + ordine.stato
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(ordine)
