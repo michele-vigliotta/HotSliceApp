@@ -57,12 +57,14 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         ordiniList = mutableListOf()
-        adapterOrdini = AdapterOrdini(ordiniList)
-        recyclerView.adapter = adapterOrdini
 
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+        // Inizializza l'adattatore con isStaff = false di default
+        adapterOrdini = createAdapter(false)
+        recyclerView.adapter = adapterOrdini
 
         // Controllo se l'utente è loggato
         if (currentUser != null) {
@@ -80,17 +82,22 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
                     linearLayoutButtons.visibility = View.VISIBLE
                     linearLayoutStaffElements.visibility = View.VISIBLE
 
+                    // Aggiorna l'adattatore con isStaff = true
+                    adapterOrdini = createAdapter(true)
+                    recyclerView.adapter = adapterOrdini
+
                     // Imposta il pulsante "Al Tavolo" come selezionato di default
                     selectButton(buttonAlTavolo)
                     filterOrdini("Servizio al Tavolo")
-                    adapterOrdini.onItemClick ={ordine ->
-                    val dialog = FragmentGestioneOrdine.newInstance(ordine)
-                    dialog.setListener(this)
-                    dialog.show(childFragmentManager, "FragmentGestioneOrdine")
+                    // Configura il listener per l'elemento cliccato
+                    adapterOrdini.onItemClick = { ordine ->
+                        val dialog = FragmentGestioneOrdine.newInstance(ordine)
+                        dialog.setListener(this)
+                        dialog.show(childFragmentManager, "FragmentGestioneOrdine")
                     }
 
-
                 } else {
+                    // Mantieni l'adattatore con isStaff = false
                     // Carica gli ordini per i clienti
                     loadOrdini(role, currentUser.uid)
                 }
@@ -112,6 +119,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
             Toast.makeText(context, "Devi essere loggato per visualizzare gli ordini", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     private fun selectButton(button: Button) {
         selectedButton?.isSelected = false // Deseleziona il pulsante precedente
@@ -249,6 +257,10 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
         recyclerView.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
     }
+    private fun createAdapter(isStaff: Boolean): AdapterOrdini {
+        return AdapterOrdini(ordiniList, isStaff)
+    }
+
 
 
 

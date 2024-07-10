@@ -62,19 +62,21 @@
             android:id="@+id/nomeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
             android:layout_marginTop="8dp"
+            android:text="Nome:"
             android:textColor="@android:color/black"
-            android:text="Nome:" />
+            android:textSize="18sp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/telefonoTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
             android:layout_marginTop="8dp"
+            android:text="Telefono:"
             android:textColor="@android:color/black"
-            android:text="Telefono:" />
+            android:textSize="18sp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/statoTextView"
