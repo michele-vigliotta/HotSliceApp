@@ -41,7 +41,7 @@ class AdapterOrdini(private val ordiniList: List<ItemOrdine>):
         val descrizionePulita = ordine.descrizione.trim().replace("\n", " ")
         holder.descrizioneTextView.text = "Descrizione: " + descrizionePulita
         holder.totaleTextView.text ="Totale ordine: ${ordine.totale}€"
-        //holder.tipoTextView.text = "Tipo: ${ordine.tipo}"
+        holder.tipoTextView.text = "Tipo: ${ordine.tipo}"
         if (ordine.ora == "") {
             holder.tavoloOrarioTextView.text = "Tavolo: ${ordine.tavolo}"
         }
