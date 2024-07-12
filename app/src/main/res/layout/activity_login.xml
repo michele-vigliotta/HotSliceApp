@@ -33,7 +33,7 @@
             android:id="@+id/imageView"
             android:layout_width="234dp"
             android:layout_height="186dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="80dp"
             android:src="@drawable/pizzalogin"
             app:layout_constraintBottom_toTopOf="@+id/etEmail"
             app:layout_constraintEnd_toEndOf="parent"

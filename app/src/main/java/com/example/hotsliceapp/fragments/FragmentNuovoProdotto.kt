@@ -2,12 +2,16 @@ import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
@@ -15,14 +19,17 @@ import com.example.hotsliceapp.R
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-
+import java.io.InputStream
 
 class FragmentNuovoProdotto : DialogFragment() {
     private lateinit var storageRef: StorageReference
-    var nomeFileFoto: String? = null
-    val db = FirebaseFirestore.getInstance()
-
+    private var nomeFileFoto: String? = null
+    private val db = FirebaseFirestore.getInstance()
     private var listener: NuovoProdottoListener? = null
+    private lateinit var progressBar: ProgressBar
+    private var isImageUploaded = false
+    private lateinit var imagePreview: ImageView
+
     interface NuovoProdottoListener {
         fun onProdottoAggiunto()
     }
@@ -31,10 +38,9 @@ class FragmentNuovoProdotto : DialogFragment() {
         this.listener = listener
     }
 
-    companion object{
+    companion object {
         private const val PICK_IMAGE_REQUEST = 1
     }
-
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         storageRef = FirebaseStorage.getInstance().reference
@@ -43,6 +49,9 @@ class FragmentNuovoProdotto : DialogFragment() {
         val inflater = requireActivity().layoutInflater
         val view = inflater.inflate(R.layout.fragment_nuovo_prodotto, null)
 
+        // Trova il ProgressBar, ImageView e altri elementi della vista
+        progressBar = view.findViewById(R.id.progressBar)
+        imagePreview = view.findViewById(R.id.imagePreview)
         val fotoButton = view.findViewById<Button>(R.id.buttonUploadPhoto)
 
         fotoButton.setOnClickListener {
@@ -53,9 +62,10 @@ class FragmentNuovoProdotto : DialogFragment() {
         builder.setView(view)
             .setTitle(titolo)
             .setPositiveButton("Aggiungi", null)
-            .setNegativeButton("Annulla"){ dialog, _ ->
+            .setNegativeButton("Annulla") { dialog, _ ->
                 dialog.dismiss()
             }
+
         val dialog = builder.create()
         dialog.setOnShowListener {
             val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
@@ -68,45 +78,55 @@ class FragmentNuovoProdotto : DialogFragment() {
                 val descrizione = view.findViewById<EditText>(R.id.editTextDescription).text.toString()
                 val prezzoStr = view.findViewById<EditText>(R.id.editTextPrice).text.toString()
 
-                if (nome.isEmpty() || prezzoStr.isEmpty() || descrizione.isEmpty()){
+                if (nome.isEmpty() || prezzoStr.isEmpty() || descrizione.isEmpty()) {
                     Toast.makeText(requireContext(), "Compilare tutti i campi", Toast.LENGTH_SHORT).show()
-                }else if (nomeFileFoto == null){
+                } else if (nomeFileFoto == null || !isImageUploaded) {
                     Toast.makeText(requireContext(), "Inserire una foto e attendere", Toast.LENGTH_SHORT).show()
-                }
-                else{
+                } else {
                     val prezzo = prezzoStr.toDouble()
-                    val nuovoProdotto = hashMapOf(
-                        "nome" to nome,
-                        "prezzo" to prezzo,
-                        "descrizione" to descrizione,
-                        "foto" to nomeFileFoto
-                    )
-                    val collection = if (titolo == "Nuova Pizza") {
-                        db.collection("pizze")
-                    } else if (titolo == "Nuova Bibita") {
-                        db.collection("bibite")
-                    }else if (titolo == "Nuovo Dolce"){
-                        db.collection("dolci")
-                    }else{
-                        db.collection("offerte")
+                    val collection = when (titolo) {
+                        "Nuova Pizza" -> db.collection("pizze")
+                        "Nuova Bibita" -> db.collection("bibite")
+                        "Nuovo Dolce" -> db.collection("dolci")
+                        else -> db.collection("offerte")
                     }
-                    collection.add(nuovoProdotto)
-                        .addOnSuccessListener { documentReference ->
-                            Log.d("Firestore", "Documento aggiunto con ID: ${documentReference.id}")
-                            Toast.makeText(requireActivity(), "Prodotto aggiunto ", Toast.LENGTH_SHORT).show()
-                            listener?.onProdottoAggiunto()
-                            dismiss()
+
+                    // Verifica se il prodotto esiste già
+                    collection.whereEqualTo("nome", nome).get()
+                        .addOnSuccessListener { querySnapshot ->
+                            if (!querySnapshot.isEmpty) {
+                                // Nome prodotto già esistente
+                                Toast.makeText(requireContext(), "Prodotto già presente nel menù", Toast.LENGTH_SHORT).show()
+                            } else {
+                                // Nome prodotto non esiste, procedi con l'aggiunta
+                                val nuovoProdotto = hashMapOf(
+                                    "nome" to nome,
+                                    "prezzo" to prezzo,
+                                    "descrizione" to descrizione,
+                                    "foto" to nomeFileFoto
+                                )
+                                collection.add(nuovoProdotto)
+                                    .addOnSuccessListener { documentReference ->
+                                        Log.d("Firestore", "Documento aggiunto con ID: ${documentReference.id}")
+                                        Toast.makeText(requireActivity(), "Prodotto aggiunto", Toast.LENGTH_SHORT).show()
+                                        listener?.onProdottoAggiunto()
+                                        dismiss()
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.w("Firestore", "Errore durante l'aggiunta del documento", e)
+                                        Toast.makeText(requireActivity(), "Prodotto non aggiunto, riprova", Toast.LENGTH_SHORT).show()
+                                    }
+                            }
                         }
                         .addOnFailureListener { e ->
-                            Log.w("Firestore", "Errore durante l'aggiunta del documento", e)
-                            Toast.makeText(requireActivity(), "Prodotto non aggiunto, riprova", Toast.LENGTH_SHORT).show()
+                            Log.w("Firestore", "Errore durante la verifica del prodotto", e)
+                            Toast.makeText(requireContext(), "Errore durante la verifica del prodotto", Toast.LENGTH_SHORT).show()
                         }
                 }
-
             }
-
         }
-            return dialog
+
+        return dialog
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -114,28 +134,42 @@ class FragmentNuovoProdotto : DialogFragment() {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             val selectedImageUri = data.data
             nomeFileFoto = getFileName(selectedImageUri)
+            showImagePreview(selectedImageUri)
             uploadFoto(selectedImageUri, nomeFileFoto)
         }
     }
 
-    private fun uploadFoto(uri: Uri?, nomeFileFoto: String?) {
+    private fun showImagePreview(uri: Uri?) {
+        uri?.let {
+            val inputStream: InputStream? = requireContext().contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            imagePreview.setImageBitmap(bitmap)
+            imagePreview.visibility = View.VISIBLE
+        }
+    }
 
+    private fun uploadFoto(uri: Uri?, nomeFileFoto: String?) {
         val imageRef = storageRef.child("$nomeFileFoto")
         val uploadTask = imageRef.putFile(uri!!)
 
+        // Mostra la ProgressBar
+        progressBar.visibility = View.VISIBLE
+        isImageUploaded = false  // Assicurati che il flag sia impostato su false prima di iniziare
 
-        //Toast pericolosi, fanno crashare l'app
-        /*
         uploadTask.addOnSuccessListener {
+            // Nascondi la ProgressBar e aggiorna il flag
+            progressBar.visibility = View.GONE
+            isImageUploaded = true
             Toast.makeText(requireContext(), "Immagine caricata con successo", Toast.LENGTH_SHORT).show()
         }.addOnFailureListener {
+            // Nascondi la ProgressBar e aggiorna il flag
+            progressBar.visibility = View.GONE
+            isImageUploaded = false
             Toast.makeText(requireContext(), "Errore durante il caricamento dell'immagine", Toast.LENGTH_SHORT).show()
         }
-        */
     }
 
     private fun getFileName(uri: Uri?): String? {
-
         val cursor = requireContext().contentResolver.query(uri!!, null, null, null, null)
         cursor?.use {
             val nameIndex = it.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)
@@ -144,5 +178,4 @@ class FragmentNuovoProdotto : DialogFragment() {
         }
         return "image_${System.currentTimeMillis()}.jpg"
     }
-
 }

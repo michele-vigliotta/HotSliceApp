@@ -5,12 +5,18 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkInfo
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.hotsliceapp.R
 import com.example.hotsliceapp.databinding.ActivityLoginBinding
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -85,16 +91,15 @@ class Login : AppCompatActivity() {
                                 startActivity(intent)
                                 finish()
                             } else {
-                                Toast.makeText(
-                                    baseContext,
+                                Snackbar.make(
+                                    binding.root,
                                     "Email e/o password errati",
-                                    Toast.LENGTH_SHORT
+                                    Snackbar.LENGTH_SHORT
                                 ).show()
                             }
                         }
                 } else {
-                    Toast.makeText(baseContext, "Compilare tutti i campi", Toast.LENGTH_SHORT)
-                        .show()
+                    Snackbar.make(binding.root, "Compilare tutti i campi", Snackbar.LENGTH_SHORT).show()
                 }
             }
 
@@ -103,6 +108,13 @@ class Login : AppCompatActivity() {
                 finish()
             }
 
+            val textView = findViewById<TextView>(R.id.NotRegisteredText)
+            val spannableString = SpannableString(textView.text)
+            val color1 = ContextCompat.getColor(this, R.color.black)
+            val color2 = ContextCompat.getColor(this, R.color.red)
+            spannableString.setSpan(ForegroundColorSpan(color1), 0, 26, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableString.setSpan(ForegroundColorSpan(color2), 27, spannableString.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            textView.text = spannableString
 
         }else{
             layoutLogin.visibility = View.GONE
