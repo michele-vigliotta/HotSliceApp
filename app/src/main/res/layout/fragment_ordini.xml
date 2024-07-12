@@ -1,22 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textViewOrdini"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Ordini"
+        android:textColor="@color/red"
+        android:textSize="26sp"
+        android:textStyle="bold"/>
 
     <!-- Layout per i pulsanti di selezione del tipo di ordine -->
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/textViewOrdini"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
         android:visibility="gone">
 
-        <!-- Pulsante per "Al Tavolo" -->
         <Button
             android:id="@+id/buttonAlTavolo"
             android:layout_width="wrap_content"
@@ -25,7 +35,6 @@
             android:background="@drawable/backgroung_button"
             android:text="Al Tavolo" />
 
-        <!-- Pulsante per "D'Asporto" -->
         <Button
             android:id="@+id/buttonDAsporto"
             android:layout_width="wrap_content"
@@ -39,6 +48,7 @@
         android:id="@+id/linearLayoutStaffElements"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/linearLayout"
         android:orientation="vertical"
         android:visibility="gone"> <!-- Inizialmente nascosto -->
 
@@ -63,13 +73,15 @@
             android:layout_marginBottom="16dp"
             android:background="@android:color/darker_gray" />
     </LinearLayout>
+
     <!-- FrameLayout per la RecyclerView e la ProgressBar -->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        android:layout_below="@id/linearLayoutStaffElements"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="16dp">
 
-        <!-- RecyclerView per visualizzare gli ordini -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewOrdini"
             android:layout_width="match_parent"
@@ -78,7 +90,6 @@
             android:scrollbars="vertical"
             tools:listitem="@layout/item_ordine" />
 
-        <!-- ProgressBar per il caricamento -->
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
@@ -86,7 +97,6 @@
             android:layout_gravity="center"
             android:indeterminate="true"
             android:indeterminateTint="@color/red" />
-
     </FrameLayout>
 
-</LinearLayout>
+</RelativeLayout>

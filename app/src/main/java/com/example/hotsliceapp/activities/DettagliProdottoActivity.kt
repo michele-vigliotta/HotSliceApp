@@ -335,6 +335,7 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                 }
                 carrelloViewModel.setItems(listaCarrello)
                 //val items = carrelloViewModel.getItems()
+                findViewById<EditText>(R.id.editText_quantity).setText("0")
                 Snackbar.make(findViewById(android.R.id.content), "Aggiunto al carrello", Snackbar.LENGTH_SHORT).show()
             }
 
