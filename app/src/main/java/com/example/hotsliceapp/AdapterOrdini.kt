@@ -43,14 +43,14 @@ class AdapterOrdini(
         // Pulizia della descrizione per evitare che vada a capo prima di "Totale ordine"
         val descrizionePulita = ordine.descrizione.trim().replace("\n", " ")
         holder.descrizioneTextView.text = "Descrizione: " + descrizionePulita
-        holder.totaleTextView.text ="Totale ordine: ${ordine.totale}€"
+        holder.totaleTextView.text ="Totale ordine: ${ordine.totale} €"
         if (ordine.ora == "") {
             holder.tavoloOrarioTextView.text = "Tavolo: ${ordine.tavolo}"
-            holder.tipoTextView.text = "Tipo: Ordine al tavolo"
+            holder.tipoTextView.text = "Tipo: Servizio al tavolo"
         }
         else{
             holder.tavoloOrarioTextView.text = "Ora di ritiro: ${ordine.ora}"
-            holder.tipoTextView.text = "Tipo: Ordine d'asporto"
+            holder.tipoTextView.text = "Tipo: Servizio d'asporto"
         }
         if (isStaff && ordine.ora != "") {
             holder.nomeTextView.visibility = View.VISIBLE

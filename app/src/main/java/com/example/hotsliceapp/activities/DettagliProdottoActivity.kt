@@ -16,6 +16,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -67,7 +68,10 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
         setContentView(R.layout.activity_dettagliprodotto)
 
         layoutDettagli = findViewById(R.id.layoutDettagli)
-
+        val backButton: ImageButton = findViewById(R.id.back_button)
+        backButton.setOnClickListener {
+            onBackPressed() // Call onBackPressed to handle back navigation
+        }
 
         connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         registerNetworkCallback() // Registra il NetworkCallback all'avvio
