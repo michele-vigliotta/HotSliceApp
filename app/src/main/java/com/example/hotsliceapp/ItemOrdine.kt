@@ -12,7 +12,8 @@ data class ItemOrdine(
     val tavolo: String = "",
     val totale: String = "",
     val nome: String = "",
-    val telefono: String = ""
+    val telefono: String = "",
+    val tipo: String = "",
 ) : Parcelable{
 
     constructor(parcel: Parcel) : this(
@@ -24,7 +25,8 @@ data class ItemOrdine(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        parcel.readString() ?: ""
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -37,6 +39,7 @@ data class ItemOrdine(
         parcel.writeString(totale)
         parcel.writeString(nome)
         parcel.writeString(telefono)
+        parcel.writeString(tipo)
     }
 
     override fun describeContents(): Int {
