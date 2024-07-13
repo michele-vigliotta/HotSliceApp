@@ -206,7 +206,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onDialogPositiveClick(option: String, ora: String, ordineId: String) {
-        Toast.makeText(context, ordineId, Toast.LENGTH_SHORT).show()
+
 
 
         db.collection("ordini").whereEqualTo("id", ordineId).get()

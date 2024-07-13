@@ -115,7 +115,7 @@ class FragmentGestioneOrdine : DialogFragment() {
                 }
                 if (selectedOption.isEmpty()) {
                     Toast.makeText(requireContext(), "Compilare tutti i campi", Toast.LENGTH_SHORT).show()
-                }else if(ordine?.tavolo == "" && editText.text.toString().isEmpty()){
+                }else if(ordine?.tavolo == "" && editText.text.toString().isEmpty() && selectedOption == "Accettato"){
                     Toast.makeText(requireContext(), "Compilare tutti i campi", Toast.LENGTH_SHORT).show()
                 }else{
                     listener?.onDialogPositiveClick(selectedOption, editText.text.toString(), ordine?.id.toString())
