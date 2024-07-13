@@ -3,6 +3,12 @@ package com.example.hotsliceapp.fragments
 import android.app.AlertDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -19,7 +25,11 @@ import java.util.Calendar
 import java.util.Locale
 
 class FragmentGestioneOrdine : DialogFragment() {
+
     private lateinit var editText: EditText
+    private var networkReceiver: BroadcastReceiver? = null
+    private var isInternetConnected: Boolean = true
+    private var timePickerDialog: TimePickerDialog? = null
 
     companion object {
         private const val ARG_ORDINE = "ordine"
@@ -120,13 +130,49 @@ class FragmentGestioneOrdine : DialogFragment() {
         return dialog
     }
 
+    override fun onResume() {
+        super.onResume()
+        registerNetworkReceiver()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterNetworkReceiver()
+    }
+
+    private fun registerNetworkReceiver() {
+        val intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        networkReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
+                isInternetConnected = activeNetwork?.isConnectedOrConnecting == true
+
+                if (!isInternetConnected) {
+                    Toast.makeText(context, "Connessione Internet persa", Toast.LENGTH_SHORT).show()
+                    dismiss()
+                    timePickerDialog?.dismiss()
+                }
+            }
+        }
+        context?.registerReceiver(networkReceiver, intentFilter)
+    }
+
+    private fun unregisterNetworkReceiver() {
+        networkReceiver?.let {
+            context?.unregisterReceiver(it)
+        }
+        timePickerDialog?.dismiss()
+    }
+
+
 
     private fun showTimePickerDialog() {
         val calendar = Calendar.getInstance()
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
 
-        val timePickerDialog = TimePickerDialog(
+        timePickerDialog = TimePickerDialog(
             requireContext(),
             R.style.CustomTimePickerDialog,
             { _, selectedHour, selectedMinute ->
@@ -141,6 +187,6 @@ class FragmentGestioneOrdine : DialogFragment() {
             minute,
             true // true per formato 24 ore, false per formato 12 ore
         )
-        timePickerDialog.show()
+        timePickerDialog!!.show()
     }
 }

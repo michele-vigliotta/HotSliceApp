@@ -1,5 +1,11 @@
 import android.app.Dialog
 import android.app.TimePickerDialog
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
@@ -21,6 +27,9 @@ import java.util.Locale
 class FragmentRitiroDialog : DialogFragment() {
     private var listener: RitiroDialogListener? = null
     private lateinit var editText: EditText
+    private var networkReceiver: BroadcastReceiver? = null
+    private var isInternetConnected: Boolean = true
+    private var timePickerDialog: TimePickerDialog? = null
 
     //Interfaccia per comunicare con FragmentCarrello, onDialogPositiveClick dve essere implementata dal fragment chiamante
     interface RitiroDialogListener {
@@ -125,7 +134,7 @@ class FragmentRitiroDialog : DialogFragment() {
         val minHour = 19 // Ora minima consentita (19:00)
         val maxHour = 23 // Ora massima consentita (23:59)
 
-        val timePickerDialog = TimePickerDialog(
+        timePickerDialog = TimePickerDialog(
             requireContext(),
             R.style.CustomTimePickerDialog,
             { _, selectedHour, selectedMinute ->
@@ -149,11 +158,44 @@ class FragmentRitiroDialog : DialogFragment() {
         )
 
         // Imposta i limiti per le ore selezionabili
-        timePickerDialog.updateTime(currentHour, currentMinute + 30) // Imposta l'orario iniziale a 30 minuti dopo l'ora corrente
+        timePickerDialog!!.updateTime(currentHour, currentMinute + 30) // Imposta l'orario iniziale a 30 minuti dopo l'ora corrente
 
-        timePickerDialog.show()
+        timePickerDialog!!.show()
     }
 
+    override fun onResume() {
+        super.onResume()
+        registerNetworkReceiver()
+    }
 
+    override fun onPause() {
+        super.onPause()
+        unregisterNetworkReceiver()
+    }
+
+    private fun registerNetworkReceiver() {
+        val intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        networkReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
+                isInternetConnected = activeNetwork?.isConnectedOrConnecting == true
+
+                if (!isInternetConnected) {
+                    Toast.makeText(context, "Connessione Internet persa", Toast.LENGTH_SHORT).show()
+                    dismiss()
+                    timePickerDialog?.dismiss()
+                }
+            }
+        }
+        context?.registerReceiver(networkReceiver, intentFilter)
+    }
+
+    private fun unregisterNetworkReceiver() {
+        networkReceiver?.let {
+            context?.unregisterReceiver(it)
+        }
+        timePickerDialog?.dismiss()
+    }
 
 }

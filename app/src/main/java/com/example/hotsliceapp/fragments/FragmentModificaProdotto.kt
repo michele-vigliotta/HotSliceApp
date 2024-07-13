@@ -1,8 +1,14 @@
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.BitmapFactory
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.net.Uri
 import android.os.Bundle
 import androidx.core.os.BundleCompat
@@ -22,6 +28,7 @@ import com.example.hotsliceapp.R
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import java.io.InputStream
 
@@ -35,7 +42,9 @@ class FragmentModificaProdotto : DialogFragment() {
     private lateinit var imagePreview: ImageView
     private var isImageUploaded = false
     private var isImageSelected = false  //per sapere se é stata caricata una nuova foto
-
+    private var networkReceiver: BroadcastReceiver? = null
+    private var isInternetConnected: Boolean = true
+    private var uploadTask: UploadTask? = null
 
     private var listener: ModificaProdottoListener? = null
     interface ModificaProdottoListener {
@@ -154,6 +163,13 @@ class FragmentModificaProdotto : DialogFragment() {
         return dialog
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        uploadTask?.let {
+            it.cancel()
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
@@ -208,18 +224,18 @@ class FragmentModificaProdotto : DialogFragment() {
     private fun uploadFoto(uri: Uri?, nomeFileFoto: String?) {
 
         val imageRef = storageRef.child("$nomeFileFoto")
-        val uploadTask = imageRef.putFile(uri!!)
+        uploadTask = imageRef.putFile(uri!!)
 
         // Mostra la ProgressBar
         progressBar.visibility = View.VISIBLE
         isImageUploaded = false  // flag false prima di iniziare
 
-        uploadTask.addOnSuccessListener {
+        uploadTask?.addOnSuccessListener {
             // Nascondi la ProgressBar e aggiorna il flag
             progressBar.visibility = View.GONE
             isImageUploaded = true
             Toast.makeText(requireContext(), "Immagine caricata con successo", Toast.LENGTH_SHORT).show()
-        }.addOnFailureListener {
+        }?.addOnFailureListener {
             // Nascondi la ProgressBar e aggiorna il flag
             progressBar.visibility = View.GONE
             isImageUploaded = false
@@ -237,6 +253,39 @@ class FragmentModificaProdotto : DialogFragment() {
             return it.getString(nameIndex)
         }
         return "image_${System.currentTimeMillis()}.jpg"
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerNetworkReceiver()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterNetworkReceiver()
+    }
+
+    private fun registerNetworkReceiver() {
+        val intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        networkReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
+                isInternetConnected = activeNetwork?.isConnectedOrConnecting == true
+
+                if (!isInternetConnected) {
+                    Toast.makeText(context, "Connessione Internet persa", Toast.LENGTH_SHORT).show()
+                    dismiss()
+                }
+            }
+        }
+        context?.registerReceiver(networkReceiver, intentFilter)
+    }
+
+    private fun unregisterNetworkReceiver() {
+        networkReceiver?.let {
+            context?.unregisterReceiver(it)
+        }
     }
 
 }

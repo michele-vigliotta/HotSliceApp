@@ -59,9 +59,10 @@ class MainActivity : AppCompatActivity() {
         replaceFragment(FragmentHome()) //fragment che mostro di default
 
         progressBar = binding.progressBar
+        progressBar.visibility = View.VISIBLE
         layoutMain.visibility = View.GONE
         bottomNavigationView.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
+
 
 
         binding.bottomNavigationView.setOnItemSelectedListener {
@@ -82,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        val bottom_menu = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+
         //codice per mostrare il bottom menu in base al ruolo dell'utente
         auth = Firebase.auth
         val authid = (auth.currentUser?.uid).toString()
@@ -90,6 +91,7 @@ class MainActivity : AppCompatActivity() {
         documentSnapshot.get().addOnSuccessListener {
                 document ->
             role = document.getString("role").toString()
+            val bottom_menu = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
             if (role == "staff") {
                 bottom_menu.menu.clear()
                 bottom_menu.inflateMenu(R.menu.bottom_menu_staff)
@@ -103,9 +105,13 @@ class MainActivity : AppCompatActivity() {
             bottomNavigationView.visibility = View.VISIBLE
             registerNetworkCallback() // Registra il NetworkCallback all'avvio
             checkInternetConnection() // Verifica la connessione iniziale
+        }.addOnFailureListener {
+            // Gestisci eventuali errori
+            Toast.makeText(this, "Error retrieving user role", Toast.LENGTH_SHORT).show()
+            progressBar.visibility = View.GONE
         }
-        registerNetworkCallback() // Registra il NetworkCallback all'avvio
-        checkInternetConnection() // Verifica la connessione iniziale
+
+
     }
 
     private fun checkInternetConnection(){

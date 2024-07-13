@@ -7,8 +7,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -60,6 +58,8 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
     private lateinit var progressBarFoto: ProgressBar
 
     private lateinit var layoutDettagli: ConstraintLayout
+
+    private var deleteConfirmationDialog: AlertDialog? = null
 
 
 
@@ -128,18 +128,18 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                             .setPositiveButton("Elimina", null) // Imposta il listener a null per ora
                             .setNegativeButton("Annulla") { dialog, _ -> dialog.dismiss() }
 
-                        val dialog = builder.create() // Crea il dialog
-                        dialog.setOnShowListener {
-                            val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                            positiveButton.setOnClickListener {
+                        deleteConfirmationDialog = builder.create() // Crea il dialog
+                        deleteConfirmationDialog?.setOnShowListener {
+                            val positiveButton = deleteConfirmationDialog?.getButton(AlertDialog.BUTTON_POSITIVE)
+                            positiveButton?.setOnClickListener {
                                 eliminaProdotto(item?.nome.toString(), prodotto.toString())
                             }
-                            dialog.getButton(DialogInterface.BUTTON_POSITIVE)
-                                .setTextColor(ContextCompat.getColor(this, R.color.red))
-                            dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
-                                .setTextColor(ContextCompat.getColor(this, R.color.red))
+                            deleteConfirmationDialog?.getButton(DialogInterface.BUTTON_POSITIVE)
+                                ?.setTextColor(ContextCompat.getColor(this, R.color.red))
+                            deleteConfirmationDialog?.getButton(DialogInterface.BUTTON_NEGATIVE)
+                                ?.setTextColor(ContextCompat.getColor(this, R.color.red))
                         }
-                        dialog.show()
+                        deleteConfirmationDialog?.show()
                     }
 
                     modificaButton.setOnClickListener {
@@ -315,6 +315,8 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
 
                 runOnUiThread {
                     checkInternetConnection()
+                    deleteConfirmationDialog?.dismiss()
+                    deleteConfirmationDialog = null
                 }
             }
         }
