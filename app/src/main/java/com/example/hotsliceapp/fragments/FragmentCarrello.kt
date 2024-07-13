@@ -118,8 +118,8 @@ class FragmentCarrello : Fragment(), FragmentRitiroDialog.RitiroDialogListener {
 
             var totale: Double = 0.0
             for (item in newList) {
-                string += "Nome: ${item.nome}, Quantità: ${item.quantita};\n"
                 totale += (item.quantita * item.prezzo)
+                string += "${item.quantita} ${item.nome},\n"
             }
             val nuovoOrdine = hashMapOf(
                 "id" to "${authid}_${System.currentTimeMillis()}",
