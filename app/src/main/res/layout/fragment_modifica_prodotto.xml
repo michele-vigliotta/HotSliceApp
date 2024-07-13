@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:padding="16dp">
 
     <TextView
@@ -19,21 +17,51 @@
         android:layout_height="48dp"
         android:hint="Descrizione"
         android:backgroundTint="@color/yellow"
-        />
+        android:imeOptions="actionNext"
+        android:inputType="textMultiLine"
+        android:layout_below="@id/editTextName"
+        android:layout_marginTop="8dp"/>
 
     <EditText
         android:id="@+id/editTextPrice"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="Prezzo"
+        android:backgroundTint="@color/yellow"
+        android:imeOptions="actionDone"
         android:inputType="numberDecimal"
-        android:backgroundTint="@color/yellow"/>
+        android:layout_below="@id/editTextDescription"
+        android:layout_marginTop="8dp"/>
 
     <Button
         android:id="@+id/buttonUploadPhoto"
         android:layout_width="200dp"
-        android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:text="Carica Foto"
-        android:background="@drawable/custom_button"/>
-</LinearLayout>
+        android:background="@drawable/custom_button"
+        android:layout_below="@id/editTextPrice"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"/>
+
+    <ImageView
+        android:id="@+id/imagePreview"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_below="@id/buttonUploadPhoto"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:scaleType="centerCrop"
+        android:src="@android:color/transparent"
+        android:visibility="gone"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/imagePreview"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        android:indeterminateTint="@color/red"/>
+
+</RelativeLayout>

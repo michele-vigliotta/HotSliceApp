@@ -2,13 +2,17 @@ import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import androidx.core.os.BundleCompat
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -18,6 +22,8 @@ import com.example.hotsliceapp.R
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.squareup.picasso.Picasso
+import java.io.InputStream
 
 
 class FragmentModificaProdotto : DialogFragment() {
@@ -25,6 +31,10 @@ class FragmentModificaProdotto : DialogFragment() {
     var nomeFileFoto: String? = null
     val db = FirebaseFirestore.getInstance()
     lateinit var itemDaModificare: Item
+    private lateinit var progressBar: ProgressBar
+    private lateinit var imagePreview: ImageView
+    private var isImageUploaded = false
+    private var isImageSelected = false  //per sapere se é stata caricata una nuova foto
 
 
     private var listener: ModificaProdottoListener? = null
@@ -58,6 +68,9 @@ class FragmentModificaProdotto : DialogFragment() {
         val descrizioneEt = view.findViewById<EditText>(R.id.editTextDescription)
         val prezzoStrEt = view.findViewById<EditText>(R.id.editTextPrice)
 
+        progressBar = view.findViewById(R.id.progressBar)
+        imagePreview = view.findViewById(R.id.imagePreview)
+
         nomeTv.setText(itemDaModificare.nome)
         descrizioneEt.setText(itemDaModificare.descrizione)
         prezzoStrEt.setText(itemDaModificare.prezzo.toString())
@@ -80,12 +93,16 @@ class FragmentModificaProdotto : DialogFragment() {
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                 .setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
 
+            showCurrentImage(itemDaModificare)
+
             positiveButton.setOnClickListener {
                 val descrizione = descrizioneEt.text.toString()
                 val prezzoStr = prezzoStrEt.text.toString()
 
                 if ( prezzoStr.isEmpty() || descrizione.isEmpty()){
                     Toast.makeText(requireContext(), "Compilare tutti i campi", Toast.LENGTH_SHORT).show()
+                }   else if (isImageSelected && (nomeFileFoto == null || !isImageUploaded)) {
+                    Toast.makeText(requireContext(), "Inserire una foto e attendere", Toast.LENGTH_SHORT).show()
                 }
                 else{
                     val prezzo = prezzoStr.toDouble()
@@ -94,9 +111,10 @@ class FragmentModificaProdotto : DialogFragment() {
                         "descrizione" to descrizione,
                     )
 
-                    if (nomeFileFoto != null) {
+                    if (isImageSelected) {
                         nuovoProdotto["foto"] = nomeFileFoto!!
                     }
+
 
                     val collection = when (tipo) {
                         "pizza" -> db.collection("pizze")
@@ -114,7 +132,7 @@ class FragmentModificaProdotto : DialogFragment() {
                                     .addOnSuccessListener {
                                         itemDaModificare.descrizione = descrizione
                                         itemDaModificare.prezzo = prezzo
-                                        if (nomeFileFoto != null) {
+                                        if (isImageSelected && nomeFileFoto != null) {
                                             itemDaModificare.foto = nomeFileFoto
                                         }
                                         listener?.onProdottoModificato(itemDaModificare)
@@ -140,43 +158,74 @@ class FragmentModificaProdotto : DialogFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             val selectedImageUri = data.data
-            val fileSize = getFileSize(selectedImageUri)
-
-            if (fileSize > 2 *1024 * 1024) {
-                Toast.makeText(requireContext(), "Foto non caricata, le dimensioni devono essere inferiori a 2MB", Toast.LENGTH_SHORT).show()
-            }else {
                 nomeFileFoto = getFileName(selectedImageUri)
+                showImagePreview(selectedImageUri)
                 uploadFoto(selectedImageUri, nomeFileFoto)
-            }
+                isImageSelected = true
+
         }
     }
 
-    private fun getFileSize(uri: Uri?): Long {
-        var fileSize: Long = 0
-        uri?.let {
-            val cursor = requireContext().contentResolver.query(it, null, null, null, null)
-            cursor?.use {
-                if (it.moveToFirst()) {
-                    fileSize = it.getLong(it.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE))
-                }
+    private fun showCurrentImage(item: Item){
+        if (!item.foto.isNullOrEmpty()) {
+            val storageReference = FirebaseStorage.getInstance().reference.child("${item.foto}")
+            storageReference.downloadUrl.addOnSuccessListener { uri ->
+                Picasso.get().load(uri).into(imagePreview, object : com.squareup.picasso.Callback {
+                    override fun onSuccess() {
+                        progressBar.visibility = View.GONE
+                        imagePreview.visibility = View.VISIBLE
+                    }
+
+                    override fun onError(e: Exception?) {
+                        imagePreview.setImageResource(R.drawable.pizza_foto)
+                        progressBar.visibility = View.GONE
+                        imagePreview.visibility = View.VISIBLE
+                    }
+                })
+            }.addOnFailureListener {
+                imagePreview.setImageResource(R.drawable.pizza_foto)
+                progressBar.visibility = View.GONE
+                imagePreview.visibility = View.VISIBLE
             }
+        } else {
+            imagePreview.setImageResource(R.drawable.pizza_foto)
+            progressBar.visibility = View.GONE
+            imagePreview.visibility = View.VISIBLE
         }
-        return fileSize
+        isImageUploaded = true
     }
+
+
+    private fun showImagePreview(uri: Uri?) {
+        uri?.let {
+            val inputStream: InputStream? = requireContext().contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            imagePreview.setImageBitmap(bitmap)
+            imagePreview.visibility = View.VISIBLE
+        }
+    }
+
     private fun uploadFoto(uri: Uri?, nomeFileFoto: String?) {
 
         val imageRef = storageRef.child("$nomeFileFoto")
         val uploadTask = imageRef.putFile(uri!!)
 
+        // Mostra la ProgressBar
+        progressBar.visibility = View.VISIBLE
+        isImageUploaded = false  // flag false prima di iniziare
 
-        //Toast pericolosi, fanno crashare l'app
-        /*
         uploadTask.addOnSuccessListener {
+            // Nascondi la ProgressBar e aggiorna il flag
+            progressBar.visibility = View.GONE
+            isImageUploaded = true
             Toast.makeText(requireContext(), "Immagine caricata con successo", Toast.LENGTH_SHORT).show()
         }.addOnFailureListener {
+            // Nascondi la ProgressBar e aggiorna il flag
+            progressBar.visibility = View.GONE
+            isImageUploaded = false
             Toast.makeText(requireContext(), "Errore durante il caricamento dell'immagine", Toast.LENGTH_SHORT).show()
         }
-        */
+
     }
 
     private fun getFileName(uri: Uri?): String? {
