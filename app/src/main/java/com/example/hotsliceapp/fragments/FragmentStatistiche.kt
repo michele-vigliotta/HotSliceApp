@@ -112,6 +112,7 @@ class FragmentStatistiche : Fragment() {
         val dataSet = BarDataSet(entries, "Quantità vendite")
         val barData = BarData(dataSet)
 
+        dataSet.color = resources.getColor(R.color.yellow) // Imposta il colore del grafico
         // Imposta le etichette sull'asse X
         barData.barWidth = 0.5f // Larghezza delle barre
         barChart.data = barData
