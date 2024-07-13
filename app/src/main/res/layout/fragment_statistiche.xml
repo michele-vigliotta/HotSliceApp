@@ -27,19 +27,22 @@
             android:id="@+id/radioWeek"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ultima settimana" />
+            android:text="Ultima settimana"
+            android:buttonTint="@color/red"/>
 
         <RadioButton
             android:id="@+id/radioMonth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ultimo mese" />
+            android:text="Ultimo mese"
+            android:buttonTint="@color/red"/>
 
         <RadioButton
             android:id="@+id/radioYear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ultimo anno" />
+            android:text="Ultimo anno"
+            android:buttonTint="@color/red"/>
     </RadioGroup>
 
     <com.github.mikephil.charting.charts.BarChart
