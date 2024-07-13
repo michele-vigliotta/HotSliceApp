@@ -60,7 +60,6 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
 
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
         // Inizializza l'adattatore con isStaff = false di default
         adapterOrdini = createAdapter(false)
