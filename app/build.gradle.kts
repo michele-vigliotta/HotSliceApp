@@ -102,6 +102,7 @@ dependencies {
 
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
     androidTestImplementation("org.mockito:mockito-android:4.8.0")
+    testImplementation("org.mockito:mockito-core:5.12.0")
 
     // Glide
     implementation ("com.github.bumptech.glide:glide:4.12.0")
