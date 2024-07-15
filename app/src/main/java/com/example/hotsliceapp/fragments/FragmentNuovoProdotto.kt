@@ -172,15 +172,15 @@ class FragmentNuovoProdotto : DialogFragment() {
 
         // Mostra la ProgressBar
         progressBar.visibility = View.VISIBLE
-        isImageUploaded = false  // Assicurati che il flag sia impostato su false prima di iniziare
+        isImageUploaded = false  // Controlla che il flag sia impostato su false prima di iniziare
 
         uploadTask?.addOnSuccessListener {
-            // Nascondi la ProgressBar e aggiorna il flag
+            // Nasconde la ProgressBar e aggiorna il flag
             progressBar.visibility = View.GONE
             isImageUploaded = true
             Toast.makeText(requireContext(), "Immagine caricata con successo", Toast.LENGTH_SHORT).show()
         }?.addOnFailureListener {
-            // Nascondi la ProgressBar e aggiorna il flag
+            // Nasconde la ProgressBar e aggiorna il flag
             progressBar.visibility = View.GONE
             isImageUploaded = false
             Toast.makeText(requireContext(), "Errore durante il caricamento dell'immagine", Toast.LENGTH_SHORT).show()

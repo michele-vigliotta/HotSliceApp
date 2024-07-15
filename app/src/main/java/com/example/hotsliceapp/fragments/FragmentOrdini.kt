@@ -61,8 +61,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
         auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
 
-        // Inizializza l'adattatore con isStaff = false di default
-        adapterOrdini = createAdapter(false)
+        adapterOrdini = createAdapter(false) // Inizializza l'adattatore con isStaff = false di default
         recyclerView.adapter = adapterOrdini
 
         // Controllo se l'utente è loggato
@@ -85,7 +84,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
                     adapterOrdini = createAdapter(true)
                     recyclerView.adapter = adapterOrdini
 
-                    // Imposta il pulsante "Al Tavolo" come selezionato di default
+                    // Pulsante "Al Tavolo" selezionato di default
                     selectButton(buttonAlTavolo)
                     filterOrdini("Servizio al Tavolo")
                     // Configura il listener per l'elemento cliccato
@@ -96,8 +95,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
                     }
 
                 } else {
-                    // Carica gli ordini per i clienti
-                    loadOrdini(role, currentUser.uid)
+                    loadOrdini(role, currentUser.uid)  // Carica gli ordini per i clienti
                 }
 
                 buttonAlTavolo.setOnClickListener {
@@ -120,8 +118,8 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
 
     private fun selectButton(button: Button) {
         selectedButton?.isSelected = false // Deseleziona il pulsante precedente
-        button.isSelected = true // Seleziona il nuovo pulsante
-        selectedButton = button // Memorizza il pulsante selezionato
+        button.isSelected = true
+        selectedButton = button
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -158,7 +156,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
 
                 // Aggiorna la RecyclerView
                 adapterOrdini.notifyDataSetChanged()
-                recyclerView.scrollToPosition(0) // Scorre in cima alla lista
+                recyclerView.scrollToPosition(0)  // Scorre in cima alla lista
                 recyclerView.visibility = View.VISIBLE
                 progressBar.visibility = View.GONE
             }
@@ -174,8 +172,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
 
         val ordiniCollection = db.collection("ordini")
 
-        // Query base per lo staff con filtro per tipo di ordine
-        val query = ordiniCollection.whereEqualTo("tipo", tipo)
+        val query = ordiniCollection.whereEqualTo("tipo", tipo) // Query per lo staff con filtro in base al tipo di ordine
 
         progressBar.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE

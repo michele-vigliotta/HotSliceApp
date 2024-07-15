@@ -71,7 +71,7 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
         layoutDettagli = findViewById(R.id.layoutDettagli)
         val backButton: ImageButton = findViewById(R.id.back_button)
         backButton.setOnClickListener {
-            onBackPressed() // Call onBackPressed to handle back navigation
+            onBackPressed()
         }
 
         connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -118,7 +118,7 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                     document ->
                 role = document.getString("role").toString()
 
-                //Configurazione vista per staff
+
                 if (role == "admin") {
                     layoutContainer.removeAllViews()
                     layoutDettagli.removeView(favButton)
@@ -435,7 +435,7 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
                         }
                     }
                     .addOnFailureListener { e ->
-                        // Gestisci l'errore
+
                         Toast.makeText(
                             this,
                             "Errore nella ricerca del documento",
@@ -475,7 +475,7 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
 
     override fun onBackPressed() {
         returnResult()
-        // Chiama la tua funzione per restituire il risultato
+
         super.onBackPressed()
     }
 
@@ -502,10 +502,10 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
             }
 
             val currentTime = System.currentTimeMillis()
-            // Check if enough time has passed since the last update
-            if (currentTime - lastChangeTime > 1000) { // 1 second debounce time
+            // controlla se è passato abbastanza tempo dall'ultimo update
+            if (currentTime - lastChangeTime > 1000) { // 1 secondo
                 if (value != null && !value.isEmpty) {
-                    finish() // Chiude l'activity solo se ci sono cambiamenti
+                    finish() // chiude l'activity solo se ci sono cambiamenti
                 }
                 lastChangeTime = currentTime
             }

@@ -61,7 +61,7 @@ class FragmentHome : Fragment() {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, FragmentPizza())
                 .commit()
-            searchView.setQuery("", false)           //svuoto il testo della searchview auando passo in un nuovo fragment
+            searchView.setQuery("", false)           //svuoto il testo della searchview quando passo in un nuovo fragment
         }
         binding.buttonBibite.setOnClickListener {
             selectButton(buttonBibite)
@@ -127,6 +127,6 @@ class FragmentHome : Fragment() {
     private fun selectButton(button: Button) {
         selectedButton?.isSelected = false // Deseleziona il pulsante precedente
         button.isSelected = true // Seleziona il nuovo pulsante
-        selectedButton = button // Memorizza il pulsante selezionato
+        selectedButton = button // Cambia selezione
     }
 }
