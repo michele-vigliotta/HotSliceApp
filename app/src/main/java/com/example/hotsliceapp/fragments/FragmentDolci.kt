@@ -38,7 +38,7 @@ class FragmentDolci:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener{
     private lateinit var progressBar: ProgressBar
 
     override fun onProdottoAggiunto() {
-        fetchDataFromFirebase()
+
     }
 
     override fun onCreateView(
@@ -104,22 +104,25 @@ class FragmentDolci:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener{
     }
 
     private fun fetchDataFromFirebase() {
-        dolciList.clear()
-
-        val db = FirebaseFirestore.getInstance()
         db.collection("dolci")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    val dolce = document.toObject(Item::class.java)
-                    dolciList.add(dolce)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w("FragmentDolci", "Listen failed.", e)
+                    return@addSnapshotListener      // Aggiunto snapshotlistener per aggiornare in real time
                 }
-                dolciAdapter.notifyDataSetChanged()
-                recyclerView.visibility = View.VISIBLE
-                progressBar.visibility = View.GONE
-            }
-            .addOnFailureListener { exception ->
-                Log.w("DolciFragment", "Error getting documents.", exception)
+
+                if (snapshot != null && !snapshot.isEmpty) {
+                    dolciList.clear()
+                    for (document in snapshot.documents) {
+                        val pizza = document.toObject(Item::class.java)
+                        dolciList.add(pizza!!)
+                    }
+                    dolciAdapter.updateList(dolciList)
+                    recyclerView.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
+                } else {
+                    Log.d("PizzaFragment", "Current data: null")
+                }
             }
     }
 

@@ -39,7 +39,7 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
 
 
     override fun onProdottoAggiunto() {
-        fetchDataFromFirebase()
+
     }
 
     override fun onCreateView(
@@ -53,6 +53,7 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
 
         bibiteAdapter = AdapterListeHome(bibiteList)
         recyclerView.adapter = bibiteAdapter
+
         fetchDataFromFirebase()
 
         val floatingButton = view.findViewById<FloatingActionButton>(R.id.floatingActionButton)
@@ -106,21 +107,25 @@ class FragmentBibite:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
     }
 
     private fun fetchDataFromFirebase() {
-        bibiteList.clear()
-        val db = FirebaseFirestore.getInstance()
         db.collection("bibite")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    val bibita = document.toObject(Item::class.java)
-                    bibiteList.add(bibita)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w("FragmentBibite", "Listen failed.", e)
+                    return@addSnapshotListener      // Aggiunto snapshotlistener per aggiornare in real time
                 }
-                bibiteAdapter.notifyDataSetChanged()
-                recyclerView.visibility = View.VISIBLE
-                progressBar.visibility = View.GONE
-            }
-            .addOnFailureListener { exception ->
-                Log.w("BibiteFragment", "Error getting documents.", exception)
+
+                if (snapshot != null && !snapshot.isEmpty) {
+                    bibiteList.clear()
+                    for (document in snapshot.documents) {
+                        val bibita = document.toObject(Item::class.java)
+                        bibiteList.add(bibita!!)
+                    }
+                    bibiteAdapter.updateList(bibiteList)
+                    recyclerView.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
+                } else {
+                    Log.d("PizzaFragment", "Current data: null")
+                }
             }
     }
 

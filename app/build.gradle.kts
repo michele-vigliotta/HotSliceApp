@@ -75,6 +75,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.recyclerview)
     implementation(libs.firebase.storage.ktx)
+    implementation(libs.androidx.espresso.intents)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -93,6 +94,14 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // epresso
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation("androidx.test:runner:1.6.1")
+    androidTestImplementation("androidx.test:rules:1.6.1")
+
+    testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
+    androidTestImplementation("org.mockito:mockito-android:4.8.0")
 
     // Glide
     implementation ("com.github.bumptech.glide:glide:4.12.0")

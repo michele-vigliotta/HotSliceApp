@@ -38,14 +38,13 @@ class FragmentOfferte:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
     private lateinit var progressBar: ProgressBar
 
     override fun onProdottoAggiunto() {
-        fetchDataFromFirebase()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_offerte,container,false)
+        val view = inflater.inflate(R.layout.fragment_offerte, container, false)
         progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
         recyclerView = view.findViewById(R.id.recyclerOfferte)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -67,8 +66,7 @@ class FragmentOfferte:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
         auth = Firebase.auth
         val authid = (auth.currentUser?.uid).toString()
         val documentSnapshot = db.collection("users").document(authid)
-        documentSnapshot.get().addOnSuccessListener {
-                document ->
+        documentSnapshot.get().addOnSuccessListener { document ->
             role = document.getString("role").toString()
             if (role == "staff") {
                 floatingButton.visibility = View.VISIBLE
@@ -103,24 +101,25 @@ class FragmentOfferte:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
     }
 
     private fun fetchDataFromFirebase() {
-        offerteList.clear()
-
-        val db = FirebaseFirestore.getInstance()
         db.collection("offerte")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    //converte ogni elemento in un oggetto e lo aggiunge alla lista
-                    val offerta = document.toObject(Item::class.java)
-                    offerteList.add(offerta)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w("FragmentOfferte", "Listen failed.", e)
+                    return@addSnapshotListener      // Aggiunto snapshotlistener per aggiornare in real time
                 }
-                //aggiorna l'adapter con la nuova lista
-                offerteAdapter.notifyDataSetChanged()
-                recyclerView.visibility = View.VISIBLE
-                progressBar.visibility = View.GONE
-            }
-            .addOnFailureListener { exception ->
-                Log.w("offerteFragment", "Error getting documents.", exception)
+
+                if (snapshot != null && !snapshot.isEmpty) {
+                    offerteList.clear()
+                    for (document in snapshot.documents) {
+                        val pizza = document.toObject(Item::class.java)
+                        offerteList.add(pizza!!)
+                    }
+                    offerteAdapter.updateList(offerteList)
+                    recyclerView.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
+                } else {
+                    Log.d("PizzaFragment", "Current data: null")
+                }
             }
     }
 }

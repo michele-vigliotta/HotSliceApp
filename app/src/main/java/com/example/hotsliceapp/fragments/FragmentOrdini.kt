@@ -76,7 +76,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
             documentSnapshot.get().addOnSuccessListener { document ->
                 role = document.getString("role").toString()
 
-                // Mostra i pulsanti se l'utente è dello staff
+                // Mostra i pulsanti se il ruolo dell'utente è staff
                 if (role == "staff") {
                     linearLayoutButtons.visibility = View.VISIBLE
                     linearLayoutStaffElements.visibility = View.VISIBLE
@@ -96,12 +96,10 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
                     }
 
                 } else {
-                    // Mantieni l'adattatore con isStaff = false
                     // Carica gli ordini per i clienti
                     loadOrdini(role, currentUser.uid)
                 }
 
-                // Configura i listener per i pulsanti
                 buttonAlTavolo.setOnClickListener {
                     selectButton(buttonAlTavolo)
                     filterOrdini("Servizio al Tavolo")
@@ -131,7 +129,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val ordiniCollection = db.collection("ordini")
 
-        // Determina la query di base in base al ruolo
+
         var query: Query = if (role == "staff") {
             ordiniCollection // Se è staff, carica tutti gli ordini
         } else {
@@ -141,26 +139,32 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
         progressBar.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
 
-        // Esegui la query di base e gestisci i risultati
-        query.get().addOnSuccessListener { documents ->
-            ordiniList.clear() // Pulisce la lista degli ordini
-            for (document in documents) {
-                val ordine = document.toObject(ItemOrdine::class.java)
-                ordiniList.add(ordine)
+        // Aggiunto snapshotlistener per aggiornare in real time
+        query.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w("OrdiniFragment", "Errore durante il recupero degli ordini", e)
+                return@addSnapshotListener
             }
 
-            // Ordina la lista per data decrescente
-            ordiniList.sortByDescending { LocalDateTime.parse(it.data, formatter) }
+            if (snapshot != null) {
+                ordiniList.clear() // Pulisce la lista degli ordini
+                for (document in snapshot) {
+                    val ordine = document.toObject(ItemOrdine::class.java)
+                    ordiniList.add(ordine)
+                }
 
-            // Aggiorna la RecyclerView
-            adapterOrdini.notifyDataSetChanged()
-            recyclerView.scrollToPosition(0) // Scorre in cima alla lista
-            recyclerView.visibility = View.VISIBLE
-            progressBar.visibility = View.GONE
-        }.addOnFailureListener { exception ->
-            Log.w("OrdiniFragment", "Errore durante il recupero degli ordini", exception)
+                // Ordina la lista per data decrescente
+                ordiniList.sortByDescending { LocalDateTime.parse(it.data, formatter) }
+
+                // Aggiorna la RecyclerView
+                adapterOrdini.notifyDataSetChanged()
+                recyclerView.scrollToPosition(0) // Scorre in cima alla lista
+                recyclerView.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
+            }
         }
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun filterOrdini(tipo: String) {
@@ -176,29 +180,34 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
         progressBar.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
 
-        // Esegui la query filtrata e gestisci i risultati
-        query.get().addOnSuccessListener { documents ->
-            ordiniList.clear() // Pulisce la lista degli ordini
-            for (document in documents) {
-                val ordine = document.toObject(ItemOrdine::class.java)
-                val ordineDateTime = LocalDateTime.parse(ordine.data, formatter)
 
-                // Verifica se l'ordine è stato creato nelle ultime 24 ore
-                if (ordineDateTime.isAfter(twentyFourHoursAgo)) {
-                    ordiniList.add(ordine)
-                }
+        query.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w("OrdiniFragment", "Errore durante il recupero degli ordini filtrati", e)
+                return@addSnapshotListener
             }
 
-            // Ordina la lista per data decrescente
-            ordiniList.sortByDescending { LocalDateTime.parse(it.data, formatter) }
+            if (snapshot != null) {
+                ordiniList.clear()
+                for (document in snapshot) {
+                    val ordine = document.toObject(ItemOrdine::class.java)
+                    val ordineDateTime = LocalDateTime.parse(ordine.data, formatter)
 
-            // Aggiorna la RecyclerView
-            adapterOrdini.notifyDataSetChanged()
-            recyclerView.scrollToPosition(0) // Scorre in cima alla lista
-            recyclerView.visibility = View.VISIBLE
-            progressBar.visibility = View.GONE
-        }.addOnFailureListener { exception ->
-            Log.w("OrdiniFragment", "Errore durante il recupero degli ordini filtrati", exception)
+                    // Verifica se l'ordine è stato creato nelle ultime 24 ore
+                    if (ordineDateTime.isAfter(twentyFourHoursAgo)) {
+                        ordiniList.add(ordine)
+                    }
+                }
+
+                // Ordina la lista per data decrescente
+                ordiniList.sortByDescending { LocalDateTime.parse(it.data, formatter) }
+
+                // Aggiorna la RecyclerView
+                adapterOrdini.notifyDataSetChanged()
+                recyclerView.scrollToPosition(0) // Scorre in cima alla lista
+                recyclerView.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
+            }
         }
     }
 

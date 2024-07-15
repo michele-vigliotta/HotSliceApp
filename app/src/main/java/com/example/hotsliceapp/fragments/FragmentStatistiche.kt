@@ -44,7 +44,11 @@ class FragmentStatistiche : Fragment() {
             }
             fetchOrders(timeInterval)
         }
+
         db = FirebaseFirestore.getInstance()
+
+        // Carica i dati di default per una settimana
+        fetchOrders("week")
 
         return view
     }
