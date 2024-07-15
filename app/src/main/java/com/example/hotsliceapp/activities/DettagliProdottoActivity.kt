@@ -33,7 +33,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
@@ -77,9 +76,6 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
         connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         registerNetworkCallback() // Registra il NetworkCallback all'avvio
         checkInternetConnection() // Verifica la connessione iniziale
-        val item = intent.getParcelableExtra<Item>("item")
-        val prodotto = intent.getStringExtra("prodotto")
-        setupCollectionListener(prodotto.toString())
     }
 
     private fun checkInternetConnection(){
@@ -447,6 +443,7 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
 
 
     override fun onProdottoModificato(item: Item){
+
         val textView : TextView = findViewById(R.id.textViewDettagli)
         val imageView : ImageView = findViewById(R.id.imageViewDettagli)
         val descrizione : TextView = findViewById(R.id.descrizioneDettagli)
@@ -471,6 +468,7 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
 
         val rootView = findViewById<View>(android.R.id.content)
         Snackbar.make(rootView, "Prodotto Modificato!", Snackbar.LENGTH_LONG).show()
+
     }
 
     override fun onBackPressed() {
@@ -483,33 +481,6 @@ class DettagliProdottoActivity : AppCompatActivity(), FragmentModificaProdotto.M
         val intent = Intent()
         intent.putParcelableArrayListExtra("itemsCarrello", ArrayList(carrelloViewModel.getItems()))
         setResult(RESULT_CODE_CARRELLO, intent)
-    }
-
-    private fun setupCollectionListener(tipo: String) {
-        val collection = when (tipo) {
-            "pizza" -> db.collection("pizze")
-            "bibita" -> db.collection("bibite")
-            "dolce" -> db.collection("dolci")
-            else -> db.collection("offerte")
-        }
-
-        var lastChangeTime = System.currentTimeMillis()
-
-        collection.addSnapshotListener { value, error ->
-            if (error != null) {
-                Log.e("DettagliProdottoActivity", "Error listening to collection changes", error)
-                return@addSnapshotListener
-            }
-
-            val currentTime = System.currentTimeMillis()
-            // Check if enough time has passed since the last update
-            if (currentTime - lastChangeTime > 1000) { // 1 second debounce time
-                if (value != null && !value.isEmpty) {
-                    finish() // Chiude l'activity solo se ci sono cambiamenti
-                }
-                lastChangeTime = currentTime
-            }
-        }
     }
 
 

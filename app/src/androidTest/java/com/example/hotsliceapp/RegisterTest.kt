@@ -26,7 +26,7 @@ class RegisterTest {
 
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var scenario: ActivityScenario<Register>
-    private var testUser: FirebaseUser? = null
+
 
     @get:Rule
     val activityRule = ActivityScenarioRule(Register::class.java)

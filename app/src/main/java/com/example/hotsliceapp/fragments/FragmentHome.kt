@@ -21,7 +21,7 @@ import com.google.firebase.ktx.Firebase
 import java.util.Locale
 
 class FragmentHome : Fragment() {
-    private lateinit var auth: FirebaseAuth
+    lateinit var auth: FirebaseAuth
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!! //getter per _binding (!! restituisce un non null)
     private var selectedButton: Button? = null

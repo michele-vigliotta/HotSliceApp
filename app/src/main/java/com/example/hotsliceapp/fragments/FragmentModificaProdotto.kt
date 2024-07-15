@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.example.hotsliceapp.Item
 import com.example.hotsliceapp.R
+import com.example.hotsliceapp.activities.MainActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -145,6 +146,7 @@ class FragmentModificaProdotto : DialogFragment() {
                                             itemDaModificare.foto = nomeFileFoto
                                         }
                                         listener?.onProdottoModificato(itemDaModificare)
+
                                         dismiss()
                                     }
                                     .addOnFailureListener { e ->
