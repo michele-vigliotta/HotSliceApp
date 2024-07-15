@@ -108,7 +108,7 @@ class FragmentDolci:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener{
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     Log.w("FragmentDolci", "Listen failed.", e)
-                    return@addSnapshotListener
+                    return@addSnapshotListener      // Aggiunto snapshotlistener per aggiornare in real time
                 }
 
                 if (snapshot != null && !snapshot.isEmpty) {

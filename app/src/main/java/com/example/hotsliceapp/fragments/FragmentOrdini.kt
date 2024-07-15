@@ -139,7 +139,7 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
         progressBar.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
 
-        // Esegui la query di base e gestisci i risultati
+        // Aggiunto snapshotlistener per aggiornare in real time
         query.addSnapshotListener { snapshot, e ->
             if (e != null) {
                 Log.w("OrdiniFragment", "Errore durante il recupero degli ordini", e)
