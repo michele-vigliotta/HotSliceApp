@@ -112,33 +112,7 @@ class FragmentPizza:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
         fetchDataFromFirebase()
     }
 
-    /*
-    private fun fetchDataFromFirebase() {
-        pizzaList.clear()
 
-        val db = FirebaseFirestore.getInstance()
-        db.collection("pizze")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    //converte ogni elemento in un oggetto e lo aggiunge alla lista
-                    val pizza = document.toObject(Item::class.java)
-                    pizzaList.add(pizza)
-                }
-                //aggiorna l'adapter con la nuova lista
-                //pizzaAdapter.notifyDataSetChanged()
-                pizzaAdapter.updateList(pizzaList)
-                recyclerView.visibility = View.VISIBLE
-                progressBar.visibility = View.GONE
-            }
-            .addOnFailureListener { exception ->
-                Log.w("PizzaFragment", "Error getting documents.", exception)
-            }
-    }
-
-
-
-     */
     private fun fetchDataFromFirebase() {
         db.collection("pizze")
             .addSnapshotListener { snapshot, e ->
@@ -161,6 +135,7 @@ class FragmentPizza:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
                 }
             }
     }
+
     fun filterList(query: String) {//metodo che filtra la lista quando si utilizza la searchview
         val filteredList = pizzaList.filter { it.nome.contains(query, ignoreCase = true) }
         pizzaAdapter.setFilteredList(filteredList)
