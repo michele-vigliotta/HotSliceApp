@@ -21,7 +21,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 class Register: AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding //Android studio genera una classe ActivityRegisterBinding a partire dal file activity_register.xml
-    private lateinit var firebaseAuth: FirebaseAuth
+    lateinit var firebaseAuth: FirebaseAuth
 
     private var isInternetConnected: Boolean = false
     private lateinit var connectivityManager: ConnectivityManager

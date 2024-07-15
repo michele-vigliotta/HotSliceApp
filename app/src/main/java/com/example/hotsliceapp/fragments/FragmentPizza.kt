@@ -39,7 +39,7 @@ class FragmentPizza:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
     private lateinit var progressBar: ProgressBar
 
     override fun onProdottoAggiunto() {
-        fetchDataFromFirebase()
+        //fetchDataFromFirebase()
     }
 
     override fun onCreateView(
@@ -112,6 +112,7 @@ class FragmentPizza:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
         fetchDataFromFirebase()
     }
 
+    /*
     private fun fetchDataFromFirebase() {
         pizzaList.clear()
 
@@ -135,6 +136,31 @@ class FragmentPizza:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
             }
     }
 
+
+
+     */
+    private fun fetchDataFromFirebase() {
+        db.collection("pizze")
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w("PizzaFragment", "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && !snapshot.isEmpty) {
+                    pizzaList.clear()
+                    for (document in snapshot.documents) {
+                        val pizza = document.toObject(Item::class.java)
+                        pizzaList.add(pizza!!)
+                    }
+                    pizzaAdapter.updateList(pizzaList)
+                    recyclerView.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
+                } else {
+                    Log.d("PizzaFragment", "Current data: null")
+                }
+            }
+    }
     fun filterList(query: String) {//metodo che filtra la lista quando si utilizza la searchview
         val filteredList = pizzaList.filter { it.nome.contains(query, ignoreCase = true) }
         pizzaAdapter.setFilteredList(filteredList)
