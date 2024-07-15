@@ -84,6 +84,7 @@ class Register: AppCompatActivity() {
                                         "Registrazione avvenuta con successo",
                                         Toast.LENGTH_SHORT
                                     ).show()
+                                    firebaseAuth.signOut()
                                     val intent = Intent(this, Login::class.java)
                                     startActivity(intent)
                                     finish() //chiude la vecchia activity appena siamo nella nuova

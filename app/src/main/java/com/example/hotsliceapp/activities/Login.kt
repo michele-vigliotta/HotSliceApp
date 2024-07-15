@@ -66,6 +66,7 @@ class Login : AppCompatActivity() {
             if (stayLoggedIn && auth.currentUser != null) { //se l'utente è loggato e se stayLoggedIn è true
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
+                return
             }
 
             binding.btnLogin.setOnClickListener {
