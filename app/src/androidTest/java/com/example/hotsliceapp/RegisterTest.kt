@@ -27,20 +27,16 @@ class RegisterTest {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var scenario: ActivityScenario<Register>
 
-
     @get:Rule
     val activityRule = ActivityScenarioRule(Register::class.java)
 
     @Before
     fun setUp() {
         firebaseAuth = FirebaseAuth.getInstance()
-        scenario = ActivityScenario.launch(Register::class.java)
     }
 
     @After
     fun tearDown() {
-
-        scenario.close()
         firebaseAuth.signOut()
     }
 
@@ -56,10 +52,8 @@ class RegisterTest {
         onView(withId(R.id.etPassword)).perform(typeText(testPassword), closeSoftKeyboard())
         onView(withId(R.id.etConfermaPassword)).perform(typeText(testPassword), closeSoftKeyboard())
 
-
-        // Clicca sul pulsante di registrazione
+        //Clicca sul pulsante di registrazione
         onView(withId(R.id.btnRegister)).perform(click())
-
 
         Thread.sleep(3000)
 
@@ -84,7 +78,6 @@ class RegisterTest {
             }
         }
     }
-        
 
     @Test
     fun testEmailGiaInUso(){
@@ -101,15 +94,13 @@ class RegisterTest {
             }
         initialLatch.await(10, TimeUnit.SECONDS)
 
-
-        // Compila le edit text
         onView(withId(R.id.etEmail)).perform(typeText(testEmail), closeSoftKeyboard())
         onView(withId(R.id.etPassword)).perform(typeText(testPassword), closeSoftKeyboard())
         onView(withId(R.id.etConfermaPassword)).perform(typeText(testConfermaPassword), closeSoftKeyboard())
 
         onView(withId(R.id.btnRegister)).perform(click())
 
-        // Listener per attendere la risposta di Firebase
+        //Listener per attendere la risposta di Firebase
         val latch = CountDownLatch(1)
         var exception: Exception? = null
 
@@ -121,15 +112,12 @@ class RegisterTest {
                 latch.countDown()
             }
 
-        // Attendi fino a 10 secondi che il latch raggiunga zero
         latch.await(10, TimeUnit.SECONDS)
 
-        // Verifica l'eccezione lanciata da Firebase
+        //Verifica l'eccezione lanciata da Firebase
         if (exception is FirebaseAuthUserCollisionException) {
-            // L'eccezione corretta è stata lanciata
             assert(true)
         } else {
-            // Un'altra eccezione è stata lanciata
             assert(false) { "Expected FirebaseAuthUserCollisionException but got ${exception?.javaClass?.name}" }
         }
     }
