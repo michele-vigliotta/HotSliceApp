@@ -47,7 +47,7 @@ class FragmentStatistiche : Fragment() {
 
         db = FirebaseFirestore.getInstance()
 
-        // Carica i dati di default per una settimana
+        //Carica i dati di default per una settimana
         fetchOrders("week")
 
         return view
@@ -62,7 +62,6 @@ class FragmentStatistiche : Fragment() {
             "month" -> startTime.add(Calendar.MONTH, -1)
             "year" -> startTime.add(Calendar.YEAR, -1)
             else -> {
-                // Gestisci un valore non valido per timeInterval
                 return
             }
         }
@@ -87,7 +86,6 @@ class FragmentStatistiche : Fragment() {
                                     val quantita = quantitaStr.toInt()
                                     productCount[nome] = productCount.getOrDefault(nome, 0) + quantita
                                 } catch (e: NumberFormatException) {
-                                    // Gestisci l'errore di conversione da stringa a intero
                                 }
                             }
                         }
@@ -98,7 +96,6 @@ class FragmentStatistiche : Fragment() {
                 displayBarChart(sortedProducts)
             }
             .addOnFailureListener { exception ->
-                // Gestisci l'errore
             }
     }
 

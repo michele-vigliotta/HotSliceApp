@@ -103,10 +103,10 @@ class MainActivity : AppCompatActivity() {
             layoutMain.visibility = View.VISIBLE
             progressBar.visibility = View.GONE
             bottomNavigationView.visibility = View.VISIBLE
-            registerNetworkCallback() // Registra il NetworkCallback all'avvio
+            registerNetworkCallback()
             checkInternetConnection() // Verifica la connessione iniziale
         }.addOnFailureListener {
-            // Gestisci eventuali errori
+
             Toast.makeText(this, "Error retrieving user role", Toast.LENGTH_SHORT).show()
             progressBar.visibility = View.GONE
         }

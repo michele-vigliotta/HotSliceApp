@@ -140,7 +140,6 @@ class FragmentPizza:Fragment(), FragmentNuovoProdotto.NuovoProdottoListener {
         val filteredList = pizzaList.filter { it.nome.contains(query, ignoreCase = true) }
         pizzaAdapter.setFilteredList(filteredList)
         if (filteredList.isEmpty()) {
-            // Se l'elenco filtrato è vuoto, mostra il messaggio
             Toast.makeText(context, "Pizza non presente nel menù", Toast.LENGTH_SHORT).show()
         }
     }

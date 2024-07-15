@@ -75,7 +75,7 @@ class AdapterOrdini(
             onItemClick?.invoke(ordine)
         }
 
-        // Imposta l'immagine appropriata in base allo stato dell'ordine
+        // Imposta l'immagine in base allo stato dell'ordine
         when (ordine.stato) {
             "in corso" -> {
                 holder.imageViewStatoOrdine.setImageResource(R.drawable.clessidra)

@@ -74,7 +74,7 @@
             android:background="@android:color/darker_gray" />
     </LinearLayout>
 
-    <!-- FrameLayout per la RecyclerView e la ProgressBar -->
+    <!-- FrameLayout per RecyclerView e ProgressBar -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

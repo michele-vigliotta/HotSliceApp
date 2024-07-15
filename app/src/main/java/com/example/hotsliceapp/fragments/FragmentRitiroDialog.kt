@@ -31,7 +31,7 @@ class FragmentRitiroDialog : DialogFragment() {
     private var isInternetConnected: Boolean = true
     private var timePickerDialog: TimePickerDialog? = null
 
-    //Interfaccia per comunicare con FragmentCarrello, onDialogPositiveClick dve essere implementata dal fragment chiamante
+    //Interfaccia per comunicare con FragmentCarrello, onDialogPositiveClick deve essere implementata dal fragment chiamante
     interface RitiroDialogListener {
         fun onDialogPositiveClick(option: String, details: String, nome: String, numero: String)
     }
