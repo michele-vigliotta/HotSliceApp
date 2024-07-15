@@ -180,29 +180,34 @@ class FragmentOrdini : Fragment(), FragmentGestioneOrdine.GestioneOrdineListener
         progressBar.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
 
-        // Esegui la query filtrata e gestisci i risultati
-        query.get().addOnSuccessListener { documents ->
-            ordiniList.clear() // Pulisce la lista degli ordini
-            for (document in documents) {
-                val ordine = document.toObject(ItemOrdine::class.java)
-                val ordineDateTime = LocalDateTime.parse(ordine.data, formatter)
 
-                // Verifica se l'ordine è stato creato nelle ultime 24 ore
-                if (ordineDateTime.isAfter(twentyFourHoursAgo)) {
-                    ordiniList.add(ordine)
-                }
+        query.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w("OrdiniFragment", "Errore durante il recupero degli ordini filtrati", e)
+                return@addSnapshotListener
             }
 
-            // Ordina la lista per data decrescente
-            ordiniList.sortByDescending { LocalDateTime.parse(it.data, formatter) }
+            if (snapshot != null) {
+                ordiniList.clear()
+                for (document in snapshot) {
+                    val ordine = document.toObject(ItemOrdine::class.java)
+                    val ordineDateTime = LocalDateTime.parse(ordine.data, formatter)
 
-            // Aggiorna la RecyclerView
-            adapterOrdini.notifyDataSetChanged()
-            recyclerView.scrollToPosition(0) // Scorre in cima alla lista
-            recyclerView.visibility = View.VISIBLE
-            progressBar.visibility = View.GONE
-        }.addOnFailureListener { exception ->
-            Log.w("OrdiniFragment", "Errore durante il recupero degli ordini filtrati", exception)
+                    // Verifica se l'ordine è stato creato nelle ultime 24 ore
+                    if (ordineDateTime.isAfter(twentyFourHoursAgo)) {
+                        ordiniList.add(ordine)
+                    }
+                }
+
+                // Ordina la lista per data decrescente
+                ordiniList.sortByDescending { LocalDateTime.parse(it.data, formatter) }
+
+                // Aggiorna la RecyclerView
+                adapterOrdini.notifyDataSetChanged()
+                recyclerView.scrollToPosition(0) // Scorre in cima alla lista
+                recyclerView.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
+            }
         }
     }
 

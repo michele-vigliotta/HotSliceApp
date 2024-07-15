@@ -1,5 +1,4 @@
 package com.example.hotsliceapp.fragments
-
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +15,7 @@ import com.example.hotsliceapp.ItemCarrello
 import com.example.hotsliceapp.R
 import com.example.hotsliceapp.activities.DettagliProdottoActivity
 import com.example.hotsliceapp.activities.MainActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 
@@ -62,8 +62,10 @@ class FragmentPreferiti:Fragment() {
 
     private fun fetchDataFromFirebase() {
         preferitiList.clear()
+
         val db = FirebaseFirestore.getInstance()
-        db.collection("preferiti")
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        db.collection("preferiti").whereEqualTo("userId", userId )
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
