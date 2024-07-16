@@ -49,9 +49,10 @@ class AdapterOrdini(
         holder.dataTextView.text = "Ordine in data: " + ordineDateTime.format(formatter)
         Log.d("Descrizione", "Descrizione: '${ordine.descrizione}'")
 
-        // Pulizia della descrizione per evitare che vada a capo prima di "Totale ordine"
-        val descrizionePulita = ordine.descrizione.trim().replace("\n", " ")
-        holder.descrizioneTextView.text = "Descrizione: " + descrizionePulita
+
+        val descrizioneFormattata = formatOrderDescription(ordine.descrizione)
+        holder.descrizioneTextView.text = "Descrizione: " + descrizioneFormattata
+
         holder.totaleTextView.text = "Totale ordine: ${ordine.totale} €"
         if (ordine.ora == "") {
             holder.tavoloOrarioTextView.text = "Tavolo: ${ordine.tavolo}"
@@ -93,5 +94,25 @@ class AdapterOrdini(
                 holder.imageViewStatoOrdine.visibility = View.GONE
             }
         }
+    }
+    // Funzione per formattare la descrizione dell'ordine
+    private fun formatOrderDescription(orderDescription: String): String {
+
+        val items = orderDescription.split(";").filter { it.isNotBlank() }
+        val formattedItems = mutableListOf<String>()
+
+        for (item in items) {
+
+            val parts = item.split(",").map { it.trim() }
+            if (parts.size == 2) {
+
+                val quantityPart = parts[1].substringAfter(":").trim()
+                val namePart = parts[0].substringAfter(":").trim()
+
+
+                formattedItems.add("${quantityPart}x $namePart")
+            }
+        }
+        return formattedItems.joinToString(", ")
     }
 }
