@@ -1,6 +1,5 @@
 package com.example.hotsliceapp
 
-import android.widget.Toast
 import org.junit.Assert
 import org.junit.Test
 
@@ -19,7 +18,7 @@ class SearchBarUnitTest {
             Item("Diavola"))
 
         Assert.assertEquals(4, 2 + 2)
-        fun filterList(query: String) {//metodo che filtra la lista quando si utilizza la searchview
+        fun filterList(query: String) {//metodo che filtra la lista quando si utilizza la searchbar
             filteredList = pizzaList.filter { it.nome.contains(query, ignoreCase = true) }
         }
 

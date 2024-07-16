@@ -17,7 +17,6 @@ import org.junit.Test
 class LoginAndRoleCheckTest {
 
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var scenario: ActivityScenario<Login>
 
     @get:Rule
     val activityRule = ActivityScenarioRule(Login::class.java)

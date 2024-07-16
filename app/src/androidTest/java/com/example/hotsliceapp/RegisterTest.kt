@@ -58,6 +58,7 @@ class RegisterTest {
         Thread.sleep(3000)
 
         // Verifica che l'Activity di login sia visibile
+
         onView(withId(R.id.loginActivityRoot))
             .check(matches(isDisplayed()))
 
@@ -118,7 +119,10 @@ class RegisterTest {
         if (exception is FirebaseAuthUserCollisionException) {
             assert(true)
         } else {
-            assert(false) { "Expected FirebaseAuthUserCollisionException but got ${exception?.javaClass?.name}" }
+            assert(false) { "Expected FirebaseAuthUserCollisionException but got " +
+                    "${exception?.javaClass?.name}" }
         }
+
+
     }
 }

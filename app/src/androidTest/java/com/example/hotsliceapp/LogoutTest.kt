@@ -9,10 +9,13 @@ import org.junit.Test
 
 class LogoutTest {
 
+
     @Test
     fun testLogoutButtonClick() {
+
         // Avvia MainActivity utilizzando ActivityScenario
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
+
 
             Thread.sleep(4000)
 
@@ -24,7 +27,7 @@ class LogoutTest {
             onView(withId(R.id.logout_button))
                 .perform(click())
 
-            // Verifica che LoginActivity sia visibile dopo il logout
+            // Verifica che Login sia visibile dopo il logout
             onView(withId(R.id.loginActivityRoot))
                 .check(matches(isDisplayed()))
         }
