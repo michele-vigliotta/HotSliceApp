@@ -96,7 +96,10 @@
                 android:padding="16dp"
                 app:layout_constraintBottom_toTopOf="@+id/button_add_to_cart"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintHorizontal_bias="0.496"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/prezzoProdotto"
+                app:layout_constraintVertical_bias="0.847">
 
                 <Button
                     android:id="@+id/button_minus"
@@ -130,7 +133,7 @@
                 android:id="@+id/button_add_to_cart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/custom_button"
                 android:padding="16dp"
                 android:text="Aggiungi al carrello"
@@ -165,20 +168,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageFrameLayout" />
 
-            <Button
-                android:id="@+id/button_nuovo"
-                android:layout_width="165dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/custom_button"
-                android:padding="16dp"
-                android:text="Modifica Prodotto"
-                android:textAllCaps="false"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@+id/button_add_to_cart"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
             <TextView
                 android:id="@+id/prezzoProdotto"
                 android:layout_width="wrap_content"
@@ -190,6 +179,23 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/descrizioneDettagli" />
+
+            <Button
+                android:id="@+id/button_nuovo"
+                android:layout_width="165dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/custom_button"
+                android:padding="16dp"
+                android:text="Modifica Prodotto"
+                android:textAllCaps="false"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/button_add_to_cart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/prezzoProdotto"
+                app:layout_constraintVertical_bias="0.971" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
