@@ -197,6 +197,15 @@ class FragmentNuovoProdotto : DialogFragment() {
         return "image_${System.currentTimeMillis()}.jpg"
     }
 
+    override fun onResume() {
+        super.onResume()
+        registerNetworkReceiver()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterNetworkReceiver()
+    }
     private fun registerNetworkReceiver() {
         val intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
         networkReceiver = object : BroadcastReceiver() {
