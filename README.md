@@ -51,17 +51,17 @@ The app is organized into three user roles, each with dedicated functionality ac
  
 <h2>Documentation</h2>
 <p>
-Full technical documentation:
-<code>/docs/RelazioneProgetto.pdf</code>
+Full technical documentation in the repository root:
+<code>HotSliceAppRelazione.pdf</code>
 </p>
 
 <h2>Authors</h2>
 
 * Michele Vigliotta
 * Filippo Montagnoli
-* Erika Pignotti
+* Giovanni Prati
 
 <hr>
 
-<p align="center"><i>University project developed for the Software Engineering course.</i></p>
+<p align="center"><i>University project developed for the Mobile Programming (Programmazione Mobile) course.</i></p>
 
