@@ -15,7 +15,7 @@ Mobile application for managing pizza restaurant operations, developed in both K
 <hr>
 
 <p align="center">
-<img src="docs/main_view.png" width="500">
+<img src="homeView.png" width="180">
 </p>
   
 
@@ -47,12 +47,17 @@ The app is organized into three user roles, each with dedicated functionality ac
   - <b>Backend</b>: Firebase (Authentication, Firestore, Storage)
   - <b>Database</b>: NoSQL - Firestore
   - <b>Architecture</b>: MVVM (Kotlin), Provider + StatefulWidgets (Flutter)
- 
+
+<h2>Flutter Version</h2>
+<p>
+<a href="https://github.com/michele-vigliotta/HotSliceAppFlutter">View Flutter implementation</a>
+</p>
+
  
 <h2>Documentation</h2>
 <p>
-Full technical documentation in the repository root:
-<code>HotSliceAppRelazione.pdf</code>
+Full technical documentation available in the repository root: 
+<a href="./HotSliceAppRelazione.pdf"><code>HotSliceAppRelazione.pdf</code></a>
 </p>
 
 <h2>Authors</h2>
